@@ -1,0 +1,45 @@
+2026-02-25 13:23:54,616 [INFO] pipeline: Pipeline start date=20260225 step=crawl demo=False
+2026-02-25 13:23:54,616 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:23:55,117 [INFO] modules.crawler: No HTML episode anchors found. Trying API fallback: /v1.0/open/media/episode/list
+2026-02-25 13:23:55,628 [INFO] modules.crawler: Parsed episode candidates: 5
+2026-02-25 13:23:55,632 [WARNING] modules.crawler: No episodes found for target date 2026-02-24
+2026-02-25 13:23:55,634 [INFO] pipeline: Selection rule: no explicit target token; selected latest episode in date=20260225 airtime=12:30
+2026-02-25 13:23:56,041 [ERROR] pipeline: Pipeline failed: episode.mp3_url is empty
+Traceback (most recent call last):
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 250, in run_pipeline
+    episode = step_crawl(cfg, target_date)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 160, in step_crawl
+    downloaded = download_episode(detailed, cfg)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 433, in download_episode
+    raise ValueError("episode.mp3_url is empty")
+ValueError: episode.mp3_url is empty
+2026-02-25 13:31:43,184 [INFO] pipeline: Pipeline start date=20260225 step=crawl demo=False
+2026-02-25 13:31:43,184 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:31:43,185 [ERROR] pipeline: Pipeline failed: Playwright is required. Install: pip install playwright
+Traceback (most recent call last):
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 171, in _async_fetch_episode_list
+    from playwright.async_api import async_playwright  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ModuleNotFoundError: No module named 'playwright'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 250, in run_pipeline
+    episode = step_crawl(cfg, target_date)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 154, in step_crawl
+    episodes = fetch_episode_list(cfg)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 241, in fetch_episode_list
+    episodes = asyncio.run(_async_fetch_episode_list(cfg))
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\runners.py", line 204, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\runners.py", line 127, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 173, in _async_fetch_episode_list
+    raise RuntimeError("Playwright is required. Install: pip install playwright") from exc
+RuntimeError: Playwright is required. Install: pip install playwright

@@ -12,13 +12,22 @@ env/
 # Logs
 logs/*
 !logs/.gitkeep
+!logs/pipeline_*.log
+!logs/download_log.json
+!logs/vocabulary_*.json
+!logs/vocabulary_*.csv
 
 # Runtime outputs
 downloads/*
 !downloads/.gitkeep
+!downloads/*_arirang.txt
+!downloads/*_arirang.mp3
+!downloads/*_arirang.mp4
+!downloads/*_arirang_meta.json
 reports/*
 !reports/.gitkeep
 !reports/index.html
+!reports/report_*.html
 
 # OS/editor
 .DS_Store

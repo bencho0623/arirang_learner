@@ -1,0 +1,198 @@
+2026-02-25 13:08:08,796 [INFO] pipeline: Pipeline start date=20260224 step=None demo=True
+2026-02-25 13:08:08,796 [INFO] pipeline: [DEMO] analyze start
+2026-02-25 13:08:10,519 [ERROR] pipeline: Demo failed: unable to infer type for attribute "REGEX"
+Traceback (most recent call last):
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 367, in <module>
+    run_demo(cfg)
+    ~~~~~~~~^^^^^
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 318, in run_demo
+    vocab_data, save_paths = step_analyze(episode, cfg)
+                             ~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 202, in step_analyze
+    vocab_data = analyze_vocabulary(script_text, cfg)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\analyzer.py", line 399, in analyze_vocabulary
+    deps = _load_dependencies()
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\analyzer.py", line 166, in _load_dependencies
+    import spacy  # type: ignore
+    ^^^^^^^^^^^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\__init__.py", line 13, in <module>
+    from . import pipeline  # noqa: F401
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\pipeline\__init__.py", line 1, in <module>
+    from .attributeruler import AttributeRuler
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\pipeline\attributeruler.py", line 10, in <module>
+    from ..language import Language
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\language.py", line 46, in <module>
+    from .pipe_analysis import analyze_pipes, print_pipe_analysis, validate_attrs
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\pipe_analysis.py", line 6, in <module>
+    from .tokens import Doc, Span, Token
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\tokens\__init__.py", line 1, in <module>
+    from ._serialize import DocBin
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\tokens\_serialize.py", line 14, in <module>
+    from ..vocab import Vocab
+  File "spacy/vocab.pyx", line 1, in init spacy.vocab
+  File "spacy/tokens/doc.pyx", line 49, in init spacy.tokens.doc
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\spacy\schemas.py", line 195, in <module>
+    class TokenPatternString(BaseModel):
+    ...<43 lines>...
+            return v
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pydantic\v1\main.py", line 221, in __new__
+    inferred = ModelField.infer(
+        name=var_name,
+    ...<3 lines>...
+        config=config,
+    )
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pydantic\v1\fields.py", line 504, in infer
+    return cls(
+        name=name,
+    ...<7 lines>...
+        field_info=field_info,
+    )
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pydantic\v1\fields.py", line 434, in __init__
+    self.prepare()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pydantic\v1\fields.py", line 544, in prepare
+    self._set_default_and_type()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\pydantic\v1\fields.py", line 576, in _set_default_and_type
+    raise errors_.ConfigError(f'unable to infer type for attribute "{self.name}"')
+pydantic.v1.errors.ConfigError: unable to infer type for attribute "REGEX"
+2026-02-25 13:08:31,413 [INFO] pipeline: Pipeline start date=20260224 step=None demo=True
+2026-02-25 13:08:31,413 [INFO] pipeline: [DEMO] analyze start
+2026-02-25 13:08:31,720 [WARNING] modules.analyzer: spaCy unavailable (unable to infer type for attribute "REGEX"). Falling back to regex tokenization.
+2026-02-25 13:08:38,523 [WARNING] modules.analyzer: spaCy model en_core_web_sm unavailable. Falling back to regex tokenization.
+2026-02-25 13:10:55,669 [INFO] modules.analyzer: Saved vocabulary json=logs\vocabulary_20260224.json csv=logs\vocabulary_20260224.csv count=30
+2026-02-25 13:10:55,670 [INFO] pipeline: [DEMO] analyze success json=logs\vocabulary_20260224.json csv=logs\vocabulary_20260224.csv count=30
+2026-02-25 13:10:55,670 [INFO] pipeline: [DEMO] report start
+2026-02-25 13:10:55,672 [INFO] modules.reporter: Saved report: reports\report_20260224_2155.html
+2026-02-25 13:10:55,672 [INFO] pipeline: [DEMO] report success path=reports\report_20260224_2155.html
+2026-02-25 13:16:31,317 [INFO] pipeline: Pipeline start date=20260224 step=crawl demo=False
+2026-02-25 13:16:31,317 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:16:33,363 [WARNING] modules.crawler: Request failed (1/3): https://www.arirang.com/radio/132
+2026-02-25 13:16:36,912 [WARNING] modules.crawler: Request failed (2/3): https://www.arirang.com/radio/132
+2026-02-25 13:16:40,457 [WARNING] modules.crawler: Request failed (3/3): https://www.arirang.com/radio/132
+2026-02-25 13:16:40,457 [ERROR] pipeline: Pipeline failed: Request failed after retries: https://www.arirang.com/radio/132
+Traceback (most recent call last):
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\connection.py", line 85, in create_connection
+    raise err
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\connection.py", line 73, in create_connection
+    sock.connect(sa)
+    ~~~~~~~~~~~~^^^^
+ConnectionRefusedError: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py", line 773, in urlopen
+    self._prepare_proxy(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py", line 1042, in _prepare_proxy
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connection.py", line 219, in _new_conn
+    raise NewConnectionError(
+        self, f"Failed to establish a new connection: {e}"
+    ) from e
+urllib3.exceptions.NewConnectionError: HTTPSConnection(host='127.0.0.1', port=9): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다
+
+The above exception was the direct cause of the following exception:
+
+urllib3.exceptions.ProxyError: ('Unable to connect to proxy', NewConnectionError("HTTPSConnection(host='127.0.0.1', port=9): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다"))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py", line 644, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\urllib3\util\retry.py", line 535, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='www.arirang.com', port=443): Max retries exceeded with url: /radio/132 (Caused by ProxyError('Unable to connect to proxy', NewConnectionError("HTTPSConnection(host='127.0.0.1', port=9): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다")))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 72, in _request_with_retry
+    resp = session.request(method=method, url=url, **kwargs)
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\cys\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\requests\adapters.py", line 671, in send
+    raise ProxyError(e, request=request)
+requests.exceptions.ProxyError: HTTPSConnectionPool(host='www.arirang.com', port=443): Max retries exceeded with url: /radio/132 (Caused by ProxyError('Unable to connect to proxy', NewConnectionError("HTTPSConnection(host='127.0.0.1', port=9): Failed to establish a new connection: [WinError 10061] 대상 컴퓨터에서 연결을 거부했으므로 연결하지 못했습니다")))
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 250, in run_pipeline
+    episode = step_crawl(cfg, target_date)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\main.py", line 154, in step_crawl
+    episodes = fetch_episode_list(cfg)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 188, in fetch_episode_list
+    resp = _request_with_retry(session, "GET", list_url, cfg)
+  File "C:\Users\cys\Desktop\python_workspace\arirang_learner\modules\crawler.py", line 82, in _request_with_retry
+    raise RuntimeError(f"Request failed after retries: {url}") from last_exc
+RuntimeError: Request failed after retries: https://www.arirang.com/radio/132
+2026-02-25 13:17:59,123 [INFO] pipeline: Pipeline start date=20260224 step=None demo=True
+2026-02-25 13:17:59,123 [INFO] pipeline: [DEMO] analyze start
+2026-02-25 13:17:59,383 [WARNING] modules.analyzer: spaCy unavailable (unable to infer type for attribute "REGEX"). Falling back to regex tokenization.
+2026-02-25 13:18:23,880 [INFO] pipeline: Pipeline start date=20260224 step=crawl demo=False
+2026-02-25 13:18:23,880 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:18:24,393 [INFO] modules.crawler: Parsed episode candidates: 0
+2026-02-25 13:18:24,408 [WARNING] modules.crawler: No episodes found for target date 2026-02-24
+2026-02-25 13:18:24,410 [WARNING] pipeline: No episode candidates for target date=20260224
+2026-02-25 13:18:24,410 [ERROR] pipeline: [STEP] crawl failed: no matching episode
+2026-02-25 13:23:43,602 [INFO] pipeline: Pipeline start date=20260224 step=crawl demo=False
+2026-02-25 13:23:43,603 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:23:44,080 [INFO] modules.crawler: No HTML episode anchors found. Trying API fallback: /v1.0/open/media/episode/list
+2026-02-25 13:23:44,582 [INFO] modules.crawler: Parsed episode candidates: 5
+2026-02-25 13:23:44,585 [WARNING] modules.crawler: No episodes found for target date 2026-02-24
+2026-02-25 13:23:44,588 [WARNING] pipeline: No episode candidates for target date=20260224
+2026-02-25 13:23:44,588 [ERROR] pipeline: [STEP] crawl failed: no matching episode
+2026-02-25 13:49:42,266 [INFO] pipeline: Pipeline start date=20260224 step=crawl demo=False
+2026-02-25 13:49:42,267 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:49:42,268 [WARNING] modules.crawler: Playwright list crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
+2026-02-25 13:49:42,905 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-25 13:49:42,909 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 13:49:42,909 [INFO] modules.crawler: Target candidate summary: date=20260224 airtime=21:55 title=21:55 Arirang News
+2026-02-25 13:49:42,909 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 13:49:42,911 [WARNING] modules.crawler: Playwright detail crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
+2026-02-25 13:49:45,872 [INFO] pipeline: [STEP] crawl success
+2026-02-25 13:59:53,628 [INFO] pipeline: Pipeline start date=20260224 step=crawl demo=False
+2026-02-25 13:59:53,628 [INFO] pipeline: [STEP] crawl start
+2026-02-25 13:59:53,630 [WARNING] modules.crawler: Playwright list crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
+2026-02-25 13:59:54,249 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-25 13:59:54,252 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 13:59:54,252 [INFO] modules.crawler: Target candidate summary: date=20260224 airtime=21:55 title=21:55 Arirang News
+2026-02-25 13:59:54,252 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 13:59:54,253 [WARNING] modules.crawler: Playwright detail crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
+2026-02-25 13:59:54,254 [INFO] modules.crawler: Skip download: already success for key=20260224_2155
+2026-02-25 13:59:54,254 [INFO] pipeline: [STEP] crawl success
+2026-02-25 14:02:11,483 [INFO] pipeline: Pipeline start date=20260224 step=crawl demo=False
+2026-02-25 14:02:11,483 [INFO] pipeline: [STEP] crawl start
+2026-02-25 14:02:11,484 [WARNING] modules.crawler: Playwright list crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
+2026-02-25 14:02:12,042 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-25 14:02:12,046 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 14:02:12,046 [INFO] modules.crawler: Target candidate summary: date=20260224 airtime=21:55 title=21:55 Arirang News
+2026-02-25 14:02:12,046 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 14:02:12,048 [WARNING] modules.crawler: Playwright detail crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
+2026-02-25 14:02:12,049 [INFO] modules.crawler: Skip download: already success for key=20260224_2155
+2026-02-25 14:02:12,050 [INFO] pipeline: [STEP] crawl success
