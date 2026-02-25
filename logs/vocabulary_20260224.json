@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-02-25T08:03:52.338184",
+  "created_at": "2026-02-25T08:11:37.292698",
   "count": 30,
   "items": [
     {
@@ -174,12 +174,14 @@
       "phonetic": "",
       "definition_en": "someone whose business involves importing goods from outside (especially from a foreign country)",
       "translation_ko": "",
-      "example_en": "India is the world's biggest importer of gold.",
+      "example_en": "",
       "context_sentence": "Just hours before the imposition of 15 percent tariff, U.S. Customs and Border Protection issued guidance to importers confirming the initial 10 percent rate applies for now.",
       "cefr_level": "B2",
       "frequency_score": 5.9208,
       "is_b2_plus": false,
-      "derivatives": []
+      "derivatives": [
+        "importer"
+      ]
     },
     {
       "word": "reinstated",
@@ -219,10 +221,10 @@
       "lemma": "surcharge",
       "pos": "NOUN",
       "pos_ko": "명사",
-      "phonetic": "/ˈsɜː(ɹ)t͡ʃɑː(ɹ)d͡ʒ/",
+      "phonetic": "",
       "definition_en": "an additional charge (as for items previously omitted or as a penalty for failure to exercise common caution or common skill)",
       "translation_ko": "",
-      "example_en": "Our airline tickets cost twenty dollars more than we expected because we had to pay a fuel surcharge.",
+      "example_en": "",
       "context_sentence": "Following a proclamation signed late last week under Section 122 of the Trade Act of 1974, the provision authorizes the president to impose temporary surcharges of up to 15 percent for a maximum of 150 days to address serious U.S. trade deficits or balance of payments imbalances, without prior approval from Congress.",
       "cefr_level": "B2",
       "frequency_score": 5.8794,
@@ -243,7 +245,7 @@
       "lemma": "imposition",
       "pos": "NOUN",
       "pos_ko": "명사",
-      "phonetic": "/ɪm.pəˈzɪʃən/",
+      "phonetic": "",
       "definition_en": "the act of imposing something (as a tax or an embargo)",
       "translation_ko": "",
       "example_en": "",
@@ -260,7 +262,7 @@
       "lemma": "reciprocal",
       "pos": "ADJ",
       "pos_ko": "형용사",
-      "phonetic": "/ɹɪˈsɪpɹək(ə)l/",
+      "phonetic": "",
       "definition_en": "something (a term or expression or concept) that has a reciprocal relation to something else",
       "translation_ko": "",
       "example_en": "risk is the reciprocal of safety",
@@ -338,7 +340,7 @@
       "lemma": "authorize",
       "pos": "VERB",
       "pos_ko": "동사",
-      "phonetic": "/ˈɑθəɹaɪz/",
+      "phonetic": "",
       "definition_en": "grant authorization or clearance for",
       "translation_ko": "",
       "example_en": "Clear the manuscript for publication",
