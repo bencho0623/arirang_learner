@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-02-25T07:54:36.903501",
+  "created_at": "2026-02-25T08:03:52.338184",
   "count": 30,
   "items": [
     {
@@ -174,7 +174,7 @@
       "phonetic": "",
       "definition_en": "someone whose business involves importing goods from outside (especially from a foreign country)",
       "translation_ko": "",
-      "example_en": "",
+      "example_en": "India is the world's biggest importer of gold.",
       "context_sentence": "Just hours before the imposition of 15 percent tariff, U.S. Customs and Border Protection issued guidance to importers confirming the initial 10 percent rate applies for now.",
       "cefr_level": "B2",
       "frequency_score": 5.9208,
@@ -243,7 +243,7 @@
       "lemma": "imposition",
       "pos": "NOUN",
       "pos_ko": "명사",
-      "phonetic": "",
+      "phonetic": "/ɪm.pəˈzɪʃən/",
       "definition_en": "the act of imposing something (as a tax or an embargo)",
       "translation_ko": "",
       "example_en": "",
@@ -540,7 +540,7 @@
       "phonetic": "",
       "definition_en": "a condition that accompanies or influences some event or activity",
       "translation_ko": "",
-      "example_en": "",
+      "example_en": "whatever my fortune may be",
       "context_sentence": "Remarks by Kim Jong-un from Monday's meeting, where he said that no challenge or change in circumstances would be able to slow or stop the North's advance, were also reported.",
       "cefr_level": "B2",
       "frequency_score": 5.3401,
