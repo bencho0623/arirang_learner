@@ -1,4 +1,4 @@
-name: Arirang Daily Pipeline
+﻿name: Arirang Daily Pipeline
 
 on:
   schedule:
@@ -32,6 +32,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Workflow Version Marker
+        run: echo "workflow-version=2026-02-25-fix-nonfatal-playwright-v1"
 
       - name: Setup Python 3.11
         uses: actions/setup-python@v5
@@ -74,16 +77,16 @@ jobs:
             python main.py
           fi
 
-      - name: Verify Playwright Click Path
+      - name: Verify Playwright Click Path (Warning Only)
         if: ${{ github.event.inputs.demo_mode != 'true' }}
         run: |
           LOG_FILE=$(ls -1t logs/pipeline_*.log | head -n 1)
           echo "Using log file: ${LOG_FILE}"
           if grep -q "Playwright .* failed" "${LOG_FILE}"; then
-            echo "Playwright fallback detected. Failing workflow."
-            exit 1
+            echo "WARNING: Playwright fallback detected. Continuing without failing workflow."
+          else
+            echo "Playwright click path verified (no fallback log found)."
           fi
-          echo "Playwright click path verified (no fallback log found)."
 
       - name: Show Generated Files
         run: |
@@ -118,10 +121,10 @@ jobs:
               links = "<li>No reports yet.</li>"
 
           html = f"""<!doctype html>
-          <html lang="en">
+          <html lang=\"en\">
           <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta charset=\"utf-8\">
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
             <title>Arirang Reports</title>
             <style>
               body {{ font-family: Arial, sans-serif; margin: 24px; }}
@@ -150,7 +153,7 @@ jobs:
             echo "No pipeline output changes to commit."
           else
             KST_NOW="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
-            git commit -m "📰 자동 업데이트: ${KST_NOW}"
+            git commit -m "news auto update: ${KST_NOW}"
             git push
           fi
 

@@ -478,17 +478,36 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
     history = _ensure_download_log(logs_path)
     existing = history.get(key, {})
     if existing.get("status") == "success":
-        LOGGER.info("Skip download: already success for key=%s", key)
-        skipped = dict(episode)
-        skipped.update(
-            {
-                "txt_path": str(txt_path),
-                "mp3_path": str(mp3_path),
-                "meta_path": str(meta_path),
-                "status": "skipped",
-            }
+        txt_ok = txt_path.exists() and txt_path.stat().st_size > 0
+        if txt_ok:
+            try:
+                current_txt = txt_path.read_text(encoding="utf-8").strip()
+                if current_txt.lower().startswith("script not available"):
+                    txt_ok = False
+            except Exception:  # noqa: BLE001
+                txt_ok = False
+        mp3_ok = mp3_path.exists() and mp3_path.stat().st_size > 0
+        meta_ok = meta_path.exists() and meta_path.stat().st_size > 0
+        if txt_ok and mp3_ok and meta_ok:
+            LOGGER.info("Skip download: already success for key=%s", key)
+            skipped = dict(episode)
+            skipped.update(
+                {
+                    "txt_path": str(txt_path),
+                    "mp3_path": str(mp3_path),
+                    "meta_path": str(meta_path),
+                    "status": "skipped",
+                }
+            )
+            return skipped
+        LOGGER.warning(
+            "History says success but files are missing or empty. Re-downloading key=%s "
+            "(txt=%s mp3=%s meta=%s)",
+            key,
+            txt_ok,
+            mp3_ok,
+            meta_ok,
         )
-        return skipped
 
     script_text = episode.get("script_text", "") or ""
     mp3_url = episode.get("mp3_url", "") or ""
