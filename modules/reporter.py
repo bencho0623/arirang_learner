@@ -45,7 +45,8 @@ def _prettify_script_text(text: str) -> str:
     raw = html.unescape(raw)
 
     # Strip leftover inline markup from highlighted/script HTML fragments.
-    raw = re.sub(r"data-lemma\s*=\s*(['\"]).*?\1\s*(?:>|&gt;)", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"\bdata-lemma\s*=\s*(['\"]).*?\1\s*(?:>|&gt;)?", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"\bdata-[a-z-]+\s*=\s*(['\"]).*?\1\s*(?:>|&gt;)?", "", raw, flags=re.IGNORECASE)
     raw = re.sub(r"</?mark[^>]*>", "", raw, flags=re.IGNORECASE)
     raw = re.sub(r"<[^>]+>", "", raw)
 
@@ -578,7 +579,13 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
     function renderScript() {{
       const box = document.getElementById("script-box");
       const toggle = document.getElementById("script-toggle");
-      let text = escHtml(episode.script_text || "");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\\bdata-lemma\\s*=\\s*(['"]).*?\\1\\s*(?:>|&gt;)?/gi, "");
+      src = src.replace(/\\bdata-[a-z-]+\\s*=\\s*(['"]).*?\\1\\s*(?:>|&gt;)?/gi, "");
+      let text = escHtml(src);
+      text = text.replace(/data-lemma\\s*=\\s*(?:&#39;|&quot;)[^\\n<>]*(?:&#39;|&quot;)\\s*&gt;/gi, "");
+      text = text.replace(/data-lemma\\s*=\\s*(?:&#39;|&quot;)[^\\n<>]*(?:&#39;|&quot;)/gi, "");
       if (!text) {{
         box.textContent = "스크립트가 없습니다.";
         toggle.style.display = "none";
