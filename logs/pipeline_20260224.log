@@ -196,3 +196,17 @@ RuntimeError: Request failed after retries: https://www.arirang.com/radio/132
 2026-02-25 14:02:12,048 [WARNING] modules.crawler: Playwright detail crawl failed, using Kollus fallback: Playwright is required. Install: pip install playwright
 2026-02-25 14:02:12,049 [INFO] modules.crawler: Skip download: already success for key=20260224_2155
 2026-02-25 14:02:12,050 [INFO] pipeline: [STEP] crawl success
+2026-02-25 06:30:58,134 [INFO] pipeline: Pipeline start date=20260224 step=None demo=False
+2026-02-25 06:30:58,134 [INFO] pipeline: [STEP] crawl start
+2026-02-25 06:30:58,165 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-25 06:30:58,165 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 06:30:58,165 [INFO] modules.crawler: Target candidate summary: date=20260224 airtime=21:55 title=21:55 Arirang News
+2026-02-25 06:30:58,165 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 06:31:13,877 [WARNING] modules.crawler: History says success but files are missing or empty. Re-downloading key=20260224_2155 (txt=False mp3=True meta=True)
+2026-02-25 06:31:15,006 [INFO] pipeline: [STEP] crawl success
+2026-02-25 06:31:15,006 [INFO] pipeline: [STEP] analyze start
+2026-02-25 06:32:02,103 [INFO] modules.analyzer: Saved vocabulary json=logs/vocabulary_20260224.json csv=logs/vocabulary_20260224.csv count=30
+2026-02-25 06:32:02,103 [INFO] pipeline: [STEP] analyze success json=logs/vocabulary_20260224.json csv=logs/vocabulary_20260224.csv count=30
+2026-02-25 06:32:02,103 [INFO] pipeline: [STEP] report start
+2026-02-25 06:32:02,104 [INFO] modules.reporter: Saved report: reports/report_20260224_2155.html
+2026-02-25 06:32:02,104 [INFO] pipeline: [STEP] report success path=reports/report_20260224_2155.html
