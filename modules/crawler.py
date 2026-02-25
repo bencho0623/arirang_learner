@@ -253,6 +253,42 @@ def _extract_urls_from_obj(obj: Any) -> list[str]:
     return urls
 
 
+def _normalize_space(text: str) -> str:
+    return " ".join((text or "").split())
+
+
+def _slice_script_by_episode_marker(script_text: str, target_date_yyyymmdd: str, airtime: str = "21:55") -> str:
+    """If playlist markers exist, keep only the target episode block."""
+    raw = (script_text or "").replace("\r\n", "\n").replace("\r", "\n")
+    if not raw.strip():
+        return ""
+
+    date_iso = f"{target_date_yyyymmdd[:4]}-{target_date_yyyymmdd[4:6]}-{target_date_yyyymmdd[6:8]}"
+    marker_pat = re.compile(
+        r"(?P<id>\d{4})\s+(?P<date>\d{4}-\d{2}-\d{2})\s+Podcast\s+Play\s+(?P<time>\d{1,2}:\d{2})\s+Arirang\s+News",
+        re.IGNORECASE,
+    )
+
+    matches = list(marker_pat.finditer(raw))
+    if not matches:
+        return raw.strip()
+
+    target_idx = -1
+    for i, m in enumerate(matches):
+        d = m.group("date")
+        t = m.group("time")
+        if d == date_iso and t == airtime:
+            target_idx = i
+            break
+    if target_idx < 0:
+        return raw.strip()
+
+    start = matches[target_idx].end()
+    end = matches[target_idx + 1].start() if target_idx + 1 < len(matches) else len(raw)
+    sliced = raw[start:end].strip()
+    return sliced or raw.strip()
+
+
 def _extract_script_and_media_from_api_cache(
     api_json_cache: list[dict[str, Any]],
     target_date_yyyymmdd: str,
@@ -407,6 +443,57 @@ async def _click_target_from_podcast_list(page: Any, date_yyyymmdd: str) -> bool
     return False
 
 
+async def _extract_target_script_from_episode_list_ui(
+    page: Any,
+    target_date_yyyymmdd: str,
+    airtime: str = "21:55",
+) -> str:
+    """Click target row in podcast episode list and read only that episode script."""
+    date_iso = f"{target_date_yyyymmdd[:4]}-{target_date_yyyymmdd[4:6]}-{target_date_yyyymmdd[6:8]}"
+    rows = await page.query_selector_all(".playList-wrap li, .info_episodeList_playList li, li.list")
+    target_row = None
+    for row in rows:
+        try:
+            txt = _normalize_space(await row.inner_text())
+        except Exception:
+            continue
+        if date_iso in txt and airtime in txt and "Arirang News" in txt:
+            target_row = row
+            break
+
+    if not target_row:
+        return ""
+
+    # Open the row details.
+    info_btn = await target_row.query_selector("button.list_info, .list_info")
+    if info_btn:
+        try:
+            await info_btn.click()
+            await page.wait_for_timeout(800)
+        except Exception:
+            pass
+
+    # Read script area dedicated to selected episode.
+    script_selectors = [
+        ".info_program_content .text",
+        ".info_program_content",
+    ]
+    texts: list[str] = []
+    for sel in script_selectors:
+        nodes = await page.query_selector_all(sel)
+        for node in nodes:
+            try:
+                t = await node.inner_text()
+            except Exception:
+                continue
+            t = _normalize_space(t)
+            if t:
+                texts.append(t)
+    if not texts:
+        return ""
+    return max(texts, key=len)
+
+
 def _resolve_kollus_media(cfg: dict[str, Any]) -> tuple[str, str, str]:
     """Return (kollus_url, media_url, inferred_date_yyyymmdd) from fallback page."""
     kollus_url = _cfg_get(cfg, "crawl.kollus_fallback_url", "https://v.kr.kollus.com/lstBUSaP?cdn=arirang-dd")
@@ -511,6 +598,9 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
         if clicked:
             await page.wait_for_load_state("networkidle")
 
+        # 1-1) Prefer exact text from episode list UI for target date/time.
+        target_ui_script = await _extract_target_script_from_episode_list_ui(page, target_date, "21:55")
+
         iframe = await page.query_selector("iframe#aodChild, iframe.aodContent, iframe[src*='kollus']")
         if iframe:
             src = await iframe.get_attribute("src")
@@ -563,6 +653,9 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             if texts:
                 collected.append(_pick_longest_text(texts))
 
+        if target_ui_script:
+            collected.insert(0, target_ui_script)
+
         await browser.close()
 
     script_text = _pick_longest_text(collected)
@@ -579,6 +672,9 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
         # Remove obvious HTML tags if API returns rich text.
         script_text = re.sub(r"<br\\s*/?>", "\n", script_text, flags=re.IGNORECASE)
         script_text = re.sub(r"<[^>]+>", "", script_text).strip()
+        # Keep only target episode block when playlist text is concatenated.
+        target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
+        script_text = _slice_script_by_episode_marker(script_text, target_date, "21:55")
 
     if not mp3_url and iframe_src:
         try:
