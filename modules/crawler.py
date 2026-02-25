@@ -232,6 +232,74 @@ def _pick_longest_text(items: list[str]) -> str:
     return sorted(cleaned, key=len, reverse=True)[0]
 
 
+def _iter_nested_strings(obj: Any) -> list[str]:
+    out: list[str] = []
+    if isinstance(obj, str):
+        out.append(obj)
+    elif isinstance(obj, dict):
+        for v in obj.values():
+            out.extend(_iter_nested_strings(v))
+    elif isinstance(obj, list):
+        for v in obj:
+            out.extend(_iter_nested_strings(v))
+    return out
+
+
+def _extract_urls_from_obj(obj: Any) -> list[str]:
+    urls: list[str] = []
+    for s in _iter_nested_strings(obj):
+        if ".mp3" in s.lower() or ".mp4" in s.lower():
+            urls.append(s)
+    return urls
+
+
+def _extract_script_and_media_from_api_cache(
+    api_json_cache: list[dict[str, Any]],
+    target_date_yyyymmdd: str,
+) -> tuple[str, str]:
+    """Extract best-effort script and media URL from intercepted API JSON."""
+    target_date = f"{target_date_yyyymmdd[:4]}-{target_date_yyyymmdd[4:6]}-{target_date_yyyymmdd[6:8]}"
+    candidates: list[tuple[int, str, str]] = []  # (score, script, media_url)
+
+    for data in api_json_cache:
+        items = data.get("item")
+        if not isinstance(items, list):
+            continue
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            bdate = str(item.get("broadcast_date", ""))
+            title = str(item.get("title", ""))
+            content = str(item.get("content", "") or "")
+            media_info = item.get("media_info", {})
+            media_url = ""
+            if isinstance(media_info, dict):
+                media_url = str(media_info.get("media_url", "") or "")
+            if not media_url:
+                nested_urls = _extract_urls_from_obj(item)
+                media_url = nested_urls[0] if nested_urls else ""
+
+            score = 0
+            if target_date in bdate:
+                score += 5
+            if "21:55" in title or "2155" in title:
+                score += 4
+            if "10 PM" in title.upper():
+                score += 3
+            if content.strip():
+                score += 2
+            if media_url:
+                score += 1
+            if score > 0:
+                candidates.append((score, content.strip(), media_url.strip()))
+
+    if not candidates:
+        return "", ""
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    best = candidates[0]
+    return best[1], best[2]
+
+
 def _extract_media_url_from_kollus_html(raw_html: str) -> str:
     text = html.unescape(raw_html or "")
     patterns = [
@@ -335,9 +403,10 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                     data = await response.json()
                     if isinstance(data, dict):
                         api_json_cache.append(data)
-                        for k, v in data.items():
-                            if isinstance(v, str) and ".mp3" in v.lower() and not mp3_url:
-                                mp3_url = v
+                        if not mp3_url:
+                            nested_urls = _extract_urls_from_obj(data)
+                            if nested_urls:
+                                mp3_url = nested_urls[0]
                 except Exception:
                     pass
 
@@ -379,6 +448,9 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                     continue
 
         script_selectors = [
+            ".info_program_content .text",
+            ".info_program_content",
+            ".playList-wrap .list_info_content",
             "[class*='script']",
             "[class*='Script']",
             "[class*='content']",
@@ -403,17 +475,13 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
 
     script_text = _pick_longest_text(collected)
     if not script_text:
-        # JSON fallback for script text.
-        for data in api_json_cache:
-            content = data.get("content")
-            if isinstance(content, list):
-                for item in content:
-                    if isinstance(item, dict) and str(item.get("lan_code", "")).lower() == "en":
-                        script_text = str(item.get("text", "")).strip()
-                        if script_text:
-                            break
-                if script_text:
-                    break
+        # JSON fallback for script text/media URL from intercepted API payloads.
+        target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
+        api_script, api_media = _extract_script_and_media_from_api_cache(api_json_cache, target_date)
+        if api_script:
+            script_text = api_script
+        if api_media and not mp3_url:
+            mp3_url = api_media
 
     if not mp3_url and iframe_src:
         try:
@@ -445,7 +513,7 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         enriched["mp3_url"] = mp3
         enriched["date_str"] = inferred
         if not enriched.get("script_text"):
-            enriched["script_text"] = "Script not available from source page."
+            enriched["script_text"] = ""
         return enriched
 
 
