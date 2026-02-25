@@ -92,19 +92,6 @@ jobs:
           ls -lh downloads/ || true
           ls -lh logs/ || true
 
-      - name: Commit Pipeline Outputs
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/ downloads/ logs/
-          if git diff --cached --quiet; then
-            echo "No pipeline output changes to commit."
-          else
-            KST_NOW="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
-            git commit -m "📰 자동 업데이트: ${KST_NOW}"
-            git push
-          fi
-
       - name: Build reports/index.html
         run: |
           mkdir -p reports
@@ -153,15 +140,17 @@ jobs:
           (reports / "index.html").write_text(html, encoding="utf-8")
           PY
 
-      - name: Commit reports/index.html
+      - name: Commit Pipeline Outputs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/ downloads/ logs/
           git add -f reports/index.html
           if git diff --cached --quiet; then
-            echo "No index updates to commit."
+            echo "No pipeline output changes to commit."
           else
-            git commit -m "Update reports index"
+            KST_NOW="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+            git commit -m "📰 자동 업데이트: ${KST_NOW}"
             git push
           fi
 
