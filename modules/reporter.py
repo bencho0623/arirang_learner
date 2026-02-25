@@ -85,6 +85,8 @@ def _prettify_script_text(text: str) -> str:
     # Ensure list paragraph markers start new paragraphs only when likely heading bullets.
     # Avoid breaking values like "33.67" or year-like numerics.
     text = re.sub(r"(?m)(^|\n)\s*(\d{1,2}\.)\s*(?=[A-Z])", r"\n\n\2 ", text)
+    # Also split inline numbered markers like "...hour. 1. Speaking ..."
+    text = re.sub(r"(?<!\d)([.!?])\s+(\d{1,2}\.)\s+(?=[A-Z])", r"\1\n\n\2 ", text)
 
     # Sentence-level wrapping for readability.
     text = re.sub(r"([.!?])\s+(?=[A-Z\"'])", r"\1\n", text)
