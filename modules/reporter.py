@@ -89,7 +89,22 @@ def _prettify_script_text(text: str) -> str:
     # Sentence-level wrapping for readability.
     text = re.sub(r"([.!?])\s+(?=[A-Z\"'])", r"\1\n", text)
 
+    # Keep each numbered section as one paragraph: "N. contents..."
+    # and separate numbered paragraphs with a blank line.
+    segments = re.split(r"(?m)(?=^\s*\d{1,2}\.\s+)", text)
+    if len(segments) > 1:
+        head = segments[0].strip()
+        numbered = []
+        for seg in segments[1:]:
+            s = seg.strip()
+            if not s:
+                continue
+            s = re.sub(r"\s*\n\s*", " ", s).strip()
+            numbered.append(s)
+        text = (head + "\n\n" if head else "") + "\n\n".join(numbered)
+
     # Final cleanup.
+    text = re.sub(r"[ \t]+", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text).strip()
     return text
 
