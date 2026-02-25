@@ -147,6 +147,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add reports/ downloads/ logs/
           git add -f reports/index.html
           if git diff --cached --quiet; then
@@ -154,7 +155,11 @@ jobs:
           else
             KST_NOW="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
             git commit -m "news auto update: ${KST_NOW}"
-            git push
+            if ! git push; then
+              echo "Push rejected; rebasing and retrying once."
+              git pull --rebase origin main
+              git push
+            fi
           fi
 
       - name: Write Failure Summary
