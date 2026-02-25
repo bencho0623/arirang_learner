@@ -42,6 +42,24 @@ def _prettify_script_text(text: str) -> str:
     if not raw.strip():
         return ""
 
+    # Strip leftover inline markup from highlighted/script HTML fragments.
+    raw = re.sub(r"data-lemma='[^']*'>", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"data-lemma=\"[^\"]*\">", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"</?mark[^>]*>", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"<[^>]+>", "", raw)
+
+    # Keep one coherent bulletin block only.
+    # If multiple "Podcast Play" chunks are concatenated, keep the text before the first chunk marker.
+    marker_pat = re.compile(r"\b\d{4}\s+\d{4}-\d{2}-\d{2}\s+Podcast\s+Play\b", re.IGNORECASE)
+    marker_match = marker_pat.search(raw)
+    if marker_match:
+        raw = raw[: marker_match.start()]
+
+    # Start from first "Welcome to Arirang News" when present.
+    welcome_idx = raw.lower().find("welcome to arirang news")
+    if welcome_idx >= 0:
+        raw = raw[welcome_idx:]
+
     # Remove recurring UI/table noise captured from page containers.
     raw = re.sub(
         r"Podcast\s+List\s+Table\s+NO\s+Date\(KST\)\s+Title\s+\d+\s+\d{4}-\d{2}-\d{2}\s+Podcast\s+Play\s+21:55\s+Arirang\s+News",
@@ -64,8 +82,9 @@ def _prettify_script_text(text: str) -> str:
         lines.append(s)
     text = "\n".join(lines)
 
-    # Ensure numbered paragraph markers start new paragraphs: "<num.>"
-    text = re.sub(r"\s*(\d+\.)\s*", r"\n\n\1 ", text)
+    # Ensure list paragraph markers start new paragraphs only when likely heading bullets.
+    # Avoid breaking values like "33.67" or year-like numerics.
+    text = re.sub(r"(?m)(^|\n)\s*(\d{1,2}\.)\s*(?=[A-Z])", r"\n\n\2 ", text)
 
     # Sentence-level wrapping for readability.
     text = re.sub(r"([.!?])\s+(?=[A-Z\"'])", r"\1\n", text)
