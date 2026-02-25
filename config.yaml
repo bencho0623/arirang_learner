@@ -9,7 +9,7 @@ schedule:
 
 crawl:
   # Target site for Arirang radio news
-  target_url: "https://www.arirang.com/radio/132"
+  target_url: "https://www.arirang.com/radio/132/podcast/668?lang=en"
   # Directory to save downloaded source files
   download_path: "./downloads"
 

@@ -23,7 +23,7 @@ DEFAULT_CONFIG: dict[str, Any] = {
         "timezone": "Asia/Seoul",
     },
     "crawl": {
-        "target_url": "https://www.arirang.com/radio/132",
+        "target_url": "https://www.arirang.com/radio/132/podcast/668?lang=en",
         "download_path": "./downloads",
         "retry_count": 3,
         "retry_delay": 1.5,
