@@ -736,7 +736,18 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
     """Sync wrapper for async Playwright detail extraction."""
 
     try:
-        return asyncio.run(_async_fetch_episode_detail(episode, cfg))
+        enriched = asyncio.run(_async_fetch_episode_detail(episode, cfg))
+        mp3 = str(enriched.get("mp3_url", "")).strip()
+        if not _is_downloadable_audio_url(mp3):
+            LOGGER.warning("Playwright detail had no downloadable media URL. Using Kollus fallback.")
+            _, fallback_media, inferred = _resolve_kollus_media(cfg)
+            if _is_downloadable_audio_url(fallback_media):
+                enriched["mp3_url"] = fallback_media
+                if not enriched.get("date_str"):
+                    enriched["date_str"] = inferred
+            else:
+                enriched["mp3_url"] = ""
+        return enriched
     except Exception as exc:  # noqa: BLE001
         LOGGER.warning("Playwright detail crawl failed, using Kollus fallback: %s", exc)
         enriched = dict(episode)
