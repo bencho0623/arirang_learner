@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">북마크 0개</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">스크롤로 전체 확인 가능 · 필요 시 전체보기</div>
+        <button id="script-toggle" class="script-toggle" type="button">전체보기</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>빈칸 퀴즈</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.02.25", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260225_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260224/28621775/28621775_20260224-ohbamslh_audio_arirang-mp3-normal-20260224220952.mp4?hdnts=exp%3D3544298120~acl%3D%2Fkr%2Fmedia1%2Farirang%2F20260224%2F28621775%2F%2A~hmac%3D81515f813863c6b016cec20affda5cbe88c101fcd3200640c7ae95c5dd978bb3", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nThe KOSPI made history on Wednesday by surging past 6,100 during the day and closing at a record high above 6,000, capping off a remarkable rally that has captivated investors worldwide.\nThe benchmark index climbed to close at 6,083, driven by robust gains in key sectors amid global optimism in the technology and automotive industries.\nLeading the charge were heavyweight stocks like Samsung Electronics and SK hynix, which built on Tuesday's milestones, where Samsung hit 200-thousand Korean won and SK hynix reached 1 million won.\nThe rises were supported by strong demand for semiconductors fueled by advancements in artificial intelligence and partnerships in the tech space.\n\n2.\nSouth Korean President Lee Jae Myung has highlighted the importance of encouraging foreign travel beyond Seoul.\nChairing a tourism policy meeting at the Blue House on this Wednesday, he called for the launch of region-specific travel programs and for more \"visitor-friendly\" infrastructure and services.\nThe government aims to attract 30 million inbound tourists annually.\nLast year, almost 19 million tourists flocked to South Korea.\n\n3.\nThe National Assembly on Wednesday approved a motion to end an opposition-led filibuster and then proceeded to pass revision to the Commercial Act which will prevent companies from freely stockpiling.. treasury shares.\nFollowing the vote, lawmakers tabled amendments to the Criminal Act that introduce a new crime of \"legal distortion\"... bringing the number of bills left on the agenda to seven.\nWith the PPP pledging to launch filibusters... against every single one of them... the parliament is headed for its longest plenary session yet.\n\n4.\nSouth Korea's birthrate grew at the fastest pace in 15 years in 2025, with the number of babies born tallied at 254-thousand five-hundred.\nThat's according to a government report released on Wednesday, which said the figure rose 6-point-8 percent from 2024, marking a birthrate increase for the second consecutive year.\nThe country's total fertility rate has also risen to zero-point-8 for the first time in four years.\nThe Ministry of Data and Statistics attributes the rebound to an increase in marriages and the continued rise in the number of women in their early 30s,... a figure that has been increasing since 2021.\nIt noted that the number of marriages rose for 21 straight months between April, 2024 and December, 2025... as couples who had delayed their marriages due to the pandemic got married.\nThe ministry also highlighted that there has been a notable change in social perception towards having children.\nThe number of couples planning to have children after marriage rose by 3-point-1 percentage points in 2024 in the ministry's latest biennial survey.\nWith such data, the government projected the total fertility rate of the country to stay above the zero-point-8 level this year... and to further rise to one by 2030. 5.\nSouth Korea and the United States will stage their annual joint springtime military exercise,...\nFreedom Shield,... from March 9th to 19th.\nIn terms of field training that is usually conducted in a concentrated fashion during this period,... the allies said they were still consulting on how the drills would take place this time,... but that they will be executed in a balanced fashion.\nThis is reportedly due to South Korea's request to adjust the drills,... seemingly to reduce any reaction by North Korea.\nThey added that the drills serve as a chance to support ongoing preparations for a conditions-based wartime operational transition.\n\n6.\nCoupang, announced on Wednesday that around 200-thousand Taiwanese accounts were included among the massive data breach of some 3-point-3 million accounts last year.\nAccording to the U.S. enlisted e-commerce giant, the cybersecurity firms Mandiant and Palo Alto found this out during their comprehensive forensic investigation.\nThe firm added that the data accessed from these accounts was limited to basic contact and order information, and that the perpetrator reportedly retained information from only one of those accounts.\nTaiwan's digital affairs ministry was reportedly notified about the matter earlier this week, and said it plans to conduct an administrative inspection shortly.\nMoving to weather forecast, The mild weather continues.\nThe spring-like weather will continue into this weekend.\nAir quality will stay in the normal range despite the big rise in highs.\nThe morning starts off on a chilly note, at 2 degrees in the capital, minus 4 degrees in Chuncheon.\nBut highs will jump more than 10 degrees by the afternoon. 59:30’ The current temperatures are: _______ degrees in Seoul _______ degrees in Gwangju. _______ degrees in Busan And _______ degrees on Jejudo Island 59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "hynix", "lemma": "hynix", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "Leading the charge were heavyweight stocks like Samsung Electronics and SK hynix, which built on Tuesday's milestones, where Samsung hit 200-thousand Korean won and SK hynix reached 1 million won.", "cefr_level": "C2", "frequency_score": 7.1302, "is_b2_plus": false, "derivatives": []}, {"word": "birthrate", "lemma": "birthrate", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the ratio of live births in an area to the population of that area; expressed per 1000 population per year", "translation_ko": "", "example_en": "", "context_sentence": "4. South Korea's birthrate grew at the fastest pace in 15 years in 2025, with the number of babies born tallied at 254-thousand five-hundred.", "cefr_level": "C1", "frequency_score": 6.719, "is_b2_plus": false, "derivatives": ["birth rate", "fertility", "fertility rate", "natality"]}, {"word": "captivated", "lemma": "captivate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈkæptɪveɪt/", "definition_en": "attract; cause to be enamored", "translation_ko": "", "example_en": "She captured all the men's hearts", "context_sentence": "The KOSPI made history on Wednesday by surging past 6,100 during the day and closing at a record high above 6,000, capping off a remarkable rally that has captivated investors worldwide.", "cefr_level": "C1", "frequency_score": 6.4802, "is_b2_plus": false, "derivatives": ["becharm", "beguile", "bewitch", "capture", "catch", "charm", "enamor", "enamour", "enchant", "entrance", "fascinate", "trance"]}, {"word": "data", "lemma": "datum", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an item of factual information derived from measurement or research", "translation_ko": "", "example_en": "statistical data", "context_sentence": "With such data, the government projected the total fertility rate of the country to stay above the zero-point-8 level this year... and to further rise to one by 2030.", "cefr_level": "C1", "frequency_score": 6.4802, "is_b2_plus": false, "derivatives": ["data point"]}, {"word": "filibuster", "lemma": "filibuster", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a legislator who gives long speeches in an effort to delay or obstruct legislation that he (or she) opposes", "translation_ko": "", "example_en": "", "context_sentence": "3. The National Assembly on Wednesday approved a motion to end an opposition-led filibuster and then proceeded to pass revision to the Commercial Act which will prevent companies from freely stockpiling.. treasury shares.", "cefr_level": "C1", "frequency_score": 6.1101, "is_b2_plus": false, "derivatives": ["filibusterer"]}, {"word": "springtime", "lemma": "springtime", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the season of growth", "translation_ko": "", "example_en": "the emerging buds were a sure sign of spring", "context_sentence": "5. South Korea and the United States will stage their annual joint springtime military exercise,...", "cefr_level": "B2", "frequency_score": 5.9508, "is_b2_plus": false, "derivatives": ["spring"]}, {"word": "lawmakers", "lemma": "lawmaker", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a maker of laws; someone who gives a code of laws", "translation_ko": "", "example_en": "", "context_sentence": "Following the vote, lawmakers tabled amendments to the Criminal Act that introduce a new crime of \"legal distortion\"... bringing the number of bills left on the agenda to seven.", "cefr_level": "B2", "frequency_score": 5.9318, "is_b2_plus": false, "derivatives": ["lawgiver"]}, {"word": "plenary", "lemma": "plenary", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈpliːnəɹi/", "definition_en": "full in all respects", "translation_ko": "", "example_en": "a plenary session of the legislature", "context_sentence": "the parliament is headed for its longest plenary session yet.", "cefr_level": "B2", "frequency_score": 5.8996, "is_b2_plus": false, "derivatives": []}, {"word": "stockpiling", "lemma": "stockpile", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈstɒkpaɪl/", "definition_en": "something kept back or saved for future use or a special purpose", "translation_ko": "", "example_en": "", "context_sentence": "3. The National Assembly on Wednesday approved a motion to end an opposition-led filibuster and then proceeded to pass revision to the Commercial Act which will prevent companies from freely stockpiling.. treasury shares.", "cefr_level": "B2", "frequency_score": 5.8794, "is_b2_plus": false, "derivatives": ["backlog", "carry", "reserve", "stock"]}, {"word": "biennial", "lemma": "biennial", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "(botany) a plant having a life cycle that normally takes two seasons from germination to death to complete; flowering biennials usually bloom and fruit in the second season", "translation_ko": "", "example_en": "", "context_sentence": "The number of couples planning to have children after marriage rose by 3-point-1 percentage points in 2024 in the ministry's latest biennial survey.", "cefr_level": "B2", "frequency_score": 5.7496, "is_b2_plus": false, "derivatives": ["biyearly", "two-year"]}, {"word": "inbound", "lemma": "inbound", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "directed or moving inward or toward a center", "translation_ko": "", "example_en": "the inbound train", "context_sentence": "The government aims to attract 30 million inbound tourists annually.", "cefr_level": "B2", "frequency_score": 5.7496, "is_b2_plus": false, "derivatives": ["inward"]}, {"word": "perpetrator", "lemma": "perpetrator", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "someone who perpetrates wrongdoing", "translation_ko": "", "example_en": "", "context_sentence": "The firm added that the data accessed from these accounts was limited to basic contact and order information, and that the perpetrator reportedly retained information from only one of those accounts.", "cefr_level": "B2", "frequency_score": 5.6799, "is_b2_plus": false, "derivatives": ["culprit"]}, {"word": "Taiwanese", "lemma": "taiwanese", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a native or inhabitant of Taiwan", "translation_ko": "", "example_en": "", "context_sentence": "6. Coupang, announced on Wednesday that around 200-thousand Taiwanese accounts were included among the massive data breach of some 3-point-3 million accounts last year.", "cefr_level": "B2", "frequency_score": 5.6596, "is_b2_plus": false, "derivatives": ["Amoy", "Chinese", "Formosan", "Fukien", "Fukkianese", "Hokkianese", "Min", "Min dialect", "Taiwanese"]}, {"word": "cybersecurity", "lemma": "cybersecurity", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "According to the U.S. enlisted e-commerce giant, the cybersecurity firms Mandiant and Palo Alto found this out during their comprehensive forensic investigation.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": true, "derivatives": []}, {"word": "enlisted", "lemma": "enlist", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "join the military", "translation_ko": "", "example_en": "", "context_sentence": "According to the U.S. enlisted e-commerce giant, the cybersecurity firms Mandiant and Palo Alto found this out during their comprehensive forensic investigation.", "cefr_level": "B2", "frequency_score": 5.6308, "is_b2_plus": false, "derivatives": ["draft", "engage", "muster in"]}, {"word": "chilly", "lemma": "chilly", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "very hot and finely tapering pepper of special pungency", "translation_ko": "", "example_en": "", "context_sentence": "The morning starts off on a chilly note, at 2 degrees in the capital, minus 4 degrees in Chuncheon.", "cefr_level": "B2", "frequency_score": 5.5003, "is_b2_plus": false, "derivatives": ["chile", "chili", "chili pepper", "chilli", "parky"]}, {"word": "rebound", "lemma": "rebound", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a movement back from an impact", "translation_ko": "", "example_en": "", "context_sentence": "The Ministry of Data and Statistics attributes the rebound to an increase in marriages and the continued rise in the number of women in their early 30s,... a figure that has been increasing since 2021.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["backlash", "bounce", "bound", "rally", "recoil", "repercussion", "resile", "reverberate", "ricochet", "spring", "take a hop"]}, {"word": "semiconductors", "lemma": "semiconductor", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a substance as germanium or silicon whose electrical conductivity is intermediate between that of a metal and an insulator; its conductivity increases with temperature and in the presence of impurities", "translation_ko": "", "example_en": "", "context_sentence": "The rises were supported by strong demand for semiconductors fueled by advancements in artificial intelligence and partnerships in the tech space.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["semiconducting material", "semiconductor device", "semiconductor unit"]}, {"word": "distortion", "lemma": "distortion", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪsˈtɔːʃən/", "definition_en": "a change for the worse", "translation_ko": "", "example_en": "", "context_sentence": "Following the vote, lawmakers tabled amendments to the Criminal Act that introduce a new crime of \"legal distortion\"... bringing the number of bills left on the agenda to seven.", "cefr_level": "B2", "frequency_score": 5.4498, "is_b2_plus": false, "derivatives": ["aberration", "deformation", "distorted shape", "optical aberration", "overrefinement", "straining", "torture", "twisting"]}, {"word": "benchmark", "lemma": "benchmark", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a standard by which something can be measured or judged", "translation_ko": "", "example_en": "his painting sets the benchmark of quality", "context_sentence": "The benchmark index climbed to close at 6,083, driven by robust gains in key sectors amid global optimism in the technology and automotive industries.", "cefr_level": "B2", "frequency_score": 5.4001, "is_b2_plus": true, "derivatives": ["bench mark"]}, {"word": "heavyweight", "lemma": "heavyweight", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "an amateur boxer who weighs no more than 201 pounds", "translation_ko": "", "example_en": "an intellectual heavyweight", "context_sentence": "Leading the charge were heavyweight stocks like Samsung Electronics and SK hynix, which built on Tuesday's milestones, where Samsung hit 200-thousand Korean won and SK hynix reached 1 million won.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": ["behemoth", "colossus", "giant", "hulk", "titan", "whale"]}, {"word": "tallied", "lemma": "tally", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈtæli/", "definition_en": "a score in baseball made by a runner touching all four bases safely", "translation_ko": "", "example_en": "the Yankees scored 3 runs in the bottom of the 9th", "context_sentence": "4. South Korea's birthrate grew at the fastest pace in 15 years in 2025, with the number of babies born tallied at 254-thousand five-hundred.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": ["agree", "check", "correspond", "count", "counting", "enumeration", "fit", "gibe", "hit", "jibe", "match", "numeration", "rack up", "reckoning", "run"]}, {"word": "optimism", "lemma": "optimism", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈɒptɪmɪzəm/", "definition_en": "the optimistic feeling that all is going to turn out well", "translation_ko": "", "example_en": "I love her youth, her beauty and above all her optimism that everything will turn out fine.", "context_sentence": "The benchmark index climbed to close at 6,083, driven by robust gains in key sectors amid global optimism in the technology and automotive industries.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": []}, {"word": "pandemic", "lemma": "pandemic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "an epidemic that is geographically widespread; occurring throughout a region or even throughout the world", "translation_ko": "", "example_en": "", "context_sentence": "It noted that the number of marriages rose for 21 straight months between April, 2024 and December, 2025... as couples who had delayed their marriages due to the pandemic got married.", "cefr_level": "B2", "frequency_score": 5.3197, "is_b2_plus": true, "derivatives": []}, {"word": "flocked", "lemma": "flock", "pos": "VERB", "pos_ko": "동사", "phonetic": "/flɒk/", "definition_en": "a church congregation guided by a pastor", "translation_ko": "", "example_en": "", "context_sentence": "Last year, almost 19 million tourists flocked to South Korea.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["batch", "deal", "fold", "good deal", "great deal", "hatful", "heap", "lot", "mass", "mess", "mickle", "mint", "mountain", "muckle", "passel"]}, {"word": "milestones", "lemma": "milestone", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "stone post at side of a road to show distances", "translation_ko": "", "example_en": "", "context_sentence": "Leading the charge were heavyweight stocks like Samsung Electronics and SK hynix, which built on Tuesday's milestones, where Samsung hit 200-thousand Korean won and SK hynix reached 1 million won.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["milepost"]}, {"word": "notified", "lemma": "notify", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "inform (somebody) of something", "translation_ko": "", "example_en": "I advised him that the rent was due", "context_sentence": "Taiwan's digital affairs ministry was reportedly notified about the matter earlier this week, and said it plans to conduct an administrative inspection shortly.", "cefr_level": "B2", "frequency_score": 5.27, "is_b2_plus": false, "derivatives": ["advise", "apprise", "apprize", "give notice", "send word"]}, {"word": "forensic", "lemma": "forensic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "of, relating to, or used in public debate or argument", "translation_ko": "", "example_en": "", "context_sentence": "According to the U.S. enlisted e-commerce giant, the cybersecurity firms Mandiant and Palo Alto found this out during their comprehensive forensic investigation.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": []}, {"word": "attributes", "lemma": "attribute", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "a construct whereby objects or individuals can be distinguished", "translation_ko": "", "example_en": "self-confidence is not an endearing property", "context_sentence": "The Ministry of Data and Statistics attributes the rebound to an increase in marriages and the continued rise in the number of women in their early 30s,... a figure that has been increasing since 2021.", "cefr_level": "B2", "frequency_score": 5.2299, "is_b2_plus": false, "derivatives": ["ascribe", "assign", "dimension", "impute", "property"]}, {"word": "fertility", "lemma": "fertility", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/fɚːˈtɪləti/", "definition_en": "the ratio of live births in an area to the population of that area; expressed per 1000 population per year", "translation_ko": "", "example_en": "Muckspreading increases the fertility of the soil.", "context_sentence": "The country's total fertility rate has also risen to zero-point-8 for the first time in four years.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": false, "derivatives": ["birth rate", "birthrate", "fecundity", "fertility rate", "natality", "prolificacy", "rankness", "richness"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>•</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "어휘 " + vocabData.length + "개";
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename;
+      } else {
+        player.src = episode.mp3_url;
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let text = escHtml(episode.script_text || "");
+      if (!text) {
+        box.textContent = "스크립트가 없습니다.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lemma = String(item.lemma || "").trim();
+        const cls = cefrClass(item.cefr_level);
+        const pattern = new RegExp("\\b(" + word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          return "<mark class='" + cls + "' data-lemma='" + escHtml(lemma) + "'>" + escHtml(m) + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-lemma]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-lemma")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "접기" : "전체보기";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "사전 미등록";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " · 빈도점수 " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(v.definition_en || "") + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(v.example_en || "") + "</div>" +
+               "<div class='context'>" + escHtml(v.context_sentence || "") + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "북마크 " + n + "개";
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => v.context_sentence && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const stem = q.context_sentence.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "정답! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "오답. 정답: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
