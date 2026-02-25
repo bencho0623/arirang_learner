@@ -1,0 +1,10 @@
+﻿requests
+beautifulsoup4
+lxml
+spacy
+playwright
+nltk
+wordfreq
+PyDictionary
+pyyaml
+tqdm

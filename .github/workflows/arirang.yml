@@ -1,0 +1,179 @@
+name: Arirang Daily Pipeline
+
+on:
+  schedule:
+    - cron: "30 23 * * *" # 08:30 KST
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "Target date (YYYYMMDD)"
+        required: false
+        type: string
+      demo_mode:
+        description: "Run demo mode"
+        required: false
+        default: false
+        type: boolean
+
+concurrency:
+  group: arirang-daily-pipeline
+  cancel-in-progress: false
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    env:
+      EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          python -m playwright install chromium --with-deps
+
+      - name: Download spaCy Model
+        run: python -m spacy download en_core_web_sm
+
+      - name: Download NLTK Data
+        run: |
+          python - <<'PY'
+          import nltk
+          nltk.download("stopwords")
+          nltk.download("punkt")
+          nltk.download("wordnet")
+          nltk.download("omw-1.4")
+          PY
+
+      - name: Run Pipeline
+        run: |
+          if [[ "${{ github.event.inputs.demo_mode }}" == "true" ]]; then
+            echo "Running demo mode"
+            python main.py --demo
+          elif [[ -n "${{ github.event.inputs.date }}" ]]; then
+            echo "Running with date=${{ github.event.inputs.date }}"
+            python main.py --date "${{ github.event.inputs.date }}"
+          else
+            echo "Running default daily pipeline"
+            python main.py
+          fi
+
+      - name: Verify Playwright Click Path
+        if: ${{ github.event.inputs.demo_mode != 'true' }}
+        run: |
+          LOG_FILE=$(ls -1t logs/pipeline_*.log | head -n 1)
+          echo "Using log file: ${LOG_FILE}"
+          if grep -q "Playwright .* failed" "${LOG_FILE}"; then
+            echo "Playwright fallback detected. Failing workflow."
+            exit 1
+          fi
+          echo "Playwright click path verified (no fallback log found)."
+
+      - name: Show Generated Files
+        run: |
+          mkdir -p reports downloads logs
+          ls -lh reports/ || true
+          ls -lh downloads/ || true
+          ls -lh logs/ || true
+
+      - name: Commit Pipeline Outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/ downloads/ logs/
+          if git diff --cached --quiet; then
+            echo "No pipeline output changes to commit."
+          else
+            KST_NOW="$(TZ=Asia/Seoul date '+%Y-%m-%d %H:%M KST')"
+            git commit -m "📰 자동 업데이트: ${KST_NOW}"
+            git push
+          fi
+
+      - name: Build reports/index.html
+        run: |
+          mkdir -p reports
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          reports = Path("reports")
+          items = []
+          pat = re.compile(r"^report_(\d{8})_(\d{4})\.html$")
+          for f in reports.glob("report_*.html"):
+              m = pat.match(f.name)
+              if not m:
+                  continue
+              ymd, hhmm = m.group(1), m.group(2)
+              display = f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:8]} {hhmm[:2]}:{hhmm[2:]}"
+              items.append((ymd, hhmm, f.name, display))
+
+          items.sort(key=lambda x: (x[0], x[1]), reverse=True)
+          links = "\n".join(
+              f'<li><a href="{name}">{display}</a></li>' for _, _, name, display in items
+          )
+          if not links:
+              links = "<li>No reports yet.</li>"
+
+          html = f"""<!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Arirang Reports</title>
+            <style>
+              body {{ font-family: Arial, sans-serif; margin: 24px; }}
+              h1 {{ margin-bottom: 8px; }}
+              ul {{ line-height: 1.8; }}
+            </style>
+          </head>
+          <body>
+            <h1>Arirang Learning Reports</h1>
+            <ul>
+              {links}
+            </ul>
+          </body>
+          </html>
+          """
+          (reports / "index.html").write_text(html, encoding="utf-8")
+          PY
+
+      - name: Commit reports/index.html
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/index.html
+          if git diff --cached --quiet; then
+            echo "No index updates to commit."
+          else
+            git commit -m "Update reports index"
+            git push
+          fi
+
+      - name: Write Failure Summary
+        if: failure()
+        run: |
+          {
+            echo "## Arirang Pipeline Failed"
+            echo ""
+            echo "- Workflow: ${{ github.workflow }}"
+            echo "- Run ID: ${{ github.run_id }}"
+            echo "- Ref: ${{ github.ref }}"
+            echo "- Actor: ${{ github.actor }}"
+            echo "- Check logs in this run for the failed step."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,29 @@
+﻿# Arirang Learner configuration
+# All values can be modified later.
+
+schedule:
+  # Daily run time in 24h format
+  time: "07:30"
+  # Timezone for scheduling
+  timezone: "Asia/Seoul"
+
+crawl:
+  # Target site for Arirang radio news
+  target_url: "https://www.arirang.com/radio/132"
+  # Directory to save downloaded source files
+  download_path: "./downloads"
+
+file_naming:
+  # Required filename stem format: YYYYMMDD_HHMM_suffix
+  # Example stem: 20250225_2155_arirang
+  suffix: "arirang"
+
+vocabulary:
+  # Minimum token length to include in analysis
+  min_word_length: 4
+  # Number of top difficult words to keep
+  top_n_words: 30
+  # Translation target language marker (actual translation uses WordNet OMW only)
+  translation_language: "ko"
+  # Dictionary definition source priority: wordnet -> free_dictionary_api -> empty
+  definition_priority: ["wordnet", "free_dictionary_api", "none"]
