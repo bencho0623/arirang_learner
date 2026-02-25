@@ -6,6 +6,7 @@ This module never calls external APIs. It only renders analyzer output
 
 from __future__ import annotations
 
+import html
 import json
 import logging
 from pathlib import Path
@@ -41,10 +42,10 @@ def _prettify_script_text(text: str) -> str:
     raw = (text or "").replace("\r\n", "\n").replace("\r", "\n")
     if not raw.strip():
         return ""
+    raw = html.unescape(raw)
 
     # Strip leftover inline markup from highlighted/script HTML fragments.
-    raw = re.sub(r"data-lemma='[^']*'>", "", raw, flags=re.IGNORECASE)
-    raw = re.sub(r"data-lemma=\"[^\"]*\">", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"data-lemma\s*=\s*(['\"]).*?\1\s*(?:>|&gt;)", "", raw, flags=re.IGNORECASE)
     raw = re.sub(r"</?mark[^>]*>", "", raw, flags=re.IGNORECASE)
     raw = re.sub(r"<[^>]+>", "", raw)
 
