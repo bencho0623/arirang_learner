@@ -2,7 +2,7 @@
 
 on:
   schedule:
-    - cron: "30 23 * * *" # 08:30 KST
+    - cron: "30 22 * * *" # 07:30 KST
   workflow_dispatch:
     inputs:
       date:
