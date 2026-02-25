@@ -300,6 +300,55 @@ def _extract_script_and_media_from_api_cache(
     return best[1], best[2]
 
 
+async def _fetch_json_via_page(page: Any, api_path: str, payload: dict[str, Any]) -> dict[str, Any]:
+    """Call same-origin API from inside browser page context."""
+    js = """
+    async ({ path, body }) => {
+      const resp = await fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const text = await resp.text();
+      try { return JSON.parse(text); } catch (e) { return { _raw_text: text, _status: resp.status }; }
+    }
+    """
+    result = await page.evaluate(js, {"path": api_path, "body": payload})
+    if isinstance(result, dict):
+        return result
+    return {}
+
+
+def _pick_item_for_target(
+    items: list[dict[str, Any]],
+    target_date_yyyymmdd: str,
+) -> dict[str, Any] | None:
+    if not items:
+        return None
+    target_date = f"{target_date_yyyymmdd[:4]}-{target_date_yyyymmdd[4:6]}-{target_date_yyyymmdd[6:8]}"
+
+    def score(it: dict[str, Any]) -> int:
+        title = str(it.get("title", ""))
+        bdate = str(it.get("broadcast_date", ""))
+        s = 0
+        if target_date in bdate:
+            s += 6
+        if "21:55" in title or "2155" in title:
+            s += 5
+        if "10 PM" in title.upper():
+            s += 4
+        if "NEWS" in title.upper():
+            s += 2
+        if str(it.get("content", "")).strip():
+            s += 1
+        return s
+
+    ranked = sorted(items, key=score, reverse=True)
+    if score(ranked[0]) <= 0:
+        return None
+    return ranked[0]
+
+
 def _extract_media_url_from_kollus_html(raw_html: str) -> str:
     text = html.unescape(raw_html or "")
     patterns = [
@@ -413,6 +462,49 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
         page.on("response", handle_response)
         await page.goto(target_url, wait_until="networkidle")
 
+        # 0) Direct browser-context API path used by the frontend route.
+        # This is the most reliable way to get script text when DOM parsing is flaky.
+        target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
+        podcast_id = str(episode.get("podcast_id", "")).strip() or "668"
+        corner_data = await _fetch_json_via_page(page, "/v1.0/open/corner/detail", {"corner_id": podcast_id})
+        bis_corner_code = str(corner_data.get("bis_corner_code", "")).strip()
+        if bis_corner_code:
+            ep_list_payload = {
+                "lan_code": "en",
+                "program_type": "radio",
+                "key_word": "corner_code",
+                "word": bis_corner_code,
+                "hit": True,
+                "type": "aod",
+                "page_info": {"row_count": 20, "number": 0},
+            }
+            ep_list = await _fetch_json_via_page(page, "/v1.0/open/media/episode/list", ep_list_payload)
+            items = ep_list.get("item", []) if isinstance(ep_list, dict) else []
+            if isinstance(items, list):
+                chosen = _pick_item_for_target([x for x in items if isinstance(x, dict)], target_date)
+                if chosen:
+                    if not mp3_url:
+                        media_info = chosen.get("media_info", {})
+                        if isinstance(media_info, dict):
+                            mp3_url = str(media_info.get("media_url", "")).strip()
+                    if not mp3_url:
+                        urls = _extract_urls_from_obj(chosen)
+                        if urls:
+                            mp3_url = urls[0]
+                    script_guess = str(chosen.get("content", "")).strip()
+                    if script_guess:
+                        api_json_cache.append({"item": [chosen]})
+                    # detail endpoint can contain richer content block.
+                    ep_id = chosen.get("episode_id")
+                    if ep_id:
+                        ep_detail = await _fetch_json_via_page(
+                            page,
+                            "/v1.0/open/media/episode/detail",
+                            {"episode_id": ep_id},
+                        )
+                        if isinstance(ep_detail, dict):
+                            api_json_cache.append(ep_detail)
+
         # 1) Force-select D-1 21:55 row from podcast list on this page.
         target_date = str(episode.get("date_str") or _get_target_date()[0])
         clicked = await _click_target_from_podcast_list(page, target_date)
@@ -482,6 +574,11 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             script_text = api_script
         if api_media and not mp3_url:
             mp3_url = api_media
+
+    if script_text:
+        # Remove obvious HTML tags if API returns rich text.
+        script_text = re.sub(r"<br\\s*/?>", "\n", script_text, flags=re.IGNORECASE)
+        script_text = re.sub(r"<[^>]+>", "", script_text).strip()
 
     if not mp3_url and iframe_src:
         try:
