@@ -262,6 +262,30 @@ def _is_downloadable_audio_url(url: str) -> bool:
     return u.endswith(".mp3") or u.endswith(".mp4") or u.endswith(".m4a")
 
 
+def _is_valid_audio_file(path: Path) -> bool:
+    """Check downloaded file is binary audio/media, not text playlist."""
+    if not path.exists() or path.stat().st_size <= 0:
+        return False
+    try:
+        with path.open("rb") as f:
+            head = f.read(32)
+    except Exception:  # noqa: BLE001
+        return False
+    # HLS playlist text starts with #EXTM3U.
+    if head.startswith(b"#EXTM3U"):
+        return False
+    # Accept common binary signatures:
+    # ID3 (mp3), ftyp (mp4/m4a), and generic non-text binary.
+    if head.startswith(b"ID3"):
+        return True
+    if b"ftyp" in head:
+        return True
+    # Reject clearly text-like header.
+    if all(32 <= b <= 126 or b in (9, 10, 13) for b in head):
+        return False
+    return True
+
+
 def _normalize_space(text: str) -> str:
     return " ".join((text or "").split())
 
@@ -765,8 +789,8 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
                     txt_ok = False
             except Exception:  # noqa: BLE001
                 txt_ok = False
-        mp3_ok = mp3_path.exists() and mp3_path.stat().st_size > 0
-        mp4_ok = mp4_path.exists() and mp4_path.stat().st_size > 0
+        mp3_ok = _is_valid_audio_file(mp3_path)
+        mp4_ok = _is_valid_audio_file(mp4_path)
         audio_ok = mp3_ok or mp4_ok
         actual_audio_path = mp3_path if mp3_ok else mp4_path
         meta_ok = meta_path.exists() and meta_path.stat().st_size > 0
