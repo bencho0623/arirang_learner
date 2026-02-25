@@ -253,6 +253,15 @@ def _extract_urls_from_obj(obj: Any) -> list[str]:
     return urls
 
 
+def _is_downloadable_audio_url(url: str) -> bool:
+    if not url:
+        return False
+    u = url.lower().split("?", 1)[0]
+    if u.endswith(".m3u8") or ".smil" in u:
+        return False
+    return u.endswith(".mp3") or u.endswith(".mp4") or u.endswith(".m4a")
+
+
 def _normalize_space(text: str) -> str:
     return " ".join((text or "").split())
 
@@ -529,7 +538,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             nonlocal mp3_url
             url = response.url
             content_type = response.headers.get("content-type", "")
-            if ".mp3" in url.lower() or "audio" in content_type.lower():
+            if _is_downloadable_audio_url(url):
                 mp3_url = url
 
             if "application/json" in content_type.lower() and any(
@@ -541,8 +550,10 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                         api_json_cache.append(data)
                         if not mp3_url:
                             nested_urls = _extract_urls_from_obj(data)
-                            if nested_urls:
-                                mp3_url = nested_urls[0]
+                            for candidate in nested_urls:
+                                if _is_downloadable_audio_url(candidate):
+                                    mp3_url = candidate
+                                    break
                 except Exception:
                     pass
 
@@ -573,11 +584,15 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                     if not mp3_url:
                         media_info = chosen.get("media_info", {})
                         if isinstance(media_info, dict):
-                            mp3_url = str(media_info.get("media_url", "")).strip()
+                            candidate = str(media_info.get("media_url", "")).strip()
+                            if _is_downloadable_audio_url(candidate):
+                                mp3_url = candidate
                     if not mp3_url:
                         urls = _extract_urls_from_obj(chosen)
-                        if urls:
-                            mp3_url = urls[0]
+                        for candidate in urls:
+                            if _is_downloadable_audio_url(candidate):
+                                mp3_url = candidate
+                                break
                     script_guess = str(chosen.get("content", "")).strip()
                     if script_guess:
                         api_json_cache.append({"item": [chosen]})
@@ -676,11 +691,13 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
         target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
         script_text = _slice_script_by_episode_marker(script_text, target_date, "21:55")
 
-    if not mp3_url and iframe_src:
+    if (not mp3_url or not _is_downloadable_audio_url(mp3_url)) and iframe_src:
         try:
             with requests.Session() as session:
                 resp = _request_with_retry(session, "GET", iframe_src, cfg)
-                mp3_url = _extract_media_url_from_kollus_html(resp.text)
+                candidate = _extract_media_url_from_kollus_html(resp.text)
+                if _is_downloadable_audio_url(candidate):
+                    mp3_url = candidate
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Failed to resolve media_url from iframe src: %s", exc)
 
@@ -701,7 +718,7 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         enriched = dict(episode)
         mp3 = str(episode.get("mp3_url_prefetched", "")).strip()
         inferred = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
-        if not mp3:
+        if not _is_downloadable_audio_url(mp3):
             _, mp3, inferred = _resolve_kollus_media(cfg)
         enriched["mp3_url"] = mp3
         enriched["date_str"] = inferred
@@ -734,6 +751,7 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
 
     txt_path = download_dir / f"{stem}.txt"
     mp3_path = download_dir / f"{stem}.mp3"
+    mp4_path = download_dir / f"{stem}.mp4"
     meta_path = download_dir / f"{stem}_meta.json"
 
     history = _ensure_download_log(logs_path)
@@ -748,14 +766,18 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
             except Exception:  # noqa: BLE001
                 txt_ok = False
         mp3_ok = mp3_path.exists() and mp3_path.stat().st_size > 0
+        mp4_ok = mp4_path.exists() and mp4_path.stat().st_size > 0
+        audio_ok = mp3_ok or mp4_ok
+        actual_audio_path = mp3_path if mp3_ok else mp4_path
         meta_ok = meta_path.exists() and meta_path.stat().st_size > 0
-        if txt_ok and mp3_ok and meta_ok:
+        if txt_ok and audio_ok and meta_ok:
             LOGGER.info("Skip download: already success for key=%s", key)
             skipped = dict(episode)
             skipped.update(
                 {
                     "txt_path": str(txt_path),
-                    "mp3_path": str(mp3_path),
+                    "mp3_path": str(actual_audio_path),
+                    "mp3_filename": actual_audio_path.name,
                     "meta_path": str(meta_path),
                     "status": "skipped",
                 }
@@ -763,10 +785,10 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
             return skipped
         LOGGER.warning(
             "History says success but files are missing or empty. Re-downloading key=%s "
-            "(txt=%s mp3=%s meta=%s)",
+            "(txt=%s audio=%s meta=%s)",
             key,
             txt_ok,
-            mp3_ok,
+            audio_ok,
             meta_ok,
         )
 
@@ -776,12 +798,18 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
         raise ValueError("episode.script_text is empty")
     if not mp3_url:
         raise ValueError("episode.mp3_url is empty")
+    if not _is_downloadable_audio_url(str(mp3_url)):
+        raise ValueError(f"episode.mp3_url is not a downloadable audio file: {mp3_url}")
 
     txt_path.write_text(script_text, encoding="utf-8")
 
+    url_lower = mp3_url.lower().split("?", 1)[0]
+    audio_ext = ".mp4" if url_lower.endswith(".mp4") else ".mp3"
+    audio_path = download_dir / f"{stem}{audio_ext}"
+
     with requests.Session() as session:
         resp = _request_with_retry(session, "GET", mp3_url, cfg, stream=True)
-        with mp3_path.open("wb") as f:
+        with audio_path.open("wb") as f:
             for chunk in resp.iter_content(chunk_size=8192):
                 if chunk:
                     f.write(chunk)
@@ -791,7 +819,7 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
         "airtime": "21:55",
         "title": episode.get("title", ""),
         "txt_filename": txt_path.name,
-        "mp3_filename": mp3_path.name,
+        "mp3_filename": audio_path.name,
         "source_url": episode.get("detail_url", ""),
         "mp3_url": mp3_url,
         "downloaded_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat(),
@@ -803,7 +831,7 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
         "title": episode.get("title", ""),
         "source_url": episode.get("detail_url", ""),
         "txt_path": str(txt_path),
-        "mp3_path": str(mp3_path),
+        "mp3_path": str(audio_path),
         "meta_path": str(meta_path),
         "updated_at": datetime.now(ZoneInfo("Asia/Seoul")).isoformat(),
     }
@@ -813,7 +841,8 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
     downloaded.update(
         {
             "txt_path": str(txt_path),
-            "mp3_path": str(mp3_path),
+            "mp3_path": str(audio_path),
+            "mp3_filename": audio_path.name,
             "meta_path": str(meta_path),
             "status": "success",
         }

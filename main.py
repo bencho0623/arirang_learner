@@ -161,7 +161,8 @@ def step_crawl(cfg: dict[str, Any], target_date: str) -> dict[str, Any] | None:
 
     paths = _bundle_paths(cfg, target_date)
     downloaded["txt_filename"] = paths["txt"].name
-    downloaded["mp3_filename"] = paths["mp3"].name
+    if not downloaded.get("mp3_filename"):
+        downloaded["mp3_filename"] = paths["mp3"].name
     downloaded["date"] = _date_display(target_date)
     downloaded["airtime"] = "21:55"
     return downloaded
