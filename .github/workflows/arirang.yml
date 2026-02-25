@@ -156,7 +156,8 @@ jobs:
             git commit -m "news auto update: ${KST_NOW}"
             if ! git push; then
               echo "Push rejected; rebasing and retrying once."
-              git pull --rebase origin main
+              git fetch origin main
+              git rebase -X theirs origin/main
               git push
             fi
           fi
