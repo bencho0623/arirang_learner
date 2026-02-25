@@ -273,6 +273,51 @@ def _get_wordnet_info(lemma: str, wn: Any) -> dict[str, Any]:
     return out
 
 
+def _lemma_candidates(word: str, lemma: str, wn: Any) -> list[str]:
+    """Build retry candidates to reduce dictionary-miss cases."""
+    seeds = [str(lemma or "").lower().strip(), str(word or "").lower().strip()]
+    out: list[str] = []
+    seen: set[str] = set()
+
+    def push(x: str) -> None:
+        t = x.strip().lower()
+        if not t or t in seen:
+            return
+        seen.add(t)
+        out.append(t)
+
+    for s in seeds:
+        push(s)
+
+    # WordNet normalization candidates.
+    if wn is not None:
+        for s in list(out):
+            for pos in ("n", "v", "a", "r"):
+                try:
+                    m = wn.morphy(s, pos=pos)
+                except Exception:  # noqa: BLE001
+                    m = None
+                if m:
+                    push(str(m))
+
+    # Simple fallback morphology.
+    for s in list(out):
+        if s.endswith("ies") and len(s) > 4:
+            push(s[:-3] + "y")
+        if s.endswith("es") and len(s) > 3:
+            push(s[:-2])
+        if s.endswith("s") and len(s) > 3:
+            push(s[:-1])
+        if s.endswith("ing") and len(s) > 5:
+            push(s[:-3])
+            push(s[:-3] + "e")
+        if s.endswith("ed") and len(s) > 4:
+            push(s[:-2])
+            push(s[:-1])
+
+    return out
+
+
 def _get_pydictionary_info(lemma: str, pydict_cls: Any) -> dict[str, str]:
     if pydict_cls is None:
         return {"definition_en": ""}
@@ -425,24 +470,42 @@ def analyze_vocabulary(script_text: str, cfg: dict[str, Any]) -> list[dict[str, 
         if score < 5.0:
             continue
 
-        wn_info = _get_wordnet_info(lemma, deps["wn"])
-        definition_en = wn_info["definition_en"]
-        example_en = wn_info["example_en"]
-        translation_ko = wn_info["translation_ko"]
-        derivatives = wn_info["derivatives"]
+        definition_en = ""
+        example_en = ""
+        translation_ko = ""
+        derivatives: list[str] = []
         phonetic = ""
 
-        if not definition_en:
-            py_info = _get_pydictionary_info(lemma, deps["PyDictionary"])
-            definition_en = py_info.get("definition_en", "") or definition_en
+        candidates = _lemma_candidates(base.get("word", ""), lemma, deps["wn"])
+        for cand in candidates:
+            # 1) WordNet
+            wn_info = _get_wordnet_info(cand, deps["wn"])
+            if not definition_en:
+                definition_en = wn_info["definition_en"]
+            if not example_en:
+                example_en = wn_info["example_en"]
+            if not translation_ko:
+                translation_ko = wn_info["translation_ko"]
+            if not derivatives and wn_info["derivatives"]:
+                derivatives = wn_info["derivatives"]
 
-        api_info = _get_free_dict_info(lemma, api_cache=api_cache, timeout_sec=3)
-        if not phonetic:
-            phonetic = api_info.get("phonetic", "") or ""
-        if not definition_en:
-            definition_en = api_info.get("definition_en", "") or ""
-        if not example_en:
-            example_en = api_info.get("example_en", "") or ""
+            # 2) PyDictionary fallback for definition
+            if not definition_en:
+                py_info = _get_pydictionary_info(cand, deps["PyDictionary"])
+                definition_en = py_info.get("definition_en", "") or definition_en
+
+            # 3) Free Dictionary API for phonetic/example/definition
+            api_info = _get_free_dict_info(cand, api_cache=api_cache, timeout_sec=3)
+            if not phonetic:
+                phonetic = api_info.get("phonetic", "") or ""
+            if not definition_en:
+                definition_en = api_info.get("definition_en", "") or ""
+            if not example_en:
+                example_en = api_info.get("example_en", "") or ""
+
+            # Stop early when all major fields are resolved.
+            if definition_en and (example_en or phonetic or translation_ko):
+                break
 
         pos = base.get("pos", "") or ""
         pos_ko = POS_KO_MAP.get(pos, "")
