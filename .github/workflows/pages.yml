@@ -1,12 +1,9 @@
 name: Deploy Reports to GitHub Pages
 
 on:
-  push:
-    branches: ["main"]
-    paths:
-      - "reports/**"
-      - "downloads/**"
-      - ".github/workflows/pages.yml"
+  workflow_run:
+    workflows: ["Arirang Daily Pipeline"]
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -20,6 +17,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
