@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+import re
 from typing import Any
 
 
@@ -35,6 +36,45 @@ def _normalize_date(date_value: str) -> tuple[str, str]:
     return raw.replace("-", "."), raw.replace("-", "")
 
 
+def _prettify_script_text(text: str) -> str:
+    """Normalize noisy script text for readability in report viewer."""
+    raw = (text or "").replace("\r\n", "\n").replace("\r", "\n")
+    if not raw.strip():
+        return ""
+
+    # Remove recurring UI/table noise captured from page containers.
+    raw = re.sub(
+        r"Podcast\s+List\s+Table\s+NO\s+Date\(KST\)\s+Title\s+\d+\s+\d{4}-\d{2}-\d{2}\s+Podcast\s+Play\s+21:55\s+Arirang\s+News",
+        "",
+        raw,
+        flags=re.IGNORECASE,
+    )
+    noise_patterns = [
+        r"Podcast\s+List\s+Table",
+        r"NO\s+Date\(KST\)\s+Title",
+        r"^\s*\d+\s+\d{4}-\d{2}-\d{2}\s+Podcast(?:\s+Play)?\s*$",
+    ]
+    lines: list[str] = []
+    for line in raw.split("\n"):
+        s = line.strip()
+        if not s:
+            continue
+        if any(re.search(pat, s, flags=re.IGNORECASE) for pat in noise_patterns):
+            continue
+        lines.append(s)
+    text = "\n".join(lines)
+
+    # Ensure numbered paragraph markers start new paragraphs: "<num.>"
+    text = re.sub(r"\s*(\d+\.)\s*", r"\n\n\1 ", text)
+
+    # Sentence-level wrapping for readability.
+    text = re.sub(r"([.!?])\s+(?=[A-Z\"'])", r"\1\n", text)
+
+    # Final cleanup.
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return text
+
+
 def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], cfg: dict[str, Any]) -> str:
     """Generate a single-file interactive HTML learning report.
 
@@ -54,7 +94,8 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
     airtime = str(episode.get("airtime", "21:55")) or "21:55"
     title = str(episode.get("title", "Arirang News"))
     mp3_filename = str(episode.get("mp3_filename", "") or "")
-    script_text = str(episode.get("script_text", "") or "")
+    mp3_url = str(episode.get("mp3_url", "") or "")
+    script_text = _prettify_script_text(str(episode.get("script_text", "") or ""))
 
     report_filename = f"report_{date_compact}_2155.html"
     report_path = reports_dir / report_filename
@@ -66,6 +107,7 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
             "airtime": airtime,
             "title": title,
             "mp3_filename": mp3_filename,
+            "mp3_url": mp3_url,
             "script_text": script_text,
         },
         ensure_ascii=False,
@@ -483,11 +525,16 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
     function renderAudio() {{
       const section = document.getElementById("audio-section");
       const player = document.getElementById("audio-player");
-      if (!episode.mp3_filename) {{
+      if (!episode.mp3_filename && !episode.mp3_url) {{
         section.style.display = "none";
         return;
       }}
-      player.src = "downloads/" + episode.mp3_filename;
+      if (episode.mp3_filename) {{
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename;
+      }} else {{
+        player.src = episode.mp3_url;
+      }}
     }}
 
     function renderScript() {{
