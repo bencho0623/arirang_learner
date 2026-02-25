@@ -266,3 +266,18 @@ RuntimeError: Request failed after retries: https://www.arirang.com/radio/132
 2026-02-25 07:43:56,891 [INFO] pipeline: [STEP] report start
 2026-02-25 07:43:56,894 [INFO] modules.reporter: Saved report: reports/report_20260224_2155.html
 2026-02-25 07:43:56,894 [INFO] pipeline: [STEP] report success path=reports/report_20260224_2155.html
+2026-02-25 07:53:59,821 [INFO] pipeline: Pipeline start date=20260224 step=None demo=False
+2026-02-25 07:53:59,821 [INFO] pipeline: [STEP] crawl start
+2026-02-25 07:53:59,854 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-25 07:53:59,854 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 07:53:59,854 [INFO] modules.crawler: Target candidate summary: date=20260224 airtime=21:55 title=21:55 Arirang News
+2026-02-25 07:53:59,854 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-25 07:54:16,866 [WARNING] modules.crawler: Playwright detail had no downloadable media URL. Using Kollus fallback.
+2026-02-25 07:54:18,208 [WARNING] modules.crawler: History says success but files are missing or empty. Re-downloading key=20260224_2155 (txt=True audio=False meta=True)
+2026-02-25 07:54:21,253 [INFO] pipeline: [STEP] crawl success
+2026-02-25 07:54:21,254 [INFO] pipeline: [STEP] analyze start
+2026-02-25 07:54:36,911 [INFO] modules.analyzer: Saved vocabulary json=logs/vocabulary_20260224.json csv=logs/vocabulary_20260224.csv count=30
+2026-02-25 07:54:36,911 [INFO] pipeline: [STEP] analyze success json=logs/vocabulary_20260224.json csv=logs/vocabulary_20260224.csv count=30
+2026-02-25 07:54:36,911 [INFO] pipeline: [STEP] report start
+2026-02-25 07:54:36,914 [INFO] modules.reporter: Saved report: reports/report_20260224_2155.html
+2026-02-25 07:54:36,914 [INFO] pipeline: [STEP] report success path=reports/report_20260224_2155.html
