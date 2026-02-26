@@ -152,7 +152,13 @@ def _sanitize_script_text(script_text: str) -> str:
     if not text.strip():
         return ""
     # Remove leaked inline attrs such as data-lemma='word'> that appear as plain text.
-    text = re.sub(r"\bdata-[a-z-]+\s*=\s*(['\"]).*?\1\s*(?:>|&gt;)?", "", text, flags=re.IGNORECASE)
+    # Remove leaked inline attrs (quoted/unquoted, including smart quotes).
+    text = re.sub(
+        r"\bdata-[a-z-]+\s*=\s*(?:'[^']*'|\"[^\"]*\"|’[^’]*’|[^\s>]+)\s*(?:>|&gt;)?",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
     # Remove any remaining HTML tags.
     text = re.sub(r"</?mark[^>]*>", "", text, flags=re.IGNORECASE)
     text = re.sub(r"<[^>]+>", "", text)
