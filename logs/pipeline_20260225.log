@@ -162,3 +162,18 @@ RuntimeError: Playwright is required. Install: pip install playwright
 2026-02-26 01:07:43,801 [INFO] pipeline: [STEP] report start
 2026-02-26 01:07:43,804 [INFO] modules.reporter: Saved report: reports/report_20260225_2155.html
 2026-02-26 01:07:43,806 [INFO] pipeline: [STEP] report success path=reports/report_20260225_2155.html
+2026-02-26 01:14:47,946 [INFO] pipeline: Pipeline start date=20260225 step=None demo=False
+2026-02-26 01:14:47,946 [INFO] pipeline: [STEP] crawl start
+2026-02-26 01:14:48,008 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-26 01:14:48,008 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-26 01:14:48,008 [INFO] modules.crawler: Target candidate summary: date=20260225 airtime=21:55 title=21:55 Arirang News
+2026-02-26 01:14:48,008 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-26 01:15:00,061 [WARNING] modules.crawler: Playwright detail had no downloadable media URL. Using Kollus fallback.
+2026-02-26 01:15:01,090 [INFO] modules.crawler: Skip download: already success for key=20260225_2155
+2026-02-26 01:15:01,090 [INFO] pipeline: [STEP] crawl success
+2026-02-26 01:15:01,090 [INFO] pipeline: [STEP] analyze start
+2026-02-26 01:15:21,614 [INFO] modules.analyzer: Saved vocabulary json=logs/vocabulary_20260225.json csv=logs/vocabulary_20260225.csv count=30
+2026-02-26 01:15:21,614 [INFO] pipeline: [STEP] analyze success json=logs/vocabulary_20260225.json csv=logs/vocabulary_20260225.csv count=30
+2026-02-26 01:15:21,614 [INFO] pipeline: [STEP] report start
+2026-02-26 01:15:21,617 [INFO] modules.reporter: Saved report: reports/report_20260225_2155.html
+2026-02-26 01:15:21,617 [INFO] pipeline: [STEP] report success path=reports/report_20260225_2155.html
