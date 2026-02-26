@@ -305,7 +305,7 @@
       <div class="header-row">
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <span class="badge" id="vocab-count-badge"></span>
-          <span class="badge" id="bookmark-count-badge">북마크 0개</span>
+          <span class="badge" id="bookmark-count-badge">遺곷쭏??0媛?/span>
         </div>
         <div class="cefr-chart" id="cefr-chart"></div>
       </div>
@@ -319,8 +319,8 @@
     <section class="panel">
       <h2>Script Viewer</h2>
       <div class="script-tools">
-        <div class="script-hint">스크롤로 전체 확인 가능 · 필요 시 전체보기</div>
-        <button id="script-toggle" class="script-toggle" type="button">전체보기</button>
+        <div class="script-hint">?ㅽ겕濡ㅻ줈 ?꾩껜 ?뺤씤 媛??쨌 ?꾩슂 ???꾩껜蹂닿린</div>
+        <button id="script-toggle" class="script-toggle" type="button">?꾩껜蹂닿린</button>
       </div>
       <div class="script-box" id="script-box"></div>
     </section>
@@ -333,7 +333,7 @@
     </section>
 
     <section class="panel quiz-section" id="quiz-section">
-      <h2>빈칸 퀴즈</h2>
+      <h2>鍮덉뭏 ?댁쫰</h2>
       <div id="quiz-score">0 / 0</div>
       <div class="progress"><i id="quiz-progress"></i></div>
       <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
@@ -357,7 +357,7 @@
 
     function cleanInlineArtifacts(s) {
       let t = String(s ?? "");
-      t = t.replace(/\bdata-[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|’[^’]*’|[^\s>]+)\s*(?:>|&gt;)?/gi, "");
+      t = t.replace(/\bdata-[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|??^??*??[^\s>]+)\s*(?:>|&gt;)?/gi, "");
       t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
       t = t.replace(/<[^>]+>/g, "");
       return t;
@@ -393,10 +393,10 @@
       document.getElementById("news-title").textContent = episode.title || "Arirang News";
       document.getElementById("news-meta").innerHTML =
         "<span>" + escHtml(episode.date_display || "") + "</span>" +
-        "<span>•</span>" +
+        "<span>??/span>" +
         "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
 
-      document.getElementById("vocab-count-badge").textContent = "어휘 " + vocabData.length + "개";
+      document.getElementById("vocab-count-badge").textContent = "?댄쐶 " + vocabData.length + "媛?;
 
       const dist = { B2:0, C1:0, C2:0 };
       for (const v of vocabData) {
@@ -436,11 +436,13 @@
       const toggle = document.getElementById("script-toggle");
       let src = String(episode.script_text || "");
       // Defensive cleanup for raw/encoded inline attribute residue.
-      src = src.replace(/\bdata-[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|’[^’]*’|[^\s>]+)\s*(?:>|&gt;)?/gi, "");
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
       let text = escHtml(src);
-      text = text.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
       if (!text) {
-        box.textContent = "스크립트가 없습니다.";
+        box.textContent = "?ㅽ겕由쏀듃媛 ?놁뒿?덈떎.";
         toggle.style.display = "none";
         return;
       }
@@ -449,25 +451,36 @@
         .filter(v => v.word)
         .sort((a,b) => String(b.word).length - String(a.word).length);
 
+      const byLower = new Map();
+      const escapedWords = [];
       for (const item of sorted) {
         const word = String(item.word || "").trim();
         if (!word) continue;
-        const lemma = String(item.lemma || "").trim();
-        const cls = cefrClass(item.cefr_level);
-        const pattern = new RegExp("\\b(" + word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + ")\\b", "gi");
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
         text = text.replace(pattern, (m) => {
-          return "<mark class='" + cls + "' data-lemma='" + escHtml(lemma) + "'>" + escHtml(m) + "</mark>";
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
         });
       }
 
       box.innerHTML = text;
-      box.querySelectorAll("mark[data-lemma]").forEach((el) => {
-        el.addEventListener("click", () => openCard(el.getAttribute("data-lemma")));
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
       });
 
       toggle.addEventListener("click", () => {
         box.classList.toggle("expanded");
-        toggle.textContent = box.classList.contains("expanded") ? "접기" : "전체보기";
+        toggle.textContent = box.classList.contains("expanded") ? "?묎린" : "?꾩껜蹂닿린";
       });
     }
 
@@ -476,7 +489,7 @@
       const grid = document.getElementById("cards-grid");
       grid.innerHTML = vocabData.map((v) => {
         const lemma = escHtml(v.lemma || "");
-        const ko = String(v.translation_ko || "").trim() || "사전 미등록";
+        const ko = String(v.translation_ko || "").trim() || "?ъ쟾 誘몃벑濡?;
         const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
         const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
         const bookmarked = bm[v.word] ? "bookmarked" : "";
@@ -485,13 +498,13 @@
         const example = cleanInlineArtifacts(v.example_en || "");
         const context = cleanInlineArtifacts(v.context_sentence || "");
         return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
-               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>?뵔</button>" +
                "<div class='card-top'>" +
                "<span class='word'>" + escHtml(v.word || "") + "</span>" +
                "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
                "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
                "</div>" +
-               "<div class='sub'>" + escHtml(v.pos_ko || "") + " · 빈도점수 " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " 쨌 鍮덈룄?먯닔 " + escHtml(v.frequency_score) + "</div>" +
                "<div class='card-body'>" +
                "<div class='def-box'>" + escHtml(definition) + "</div>" +
                "<div class='ko'>" + escHtml(ko) + "</div>" +
@@ -526,7 +539,7 @@
     function updateBookmarkCount() {
       const bm = loadBookmarks();
       const n = Object.keys(bm).length;
-      document.getElementById("bookmark-count-badge").textContent = "북마크 " + n + "개";
+      document.getElementById("bookmark-count-badge").textContent = "遺곷쭏??" + n + "媛?;
     }
 
     function shuffle(arr) {
@@ -605,10 +618,10 @@
             if (picked === q.answer) {
               correct++;
               btn.classList.add("correct");
-              result.textContent = "정답! " + (q.definition ? q.definition : "");
+              result.textContent = "?뺣떟! " + (q.definition ? q.definition : "");
             } else {
               btn.classList.add("wrong");
-              result.textContent = "오답. 정답: " + q.answer + (q.definition ? " | " + q.definition : "");
+              result.textContent = "?ㅻ떟. ?뺣떟: " + q.answer + (q.definition ? " | " + q.definition : "");
             }
             refresh();
           });
