@@ -262,6 +262,26 @@ def _is_downloadable_audio_url(url: str) -> bool:
     return u.endswith(".mp3") or u.endswith(".mp4") or u.endswith(".m4a")
 
 
+def _extract_media_date_yyyymmdd(url: str) -> str:
+    """Extract media date from known URL patterns."""
+    if not url:
+        return ""
+    s = html.unescape(str(url))
+    for pat in (r"/arirang/(20\d{6})/", r"_(20\d{6})-", r"\b(20\d{6})\b"):
+        m = re.search(pat, s)
+        if m:
+            return m.group(1)
+    return ""
+
+
+def _is_media_date_match(url: str, target_date_yyyymmdd: str) -> bool:
+    """Return True when media URL has no date or date matches target."""
+    media_date = _extract_media_date_yyyymmdd(url)
+    if not media_date:
+        return True
+    return media_date == target_date_yyyymmdd
+
+
 def _is_valid_audio_file(path: Path) -> bool:
     """Check downloaded file is binary audio/media, not text playlist."""
     if not path.exists() or path.stat().st_size <= 0:
@@ -297,7 +317,7 @@ def _sanitize_script_source(text: str) -> str:
         return ""
     # Remove leaked inline attributes such as data-lemma='word'>.
     raw = re.sub(
-        r"\bdata-[a-z-]+\s*=\s*(?:'[^']*'|\"[^\"]*\"|’[^’]*’|[^\s>]+)\s*(?:>|&gt;)?",
+        r"\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|\"[^\"]*\"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?",
         "",
         raw,
         flags=re.IGNORECASE,
@@ -380,6 +400,8 @@ def _extract_script_and_media_from_api_cache(
                 score += 2
             if media_url:
                 score += 1
+            if media_url and not _is_media_date_match(media_url, target_date_yyyymmdd):
+                media_url = ""
             if score > 0:
                 candidates.append((score, content.strip(), media_url.strip()))
 
@@ -571,6 +593,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
         raise RuntimeError("Playwright is required. Install: pip install playwright") from exc
 
     target_url = str(episode.get("detail_url") or "https://www.arirang.com/radio/132/podcast/668?lang=en")
+    target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
     mp3_url = ""
     iframe_src = ""
     api_json_cache: list[dict[str, Any]] = []
@@ -583,7 +606,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             nonlocal mp3_url
             url = response.url
             content_type = response.headers.get("content-type", "")
-            if _is_downloadable_audio_url(url):
+            if _is_downloadable_audio_url(url) and _is_media_date_match(url, target_date):
                 mp3_url = url
 
             if "application/json" in content_type.lower() and any(
@@ -596,7 +619,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                         if not mp3_url:
                             nested_urls = _extract_urls_from_obj(data)
                             for candidate in nested_urls:
-                                if _is_downloadable_audio_url(candidate):
+                                if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
                                     mp3_url = candidate
                                     break
                 except Exception:
@@ -607,7 +630,6 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
 
         # 0) Direct browser-context API path used by the frontend route.
         # This is the most reliable way to get script text when DOM parsing is flaky.
-        target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
         podcast_id = str(episode.get("podcast_id", "")).strip() or "668"
         corner_data = await _fetch_json_via_page(page, "/v1.0/open/corner/detail", {"corner_id": podcast_id})
         bis_corner_code = str(corner_data.get("bis_corner_code", "")).strip()
@@ -630,12 +652,12 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                         media_info = chosen.get("media_info", {})
                         if isinstance(media_info, dict):
                             candidate = str(media_info.get("media_url", "")).strip()
-                            if _is_downloadable_audio_url(candidate):
+                            if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
                                 mp3_url = candidate
                     if not mp3_url:
                         urls = _extract_urls_from_obj(chosen)
                         for candidate in urls:
-                            if _is_downloadable_audio_url(candidate):
+                            if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
                                 mp3_url = candidate
                                 break
                     script_guess = str(chosen.get("content", "")).strip()
@@ -740,10 +762,19 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             with requests.Session() as session:
                 resp = _request_with_retry(session, "GET", iframe_src, cfg)
                 candidate = _extract_media_url_from_kollus_html(resp.text)
-                if _is_downloadable_audio_url(candidate):
+                if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
                     mp3_url = candidate
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Failed to resolve media_url from iframe src: %s", exc)
+
+    if mp3_url and not _is_media_date_match(mp3_url, target_date):
+        LOGGER.warning(
+            "Reject mismatched media URL date. target=%s media_date=%s url=%s",
+            target_date,
+            _extract_media_date_yyyymmdd(mp3_url),
+            mp3_url,
+        )
+        mp3_url = ""
 
     enriched = dict(episode)
     enriched["script_text"] = script_text
@@ -758,10 +789,11 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
     try:
         enriched = asyncio.run(_async_fetch_episode_detail(episode, cfg))
         mp3 = str(enriched.get("mp3_url", "")).strip()
-        if not _is_downloadable_audio_url(mp3):
+        target_date = str(enriched.get("date_str", "")).strip() or _get_target_date()[0]
+        if not _is_downloadable_audio_url(mp3) or not _is_media_date_match(mp3, target_date):
             LOGGER.warning("Playwright detail had no downloadable media URL. Using Kollus fallback.")
             _, fallback_media, inferred = _resolve_kollus_media(cfg)
-            if _is_downloadable_audio_url(fallback_media):
+            if _is_downloadable_audio_url(fallback_media) and _is_media_date_match(fallback_media, target_date):
                 enriched["mp3_url"] = fallback_media
                 if not enriched.get("date_str"):
                     enriched["date_str"] = inferred
@@ -772,9 +804,13 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         LOGGER.warning("Playwright detail crawl failed, using Kollus fallback: %s", exc)
         enriched = dict(episode)
         mp3 = str(episode.get("mp3_url_prefetched", "")).strip()
-        inferred = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
-        if not _is_downloadable_audio_url(mp3):
+        target_date = str(enriched.get("date_str", "")).strip() or _get_target_date()[0]
+        inferred = target_date
+        if not _is_downloadable_audio_url(mp3) or not _is_media_date_match(mp3, target_date):
             _, mp3, inferred = _resolve_kollus_media(cfg)
+            if not _is_media_date_match(mp3, target_date):
+                mp3 = ""
+                inferred = target_date
         enriched["mp3_url"] = mp3
         enriched["date_str"] = inferred
         if not enriched.get("script_text"):
@@ -855,6 +891,11 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
         raise ValueError("episode.mp3_url is empty")
     if not _is_downloadable_audio_url(str(mp3_url)):
         raise ValueError(f"episode.mp3_url is not a downloadable audio file: {mp3_url}")
+    if not _is_media_date_match(str(mp3_url), date_compact):
+        raise ValueError(
+            "episode.mp3_url date mismatch: "
+            f"target={date_compact} media_date={_extract_media_date_yyyymmdd(str(mp3_url))} url={mp3_url}"
+        )
 
     txt_path.write_text(script_text, encoding="utf-8")
 
