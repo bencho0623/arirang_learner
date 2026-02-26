@@ -290,6 +290,27 @@ def _normalize_space(text: str) -> str:
     return " ".join((text or "").split())
 
 
+def _sanitize_script_source(text: str) -> str:
+    """Normalize script text captured from page/API and remove markup residue."""
+    raw = html.unescape((text or "").replace("\r\n", "\n").replace("\r", "\n"))
+    if not raw.strip():
+        return ""
+    # Remove leaked inline attributes such as data-lemma='word'>.
+    raw = re.sub(
+        r"\bdata-[a-z-]+\s*=\s*(?:'[^']*'|\"[^\"]*\"|’[^’]*’|[^\s>]+)\s*(?:>|&gt;)?",
+        "",
+        raw,
+        flags=re.IGNORECASE,
+    )
+    # Remove common html tags from rich-text payload.
+    raw = re.sub(r"<br\s*/?>", "\n", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"</?mark[^>]*>", "", raw, flags=re.IGNORECASE)
+    raw = re.sub(r"<[^>]+>", "", raw)
+    raw = re.sub(r"[ \t]+", " ", raw)
+    raw = re.sub(r"\n{3,}", "\n\n", raw)
+    return raw.strip()
+
+
 def _slice_script_by_episode_marker(script_text: str, target_date_yyyymmdd: str, airtime: str = "21:55") -> str:
     """If playlist markers exist, keep only the target episode block."""
     raw = (script_text or "").replace("\r\n", "\n").replace("\r", "\n")
@@ -708,12 +729,11 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             mp3_url = api_media
 
     if script_text:
-        # Remove obvious HTML tags if API returns rich text.
-        script_text = re.sub(r"<br\\s*/?>", "\n", script_text, flags=re.IGNORECASE)
-        script_text = re.sub(r"<[^>]+>", "", script_text).strip()
+        script_text = _sanitize_script_source(script_text)
         # Keep only target episode block when playlist text is concatenated.
         target_date = str(episode.get("date_str", "")).strip() or _get_target_date()[0]
         script_text = _slice_script_by_episode_marker(script_text, target_date, "21:55")
+        script_text = _sanitize_script_source(script_text)
 
     if (not mp3_url or not _is_downloadable_audio_url(mp3_url)) and iframe_src:
         try:
@@ -827,7 +847,7 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
             meta_ok,
         )
 
-    script_text = episode.get("script_text", "") or ""
+    script_text = _sanitize_script_source(episode.get("script_text", "") or "")
     mp3_url = episode.get("mp3_url", "") or ""
     if not script_text:
         raise ValueError("episode.script_text is empty")
