@@ -111,11 +111,12 @@ jobs:
                   continue
               ymd, hhmm = m.group(1), m.group(2)
               display = f"{ymd[:4]}-{ymd[4:6]}-{ymd[6:8]} {hhmm[:2]}:{hhmm[2:]}"
-              items.append((ymd, hhmm, f.name, display))
+              version = str(int(f.stat().st_mtime))
+              items.append((ymd, hhmm, f.name, display, version))
 
           items.sort(key=lambda x: (x[0], x[1]), reverse=True)
           links = "\n".join(
-              f'<li><a href="{name}">{display}</a></li>' for _, _, name, display in items
+              f'<li><a href="{name}?v={version}">{display}</a></li>' for _, _, name, display, version in items
           )
           if not links:
               links = "<li>No reports yet.</li>"

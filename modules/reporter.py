@@ -576,15 +576,16 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
     function renderAudio() {{
       const section = document.getElementById("audio-section");
       const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
       if (!episode.mp3_filename && !episode.mp3_url) {{
         section.style.display = "none";
         return;
       }}
       if (episode.mp3_filename) {{
         // report file is in reports/, media files are in downloads/
-        player.src = "../downloads/" + episode.mp3_filename;
+        player.src = "../downloads/" + episode.mp3_filename + bust;
       }} else {{
-        player.src = episode.mp3_url;
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
       }}
     }}
 
