@@ -515,7 +515,7 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
 
     function cleanInlineArtifacts(s) {{
       let t = String(s ?? "");
-      t = t.replace(/\\bdata-[a-z-]+\\s*=\\s*(?:'[^']*'|\"[^\"]*\"|??^??*??[^\\s>]+)\\s*(?:>|&gt;)?/gi, "");
+      t = t.replace(/\\bdata\\s*-\\s*[a-z-]+\\s*=\\s*(?:'[^']*'|\"[^\"]*\"|[^\\s>]+)\\s*(?:>|&gt;|&amp;gt;)?/gi, "");
       t = t.replace(/data-[a-z-]+\\s*=\\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\\s&]+)\\s*(?:&gt;)?/gi, "");
       t = t.replace(/<[^>]+>/g, "");
       return t;
