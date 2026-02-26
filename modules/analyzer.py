@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 from datetime import datetime
+import html
 import json
 import logging
 from pathlib import Path
@@ -143,6 +144,22 @@ def _cfg_get(cfg: dict[str, Any], path: str, default: Any) -> Any:
             return default
         cur = cur[key]
     return cur
+
+
+def _sanitize_script_text(script_text: str) -> str:
+    """Remove crawler/page markup residue before NLP analysis."""
+    text = html.unescape((script_text or "").replace("\r\n", "\n").replace("\r", "\n"))
+    if not text.strip():
+        return ""
+    # Remove leaked inline attrs such as data-lemma='word'> that appear as plain text.
+    text = re.sub(r"\bdata-[a-z-]+\s*=\s*(['\"]).*?\1\s*(?:>|&gt;)?", "", text, flags=re.IGNORECASE)
+    # Remove any remaining HTML tags.
+    text = re.sub(r"</?mark[^>]*>", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", "", text)
+    # Normalize whitespace.
+    text = re.sub(r"[ \t]+", " ", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
 
 
 def _load_dependencies() -> dict[str, Any]:
@@ -441,6 +458,7 @@ def analyze_vocabulary(script_text: str, cfg: dict[str, Any]) -> list[dict[str, 
     - Korean translation: OMW only, else empty string.
     """
 
+    script_text = _sanitize_script_text(script_text)
     deps = _load_dependencies()
     _ensure_nltk_data(deps["nltk"])
 

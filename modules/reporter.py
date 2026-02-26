@@ -509,6 +509,15 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
         .replaceAll("'", "&#39;");
     }}
 
+    function cleanInlineArtifacts(s) {{
+      let t = String(s ?? "");
+      t = t.replace(/\\bdata-[a-z-]+\\s*=\\s*(['"]).*?\\1\\s*(?:>|&gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\\s*=\\s*(?:&#39;|&quot;)[^\\n<>]*(?:&#39;|&quot;)\\s*&gt;/gi, "");
+      t = t.replace(/data-[a-z-]+\\s*=\\s*(?:&#39;|&quot;)[^\\n<>]*(?:&#39;|&quot;)/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }}
+
     function loadBookmarks() {{
       try {{
         return JSON.parse(localStorage.getItem(bookmarksKey) || "{{}}");
@@ -628,6 +637,9 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
         const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
         const bookmarked = bm[v.word] ? "bookmarked" : "";
         const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
         return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
                "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
                "<div class='card-top'>" +
@@ -637,10 +649,10 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
                "</div>" +
                "<div class='sub'>" + escHtml(v.pos_ko || "") + " · 빈도점수 " + escHtml(v.frequency_score) + "</div>" +
                "<div class='card-body'>" +
-               "<div class='def-box'>" + escHtml(v.definition_en || "") + "</div>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
                "<div class='ko'>" + escHtml(ko) + "</div>" +
-               "<div class='example'>" + escHtml(v.example_en || "") + "</div>" +
-               "<div class='context'>" + escHtml(v.context_sentence || "") + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
                "<div class='tags'>" + tags + "</div>" +
                "</div>" +
                "</article>";
@@ -683,14 +695,15 @@ def generate_report(episode: dict[str, Any], vocab_data: list[dict[str, Any]], c
     }}
 
     function buildQuizItems() {{
-      const withCtx = vocabData.filter(v => v.context_sentence && v.word);
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
       const picked = shuffle(withCtx).slice(0, 5);
       const words = vocabData.map(v => v.word).filter(Boolean);
       return picked.map((q, idx) => {{
         const answer = q.word;
         const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
         const choices = shuffle([answer, ...wrongPool]);
-        const stem = q.context_sentence.replace(new RegExp("\\\\b" + answer.replace(/[.*+?^${{}}()|[\\\\]\\\\]/g, "\\\\$&") + "\\\\b", "i"), "______");
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\\\b" + answer.replace(/[.*+?^${{}}()|[\\\\]\\\\]/g, "\\\\$&") + "\\\\b", "i"), "______");
         return {{
           id: idx + 1,
           answer,
