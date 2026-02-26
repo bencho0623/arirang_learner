@@ -305,7 +305,7 @@
       <div class="header-row">
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <span class="badge" id="vocab-count-badge"></span>
-          <span class="badge" id="bookmark-count-badge">遺곷쭏??0媛?/span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
         </div>
         <div class="cefr-chart" id="cefr-chart"></div>
       </div>
@@ -319,8 +319,8 @@
     <section class="panel">
       <h2>Script Viewer</h2>
       <div class="script-tools">
-        <div class="script-hint">?ㅽ겕濡ㅻ줈 ?꾩껜 ?뺤씤 媛??쨌 ?꾩슂 ???꾩껜蹂닿린</div>
-        <button id="script-toggle" class="script-toggle" type="button">?꾩껜蹂닿린</button>
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
       </div>
       <div class="script-box" id="script-box"></div>
     </section>
@@ -333,7 +333,7 @@
     </section>
 
     <section class="panel quiz-section" id="quiz-section">
-      <h2>鍮덉뭏 ?댁쫰</h2>
+      <h2>Fill-in Quiz</h2>
       <div id="quiz-score">0 / 0</div>
       <div class="progress"><i id="quiz-progress"></i></div>
       <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
@@ -393,10 +393,10 @@
       document.getElementById("news-title").textContent = episode.title || "Arirang News";
       document.getElementById("news-meta").innerHTML =
         "<span>" + escHtml(episode.date_display || "") + "</span>" +
-        "<span>??/span>" +
+        "<span>/</span>" +
         "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
 
-      document.getElementById("vocab-count-badge").textContent = "?댄쐶 " + vocabData.length + "媛?;
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
 
       const dist = { B2:0, C1:0, C2:0 };
       for (const v of vocabData) {
@@ -442,7 +442,7 @@
       text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
       text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
       if (!text) {
-        box.textContent = "?ㅽ겕由쏀듃媛 ?놁뒿?덈떎.";
+        box.textContent = "Script is not available.";
         toggle.style.display = "none";
         return;
       }
@@ -480,7 +480,7 @@
 
       toggle.addEventListener("click", () => {
         box.classList.toggle("expanded");
-        toggle.textContent = box.classList.contains("expanded") ? "?묎린" : "?꾩껜蹂닿린";
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
       });
     }
 
@@ -489,7 +489,7 @@
       const grid = document.getElementById("cards-grid");
       grid.innerHTML = vocabData.map((v) => {
         const lemma = escHtml(v.lemma || "");
-        const ko = String(v.translation_ko || "").trim() || "?ъ쟾 誘몃벑濡?;
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
         const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
         const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
         const bookmarked = bm[v.word] ? "bookmarked" : "";
@@ -498,13 +498,13 @@
         const example = cleanInlineArtifacts(v.example_en || "");
         const context = cleanInlineArtifacts(v.context_sentence || "");
         return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
-               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>?뵔</button>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
                "<div class='card-top'>" +
                "<span class='word'>" + escHtml(v.word || "") + "</span>" +
                "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
                "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
                "</div>" +
-               "<div class='sub'>" + escHtml(v.pos_ko || "") + " 쨌 鍮덈룄?먯닔 " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
                "<div class='card-body'>" +
                "<div class='def-box'>" + escHtml(definition) + "</div>" +
                "<div class='ko'>" + escHtml(ko) + "</div>" +
@@ -539,7 +539,7 @@
     function updateBookmarkCount() {
       const bm = loadBookmarks();
       const n = Object.keys(bm).length;
-      document.getElementById("bookmark-count-badge").textContent = "遺곷쭏??" + n + "媛?;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
     }
 
     function shuffle(arr) {
@@ -618,10 +618,10 @@
             if (picked === q.answer) {
               correct++;
               btn.classList.add("correct");
-              result.textContent = "?뺣떟! " + (q.definition ? q.definition : "");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
             } else {
               btn.classList.add("wrong");
-              result.textContent = "?ㅻ떟. ?뺣떟: " + q.answer + (q.definition ? " | " + q.definition : "");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
             }
             refresh();
           });
