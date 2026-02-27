@@ -157,6 +157,9 @@ def step_crawl(cfg: dict[str, Any], target_date: str) -> dict[str, Any] | None:
         return None
 
     detailed = fetch_episode_detail(episode, cfg)
+    # Keep output filename/date matching the requested pipeline date.
+    # This prevents fallback media inference from drifting to a previous day.
+    detailed["date_str"] = target_date
     downloaded = download_episode(detailed, cfg)
 
     paths = _bundle_paths(cfg, target_date)

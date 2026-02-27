@@ -14,6 +14,7 @@ from datetime import datetime
 import html
 import json
 import logging
+import os
 from pathlib import Path
 import re
 import time
@@ -201,13 +202,9 @@ def _load_dependencies() -> dict[str, Any]:
         LOGGER.warning("wordfreq not installed. Using heuristic frequency fallback.")
         deps["word_frequency"] = None
 
-    try:
-        from PyDictionary import PyDictionary  # type: ignore
-
-        deps["PyDictionary"] = PyDictionary
-    except ImportError:
-        LOGGER.warning("PyDictionary not installed. Skipping PyDictionary fallback.")
-        deps["PyDictionary"] = None
+    # Keep dictionary source policy deterministic:
+    # WordNet (offline) -> Free Dictionary API -> blank.
+    deps["PyDictionary"] = None
 
     return deps
 
@@ -215,12 +212,23 @@ def _load_dependencies() -> dict[str, Any]:
 def _ensure_nltk_data(nltk_mod: Any) -> None:
     if nltk_mod is None:
         return
+    # Use project-local NLTK data dir to avoid permission issues on user profile paths.
+    local_nltk_dir = Path(__file__).resolve().parents[1] / ".nltk_data"
+    local_nltk_dir.mkdir(parents=True, exist_ok=True)
+    os.environ.setdefault("NLTK_DATA", str(local_nltk_dir))
+    if str(local_nltk_dir) not in nltk_mod.data.path:
+        nltk_mod.data.path.insert(0, str(local_nltk_dir))
     for pkg in ("wordnet", "omw-1.4", "stopwords"):
         try:
             nltk_mod.data.find(f"corpora/{pkg}")
-        except LookupError:
+        except Exception:
             try:
-                nltk_mod.download(pkg, quiet=True)
+                nltk_mod.data.find(f"corpora/{pkg}.zip")
+                continue
+            except Exception:
+                pass
+            try:
+                nltk_mod.download(pkg, quiet=True, download_dir=str(local_nltk_dir))
             except Exception:  # noqa: BLE001
                 LOGGER.warning("Failed to download NLTK corpus: %s", pkg)
 
@@ -369,7 +377,9 @@ def _get_free_dict_info(
     data = {"phonetic": "", "definition_en": "", "example_en": ""}
     url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{lemma}"
     try:
-        resp = requests.get(url, timeout=timeout_sec)
+        with requests.Session() as session:
+            session.trust_env = False
+            resp = session.get(url, timeout=timeout_sec)
         if resp.ok:
             payload = resp.json()
             first = payload[0] if payload else {}

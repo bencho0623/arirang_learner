@@ -16,6 +16,7 @@ import re
 import time
 from typing import Any
 from urllib.parse import urljoin
+from urllib.parse import parse_qs, urlsplit
 
 import requests
 from zoneinfo import ZoneInfo
@@ -82,6 +83,27 @@ def _request_with_retry(
 
                 sleep(retry_delay)
     raise RuntimeError(f"Request failed after retries: {url}") from last_exc
+
+
+def _api_post_json(
+    session: requests.Session,
+    path: str,
+    payload: dict[str, Any],
+    cfg: dict[str, Any],
+) -> dict[str, Any]:
+    base = str(_cfg_get(cfg, "crawl.api_base_url", "https://www.arirang.com")).rstrip("/")
+    url = f"{base}{path}"
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+        "Origin": base,
+        "Referer": str(_cfg_get(cfg, "crawl.target_url", "https://www.arirang.com/radio/132/podcast/668?lang=en")),
+    }
+    resp = _request_with_retry(session, "POST", url, cfg, json=payload, headers=headers)
+    data = resp.json()
+    if not isinstance(data, dict):
+        return {}
+    return data
 
 
 def _extract_date_yyyymmdd(text: str) -> str:
@@ -176,11 +198,6 @@ def _get_target_date() -> tuple[str, str]:
 async def _async_fetch_episode_list(cfg: dict[str, Any]) -> list[dict[str, Any]]:
     """Fetch episode list seed from the exact podcast page URL."""
 
-    try:
-        from playwright.async_api import async_playwright  # type: ignore
-    except ImportError as exc:
-        raise RuntimeError("Playwright is required. Install: pip install playwright") from exc
-
     target_url = _cfg_get(cfg, "crawl.target_url", "https://www.arirang.com/radio/132/podcast/668?lang=en")
     date_compact, _ = _get_target_date()
     return [
@@ -196,6 +213,23 @@ async def _async_fetch_episode_list(cfg: dict[str, Any]) -> list[dict[str, Any]]
 
 def fetch_episode_list(cfg: dict[str, Any]) -> list[dict[str, Any]]:
     """Fetch episode list from Arirang and return parsed candidates."""
+
+    try:
+        episodes = _fetch_candidates_from_radio_api(cfg)
+        if episodes:
+            LOGGER.info("Episode list loaded from Arirang API path (corner/list + media/vod/list).")
+            LOGGER.info("Parsed episode candidates: %d", len(episodes))
+            chosen = _select_target_episode(episodes)
+            if chosen:
+                LOGGER.info(
+                    "Target candidate summary: date=%s airtime=%s title=%s",
+                    chosen.get("date_str", ""),
+                    chosen.get("airtime", ""),
+                    chosen.get("title", ""),
+                )
+            return episodes
+    except Exception as exc:  # noqa: BLE001
+        LOGGER.warning("Arirang API list path failed; fallback to legacy path: %s", exc)
 
     try:
         episodes = asyncio.run(_async_fetch_episode_list(cfg))
@@ -261,6 +295,30 @@ def _is_downloadable_audio_url(url: str) -> bool:
     if u.endswith(".m3u8") or ".smil" in u:
         return False
     return u.endswith(".mp3") or u.endswith(".mp4") or u.endswith(".m4a")
+
+
+def _derive_direct_mp4_from_m3u8(url: str) -> str:
+    """Convert Kollus HLS m3u8 URL to downloadable Akamai mp4 URL when possible."""
+    if not url:
+        return ""
+    try:
+        parsed = urlsplit(url)
+        q = parse_qs(parsed.query)
+        hdnts = q.get("hdnts", [""])[0]
+        m = re.search(
+            r"/arirang/(20\d{6})/(\d+)/hls/([^/]+)/index\.m3u8",
+            parsed.path,
+            re.IGNORECASE,
+        )
+        if not m or not hdnts:
+            return ""
+        date_key, media_id, filename = m.group(1), m.group(2), m.group(3)
+        return (
+            f"https://download-arirang-com.akamaized.net/kr/media1/arirang/"
+            f"{date_key}/{media_id}/{filename}?hdnts={hdnts}"
+        )
+    except Exception:  # noqa: BLE001
+        return ""
 
 
 def _extract_media_date_yyyymmdd(url: str) -> str:
@@ -475,6 +533,100 @@ def _extract_media_url_from_kollus_html(raw_html: str) -> str:
     return ""
 
 
+def _extract_media_url_from_content_key(content_key: str, cfg: dict[str, Any]) -> str:
+    """Resolve downloadable media URL from Kollus content key."""
+    if not content_key:
+        return ""
+    iframe_url = f"https://v.kr.kollus.com/{content_key}?enable_pip=true"
+    with requests.Session() as session:
+        session.trust_env = False
+        resp = _request_with_retry(session, "GET", iframe_url, cfg)
+        raw = html.unescape(resp.text).replace("\\/", "/")
+        media_url = _extract_media_url_from_kollus_html(raw)
+        if _is_downloadable_audio_url(media_url):
+            return media_url
+        if "m3u8" in (media_url or "").lower():
+            direct = _derive_direct_mp4_from_m3u8(media_url)
+            if _is_downloadable_audio_url(direct):
+                return direct
+    return ""
+
+
+def _fetch_candidates_from_radio_api(cfg: dict[str, Any]) -> list[dict[str, Any]]:
+    """Fetch radio podcast candidates via Arirang JSON API (no Playwright)."""
+    target_url = str(_cfg_get(cfg, "crawl.target_url", "https://www.arirang.com/radio/132/podcast/668?lang=en"))
+    with requests.Session() as session:
+        session.trust_env = False
+        corner_payload = {
+            "lan_code": "en",
+            "program_type": "radio",
+            "classify": "content",
+            "is_use_allow": True,
+            "is_open_allow": True,
+        }
+        corner_data = _api_post_json(session, "/v1.0/open/corner/list", corner_payload, cfg)
+        corners = corner_data.get("item", []) if isinstance(corner_data, dict) else []
+        if not isinstance(corners, list):
+            corners = []
+
+        news_corner: dict[str, Any] | None = None
+        for c in corners:
+            if not isinstance(c, dict):
+                continue
+            title = str(c.get("title", "")).strip().lower()
+            if title == "arirang news" or "arirang news" in title:
+                news_corner = c
+                break
+        if not news_corner:
+            return []
+
+        bis_corner_code = str(news_corner.get("bis_corner_code", "")).strip()
+        corner_id = str(news_corner.get("corner_id", "")).strip()
+        if not bis_corner_code:
+            return []
+
+        vod_payload = {
+            "lan_code": "en",
+            "program_type": "radio",
+            "key_word": "corner_code",
+            "word": bis_corner_code,
+            "hit": True,
+            "type": "aod",
+            "page_info": {"row_count": 20, "number": 0},
+        }
+        vod_data = _api_post_json(session, "/v1.0/open/media/vod/list", vod_payload, cfg)
+        items = vod_data.get("item", []) if isinstance(vod_data, dict) else []
+        if not isinstance(items, list):
+            items = []
+
+        episodes: list[dict[str, Any]] = []
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            title = str(it.get("title", "")).strip()
+            bdate = str(it.get("broadcast_date", "")).strip()
+            date_str = _extract_date_yyyymmdd(bdate)
+            airtime = _extract_airtime(f"{title} {bdate}") or "21:55"
+            media_info = it.get("media_info", {}) if isinstance(it.get("media_info", {}), dict) else {}
+            content_key = str(media_info.get("media_content_key", "")).strip()
+            episodes.append(
+                {
+                    "title": title,
+                    "detail_url": target_url,
+                    "date_str": date_str,
+                    "airtime": airtime,
+                    "podcast_id": corner_id or "668",
+                    "corner_id": corner_id,
+                    "bis_corner_code": bis_corner_code,
+                    "vod_id": str(it.get("vod_id", "")).strip(),
+                    "script_text": str(it.get("content", "")).strip(),
+                    "media_content_key": content_key,
+                    "mp3_url_prefetched": "",
+                }
+            )
+        return episodes
+
+
 async def _click_target_from_podcast_list(page: Any, date_yyyymmdd: str) -> bool:
     """Click D-1 21:55 item from podcast list on the page."""
     y, m, d = date_yyyymmdd[:4], date_yyyymmdd[4:6], date_yyyymmdd[6:8]
@@ -573,6 +725,7 @@ def _resolve_kollus_media(cfg: dict[str, Any]) -> tuple[str, str, str]:
     """Return (kollus_url, media_url, inferred_date_yyyymmdd) from fallback page."""
     kollus_url = _cfg_get(cfg, "crawl.kollus_fallback_url", "https://v.kr.kollus.com/lstBUSaP?cdn=arirang-dd")
     with requests.Session() as session:
+        session.trust_env = False
         resp = _request_with_retry(session, "GET", kollus_url, cfg)
         raw = html.unescape(resp.text)
         media_url = _extract_media_url_from_kollus_html(raw)
@@ -593,8 +746,16 @@ def _resolve_kollus_media_with_retry(cfg: dict[str, Any], target_date: str) -> t
         try:
             kollus_url, media_url, inferred = _resolve_kollus_media(cfg)
             last = (kollus_url, media_url, inferred)
-            if _is_downloadable_audio_url(media_url):
+            if _is_downloadable_audio_url(media_url) and _is_media_date_match(media_url, target_date):
                 return kollus_url, media_url, inferred
+            if _is_downloadable_audio_url(media_url):
+                LOGGER.warning(
+                    "Fallback media retry %s/%s: media date mismatch (target=%s media_date=%s)",
+                    attempt,
+                    retry_count,
+                    target_date,
+                    _extract_media_date_yyyymmdd(media_url),
+                )
             LOGGER.warning(
                 "Fallback media retry %s/%s: media URL missing/invalid",
                 attempt,
@@ -788,6 +949,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
     if (not mp3_url or not _is_downloadable_audio_url(mp3_url)) and iframe_src:
         try:
             with requests.Session() as session:
+                session.trust_env = False
                 resp = _request_with_retry(session, "GET", iframe_src, cfg)
                 candidate = _extract_media_url_from_kollus_html(resp.text)
                 if _is_downloadable_audio_url(candidate):
@@ -797,11 +959,12 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
 
     if mp3_url and not _is_media_date_match(mp3_url, target_date):
         LOGGER.warning(
-            "Media URL date differs from target (allowed). target=%s media_date=%s url=%s",
+            "Media URL date differs from target; dropping candidate. target=%s media_date=%s url=%s",
             target_date,
             _extract_media_date_yyyymmdd(mp3_url),
             mp3_url,
         )
+        mp3_url = ""
 
     enriched = dict(episode)
     enriched["script_text"] = script_text
@@ -813,6 +976,23 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
 def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
     """Sync wrapper for async Playwright detail extraction."""
 
+    pre_script = _sanitize_script_source(str(episode.get("script_text", "")).strip())
+    pre_mp3 = str(episode.get("mp3_url_prefetched", "")).strip()
+    if pre_script and _is_downloadable_audio_url(pre_mp3):
+        enriched = dict(episode)
+        enriched["script_text"] = pre_script
+        enriched["mp3_url"] = pre_mp3
+        return enriched
+
+    if pre_script and not _is_downloadable_audio_url(pre_mp3):
+        key = str(episode.get("media_content_key", "")).strip()
+        if key:
+            resolved = _extract_media_url_from_content_key(key, cfg)
+            enriched = dict(episode)
+            enriched["script_text"] = pre_script
+            enriched["mp3_url"] = resolved
+            return enriched
+
     try:
         enriched = asyncio.run(_async_fetch_episode_detail(episode, cfg))
         mp3 = str(enriched.get("mp3_url", "")).strip()
@@ -820,7 +1000,7 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         if not _is_downloadable_audio_url(mp3):
             LOGGER.warning("Playwright detail had no downloadable media URL. Using Kollus fallback.")
             _, fallback_media, inferred = _resolve_kollus_media_with_retry(cfg, target_date)
-            if _is_downloadable_audio_url(fallback_media):
+            if _is_downloadable_audio_url(fallback_media) and _is_media_date_match(fallback_media, target_date):
                 enriched["mp3_url"] = fallback_media
                 if not enriched.get("date_str"):
                     enriched["date_str"] = inferred
@@ -835,6 +1015,13 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         inferred = target_date
         if not _is_downloadable_audio_url(mp3):
             _, mp3, inferred = _resolve_kollus_media_with_retry(cfg, target_date)
+        if _is_downloadable_audio_url(mp3) and not _is_media_date_match(mp3, target_date):
+            LOGGER.warning(
+                "Fallback media date mismatch; dropping media. target=%s media_date=%s",
+                target_date,
+                _extract_media_date_yyyymmdd(mp3),
+            )
+            mp3 = ""
         enriched["mp3_url"] = mp3
         enriched["date_str"] = inferred
         if not enriched.get("script_text"):
@@ -916,12 +1103,9 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
     if not _is_downloadable_audio_url(str(mp3_url)):
         raise ValueError(f"episode.mp3_url is not a downloadable audio file: {mp3_url}")
     if not _is_media_date_match(str(mp3_url), date_compact):
-        LOGGER.warning(
-            "episode.mp3_url date differs from target (allowed): "
-            "target=%s media_date=%s url=%s",
-            date_compact,
-            _extract_media_date_yyyymmdd(str(mp3_url)),
-            mp3_url,
+        raise ValueError(
+            "episode.mp3_url date mismatch: "
+            f"target={date_compact} media_date={_extract_media_date_yyyymmdd(str(mp3_url))}"
         )
 
     txt_path.write_text(script_text, encoding="utf-8")
@@ -931,6 +1115,7 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
     audio_path = download_dir / f"{stem}{audio_ext}"
 
     with requests.Session() as session:
+        session.trust_env = False
         resp = _request_with_retry(session, "GET", mp3_url, cfg, stream=True)
         with audio_path.open("wb") as f:
             for chunk in resp.iter_content(chunk_size=8192):
