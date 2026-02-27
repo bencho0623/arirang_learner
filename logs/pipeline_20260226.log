@@ -1,0 +1,15 @@
+2026-02-27 00:47:06,489 [INFO] pipeline: Pipeline start date=20260226 step=None demo=False
+2026-02-27 00:47:06,489 [INFO] pipeline: [STEP] crawl start
+2026-02-27 00:47:06,521 [INFO] modules.crawler: Parsed episode candidates: 1
+2026-02-27 00:47:06,521 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-27 00:47:06,521 [INFO] modules.crawler: Target candidate summary: date=20260226 airtime=21:55 title=21:55 Arirang News
+2026-02-27 00:47:06,521 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-02-27 00:47:23,154 [WARNING] modules.crawler: Playwright detail had no downloadable media URL. Using Kollus fallback.
+2026-02-27 00:47:24,463 [WARNING] modules.crawler: episode.mp3_url date differs from target (allowed): target=20260226 media_date=20260224 url=https://download-arirang-com.akamaized.net/kr/media1/arirang/20260224/28621775/28621775_20260224-ohbamslh_audio_arirang-mp3-normal-20260224220952.mp4?hdnts=exp%3D3544479288~acl%3D%2Fkr%2Fmedia1%2Farirang%2F20260224%2F28621775%2F%2A~hmac%3D8ef9898c3c8af0a1e648da37e58414e553c1def1a44a9594ae1e3b4cc285191a
+2026-02-27 00:47:27,464 [INFO] pipeline: [STEP] crawl success
+2026-02-27 00:47:27,464 [INFO] pipeline: [STEP] analyze start
+2026-02-27 00:47:42,150 [INFO] modules.analyzer: Saved vocabulary json=logs/vocabulary_20260226.json csv=logs/vocabulary_20260226.csv count=30
+2026-02-27 00:47:42,151 [INFO] pipeline: [STEP] analyze success json=logs/vocabulary_20260226.json csv=logs/vocabulary_20260226.csv count=30
+2026-02-27 00:47:42,151 [INFO] pipeline: [STEP] report start
+2026-02-27 00:47:42,153 [INFO] modules.reporter: Saved report: reports/report_20260226_2155.html
+2026-02-27 00:47:42,153 [INFO] pipeline: [STEP] report success path=reports/report_20260226_2155.html
