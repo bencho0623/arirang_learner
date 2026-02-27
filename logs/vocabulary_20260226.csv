@@ -1,82 +1,68 @@
 ﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
-Myung's,myung's,,,,,,,"That's according to Presidential Chief of Staff Kang Hoon-sik, 
-who returned from the UAE on Thursday after serving as 
-President Lee Jae Myung's special envoy 
-for strategic economic cooperation.",C2,7.9706,False,
-Khaldoon,khaldoon,,,,,,,"Kang said he reached the agreement during talks with 
-Khaldoon Khalifa Al Mubarak, 
-Abu Dhabi’s Executive Affairs Authority Chairman.",C2,7.9393,False,
-Arirang,arirang,,,,,,,"Welcome to Arirang News This is Park Kee hoon 
-And we start with the top headlines at this hour.",C1,6.9318,False,
-Nahyan,nahyan,,,,,,,"Kang also delivered a personal letter from President Lee 
-inviting UAE President
-Mohamed bin Zayed Al Nahyan to visit South Korea.",C1,6.8894,False,
-Pursing,pursing,,,/pɜːs/,contract one's lips into a rounded shape,,she reached into her bag and found a comb,"Pursing values of peace and stability, while ending the past that was dashing towards confrontation and war, was the response by 
-President Lee Jae Myung to a hostile message by North Korea's 
-Kim Jong-un, condemning the South during the regime's recent 
-political event.",C1,6.8097,False,purse|wrinkle
-predecessor's,predecessor's,,,,,,,"President Lee was critical of his predecessor's hawkish stance 
-on North Korea and those who criticize his view as ""submissive,"" 
-as he opened Thursday's weekly meeting with his aides.",C1,6.719,False,
-reasserted,reasserted,,,,strengthen or make more firm,,The witnesses confirmed the victim's account,He reasserted the permanent status of North Korea as a nuclear weapons state and his commitment to maintaining defense capabilities.,C1,6.71,False,confirm|reassert
-ICBMs,icbms,,,,a ballistic missile that is capable of traveling from one continent to another,,,"He also outlined a new five-year plan for defense buildup, citing on-land and underwater-launched ICBMs, AI-equipped drones, surveillance satellites and strategic and electric weapons.",C1,6.6198,False,ICBM|intercontinental ballistic missile
-hawkish,hawkish,,,,disposed to warfare or hard-line policies,,militant nations,"Meanwhile, President Lee Jae Myung once again vowed to continue his peace drive against North Korea, as he was critical of a hawkish stance 
+hawkish,hawkish,ADJ,형용사,,disposed to warfare or hard-line policies,,militant nations,"Meanwhile, President Lee Jae Myung once again vowed to continue his peace drive against North Korea, as he was critical of a hawkish stance 
 by his predecessor.",C1,6.5702,False,militant|warlike
-Hoon-sik,hoon-sik,,,,,,,"That's according to Presidential Chief of Staff Kang Hoon-sik, 
-who returned from the UAE on Thursday after serving as 
-President Lee Jae Myung's special envoy 
-for strategic economic cooperation.",C1,6.4672,False,
-bolstering,bolstering,,,,support and strengthen,,bolster morale,"According to the North's state-run Korean Central News Agency 
-on Thursday, Kim Jong-un presented a report at the 9th Congress, reaffirming the regime’s strategic line of bolstering its nuclear capabilities.",C1,6.4101,False,bolster|bolster up|pad
-Zayed,zayed,,,,,,,"Kang also delivered a personal letter from President Lee 
-inviting UAE President
-Mohamed bin Zayed Al Nahyan to visit South Korea.",C1,6.3904,False,
-reaffirming,reaffirming,,,,affirm once again,,He reaffirmed his faith in the church,"According to the North's state-run Korean Central News Agency 
-on Thursday, Kim Jong-un presented a report at the 9th Congress, reaffirming the regime’s strategic line of bolstering its nuclear capabilities.",C1,6.3497,False,reaffirm
-North's,north's,,,,,,,"According to the North's state-run Korean Central News Agency 
-on Thursday, Kim Jong-un presented a report at the 9th Congress, reaffirming the regime’s strategic line of bolstering its nuclear capabilities.",C1,6.3298,False,
-vowing,vowing,,,,make a vow; promise,,He vowed never to drink alcohol again,"The People Power Party immediately launched another filibuster, 
-vowing to resist what it calls an excessive overhaul of the judicial system.",C1,6.3197,False,consecrate|vow
-regime's,regime's,,,,,,,"Pursing values of peace and stability, while ending the past that was dashing towards confrontation and war, was the response by 
-President Lee Jae Myung to a hostile message by North Korea's 
-Kim Jong-un, condemning the South during the regime's recent 
-political event.",C1,6.2798,False,
-Jong-un's,jong-un's,,,,,,,"Kim Jong-un's daughter, Ju-ae, also attended the military parade, 
-drawing attention for her attire as she appeared in a matching 
-leather jacket with her father and took a central position on the stairs.",C1,6.2147,False,
-Myung,myung,,,,,,,"Meanwhile, President Lee Jae Myung once again vowed to continue his peace drive against North Korea, as he was critical of a hawkish stance 
-by his predecessor.",C1,6.1798,False,
-filibuster,filibuster,,,,a legislator who gives long speeches in an effort to delay or obstruct legislation that he (or she) opposes,,,"South Korea's National Assembly today passed a revised Criminal Act bill, creating the crime of ""legal distortion,"" after a ruling party-led motion brought an end to an opposition filibuster 
+reasserted,reassert,VERB,동사,,strengthen or make more firm,,The witnesses confirmed the victim's account,He reasserted the permanent status of North Korea as a nuclear weapons state and his commitment to maintaining defense capabilities.,C1,6.4895,False,confirm
+ICBMs,icbm,NOUN,명사,,a ballistic missile that is capable of traveling from one continent to another,,,"He also outlined a new five-year plan for defense buildup, citing on-land and underwater-launched ICBMs, AI-equipped drones, surveillance satellites and strategic and electric weapons.",C1,6.3696,False,ICBM|intercontinental ballistic missile
+reaffirming,reaffirm,VERB,동사,/ɹiːəˈfɜː(ɹ)m/,affirm once again,,He reaffirmed his faith in the church,"According to the North's state-run Korean Central News Agency 
+on Thursday, Kim Jong-un presented a report at the 9th Congress, reaffirming the regime’s strategic line of bolstering its nuclear capabilities.",C1,6.1701,False,
+filibuster,filibuster,NOUN,명사,,a legislator who gives long speeches in an effort to delay or obstruct legislation that he (or she) opposes,,,"South Korea's National Assembly today passed a revised Criminal Act bill, creating the crime of ""legal distortion,"" after a ruling party-led motion brought an end to an opposition filibuster 
 and the bill cleared the chamber in a vote.",C1,6.1101,False,filibusterer
-constitutionality,constitutionality,,,,The status of being constitutional; of being in accord with the provisions of the appropriate constitution,,,"The amendment, one of the Democratic Party’s three flagship judicial 
+constitutionality,constitutionality,NOUN,명사,,The status of being constitutional; of being in accord with the provisions of the appropriate constitution,,,"The amendment, one of the Democratic Party’s three flagship judicial 
 reform measures, limits its application to criminal cases 
 and clarifies its provisions amid earlier concerns over constitutionality.",C1,6.06,False,
-clarifies,clarifies,,,,make clear and (more) comprehensible,,clarify the mystery surrounding her death,"The amendment, one of the Democratic Party’s three flagship judicial 
-reform measures, limits its application to criminal cases 
-and clarifies its provisions amid earlier concerns over constitutionality.",C1,6.0301,False,clarify|clear up|elucidate
-hoon,hoon,,,,A worthless person; a hooligan or lout.,,,"Welcome to Arirang News This is Park Kee hoon 
-And we start with the top headlines at this hour.",C1,6.0101,False,
-Pyongyang,pyongyang,,,,capital of North Korea and an industrial center,,Pyongyang is Korea's oldest city but little of its history has been preserved,"Pyongyang held a large-scale military parade on Wednesday night 
-to mark the 9th Congress of the Workers' Party of Korea, 
-but no major weapons systems appeared to be on display.",B2,5.8894,False,Pyongyang|capital of North Korea
-Thursday's,thursday's,,,,,,,"President Lee was critical of his predecessor's hawkish stance 
-on North Korea and those who criticize his view as ""submissive,"" 
-as he opened Thursday's weekly meeting with his aides.",B2,5.8894,False,
-Ju-ae,ju-ae,,,,,,,"Kim Jong-un's daughter, Ju-ae, also attended the military parade, 
-drawing attention for her attire as she appeared in a matching 
-leather jacket with her father and took a central position on the stairs.",B2,5.7721,False,
-Mubarak,mubarak,,,,Egyptian statesman who became president in 1981 after Sadat was assassinated (born in 1929),,,"Kang said he reached the agreement during talks with 
-Khaldoon Khalifa Al Mubarak, 
-Abu Dhabi’s Executive Affairs Authority Chairman.",B2,5.7595,False,Hosni Mubarak|Mubarak
-submissive,submissive,,,/səbˈmɪsɪv/,inclined or willing to submit to orders or wishes of others or showing such inclination,,submissive servants,"President Lee was critical of his predecessor's hawkish stance 
+hoon,hoon,NOUN,명사,,A worthless person; a hooligan or lout.,,,Welcome to Arirang News This is Park Kee hoon,C1,6.0101,False,
+lawmakers,lawmaker,NOUN,명사,,a maker of laws; someone who gives a code of laws,,,"Following the vote, lawmakers moved on to the next item on the agenda, 
+a revision to the Constitutional Court Act introducing a 
+judicial complaint system, which was formally reported to the floor.",B2,5.9318,False,lawgiver
+submissive,submissive,ADJ,형용사,/səbˈmɪsɪv/,inclined or willing to submit to orders or wishes of others or showing such inclination,,submissive servants,"President Lee was critical of his predecessor's hawkish stance 
 on North Korea and those who criticize his view as ""submissive,"" 
 as he opened Thursday's weekly meeting with his aides.",B2,5.7496,False,slavish|subservient
-Khalifa,khalifa,,,,,,,"Kang said he reached the agreement during talks with 
-Khaldoon Khalifa Al Mubarak, 
-Abu Dhabi’s Executive Affairs Authority Chairman.",B2,5.7399,False,
-dashing,dashing,,,/ˈdæʃɪŋ(ɡ)/,run or move very quickly or hastily,,She dashed into the yard,"Pursing values of peace and stability, while ending the past that was dashing towards confrontation and war, was the response by 
+stairs,stair,NOUN,명사,/stɛə/,support consisting of a place to rest the foot while ascending or descending a stairway,,he paused on the bottom step,"Kim Jong-un's daughter, Ju-ae, also attended the military parade, 
+drawing attention for her attire as she appeared in a matching 
+leather jacket with her father and took a central position on the stairs.",B2,5.7399,False,step
+bolstering,bolster,VERB,동사,/ˈbəʊlstə/,a pillow that is often put across a bed underneath the regular pillows,,,"According to the North's state-run Korean Central News Agency 
+on Thursday, Kim Jong-un presented a report at the 9th Congress, reaffirming the regime’s strategic line of bolstering its nuclear capabilities.",B2,5.6904,False,bolster up|long pillow|pad
+buildup,buildup,NOUN,명사,,the act of building up an accumulation,,I envied his rapid buildup of assets,"He also outlined a new five-year plan for defense buildup, citing on-land and underwater-launched ICBMs, AI-equipped drones, surveillance satellites and strategic and electric weapons.",B2,5.6308,False,
+memorandum,memorandum,NOUN,명사,,a written proposal or reminder,,,"The two sides signed a memorandum of understanding 
+outlining cooperation in weapons design, training, and maintenance.",B2,5.5302,False,memo|memoranda
+envoy,envoy,NOUN,명사,/ˈɛn.vɔɪ/,a diplomat having less authority than an ambassador,,,"That's according to Presidential Chief of Staff Kang Hoon-sik, 
+who returned from the UAE on Thursday after serving as 
+President Lee Jae Myung's special envoy 
+for strategic economic cooperation.",B2,5.52,False,emissary|envoi|envoy extraordinary|minister plenipotentiary
+revised,revise,VERB,동사,/ɹɪˈvaɪ̯z/,the act of rewriting something,,,"South Korea's National Assembly today passed a revised Criminal Act bill, creating the crime of ""legal distortion,"" after a ruling party-led motion brought an end to an opposition filibuster 
+and the bill cleared the chamber in a vote.",B2,5.52,False,rescript|retool|revisal|revision
+attire,attire,NOUN,명사,/əˈtaɪə(ɹ)/,clothing of a distinctive style or for a particular occasion,,formal attire,"Kim Jong-un's daughter, Ju-ae, also attended the military parade, 
+drawing attention for her attire as she appeared in a matching 
+leather jacket with her father and took a central position on the stairs.",B2,5.51,False,deck out|deck up|dress|dress up|fancy up|fig out|fig up|garb|get up|gussy up|overdress|prink|rig out|tog out|tog up
+equipped,equip,VERB,동사,/ɪˈkwɪp/,provide with (something) usually for a specific purpose,,"The expedition was equipped with proper clothing, food, and other necessities","He also outlined a new five-year plan for defense buildup, citing on-land and underwater-launched ICBMs, AI-equipped drones, surveillance satellites and strategic and electric weapons.",B2,5.5003,False,fit|fit out|outfit
+forefront,forefront,NOUN,명사,/ˈfɔːfɹʌnt/,the part in the front or nearest the viewer,,he was in the forefront,It's believed to be the first time in a decade that North Korea has not placed weapons or military equipment at the forefront of a key parade.,B2,5.4802,False,cutting edge|head|vanguard
+distortion,distortion,NOUN,명사,/dɪsˈtɔːʃən/,a change for the worse,,,"South Korea's National Assembly today passed a revised Criminal Act bill, creating the crime of ""legal distortion,"" after a ruling party-led motion brought an end to an opposition filibuster 
+and the bill cleared the chamber in a vote.",B2,5.4498,False,aberration|deformation|distorted shape|optical aberration|overrefinement|straining|torture|twisting
+overhaul,overhaul,NOUN,명사,/ˈoʊvɚˌhɑl/,periodic maintenance on a car or machine,,it was time for an overhaul on the tractor,"The People Power Party immediately launched another filibuster, 
+vowing to resist what it calls an excessive overhaul of the judicial system.",B2,5.4101,False,inspection and repair|modernise|modernize|overtake|pass|redevelopment|renovation|service
+benchmark,benchmark,ADJ,형용사,,a standard by which something can be measured or judged,,his painting sets the benchmark of quality,"The Bank of Korea has yet again frozen the benchmark interest rate 
+at 2.5 percent.",B2,5.4001,True,bench mark
+unanimously,unanimously,ADV,부사,,of one mind; without dissent,,the Senate unanimously approved the bill,"The decision came unanimously on Thursday after a 
+monetary policy board meeting.",B2,5.3799,False,nem con|nemine contradicente
+criticize,criticize,VERB,동사,/ˈkɹɪtɪsaɪz/,find fault with; express criticism of; point out real or perceived flaws,,The paper criticized the new movie,"President Lee was critical of his predecessor's hawkish stance 
+on North Korea and those who criticize his view as ""submissive,"" 
+as he opened Thursday's weekly meeting with his aides.",B2,5.3696,False,criticise|knock|pick apart
+citing,cite,VERB,동사,/saɪt/,a short note recognizing a source of information or of a quoted passage,,the student's essay failed to list several important citations,"He also outlined a new five-year plan for defense buildup, citing on-land and underwater-launched ICBMs, AI-equipped drones, surveillance satellites and strategic and electric weapons.",B2,5.3298,False,acknowledgment|advert|bring up|citation|credit|mention|name|quotation|quote|refer|reference
+aides,aide,NOUN,명사,/eɪd/,an officer who acts as military assistant to a more senior officer,,,"President Lee was critical of his predecessor's hawkish stance 
+on North Korea and those who criticize his view as ""submissive,"" 
+as he opened Thursday's weekly meeting with his aides.",B2,5.3098,False,adjutant|aide-de-camp|auxiliary
+condemning,condemn,VERB,동사,/kənˈdɛm/,express strong disapproval of,,We condemn the racism in South Africa,"Pursing values of peace and stability, while ending the past that was dashing towards confrontation and war, was the response by 
 President Lee Jae Myung to a hostile message by North Korea's 
 Kim Jong-un, condemning the South during the regime's recent 
-political event.",B2,5.7305,False,crash|dart|dash|daunt|flash|frighten away|frighten off|pall|scare|scare away|scare off|scoot|scud|shoot|smash
-outlining,outlining,,,,describe roughly or briefly or give the main points or summary of,,sketch the outline of the book,"The two sides signed a memorandum of understanding 
-outlining cooperation in weapons design, training, and maintenance.",B2,5.6904,False,adumbrate|delineate|draft|limn|outline|sketch
+political event.",B2,5.2798,False,decry|doom|excoriate|objurgate|reprobate|sentence
+confrontation,confrontation,NOUN,명사,/ˌkɒnfɹənˈteɪʃən/,a bold challenge,,,"Pursing values of peace and stability, while ending the past that was dashing towards confrontation and war, was the response by 
+President Lee Jae Myung to a hostile message by North Korea's 
+Kim Jong-un, condemning the South during the regime's recent 
+political event.",B2,5.2798,False,encounter|face-off|opposition|showdown
+flagship,flagship,NOUN,명사,/ˈflæɡʃɪp/,the chief one of a related group,,it is their flagship newspaper,"The amendment, one of the Democratic Party’s three flagship judicial 
+reform measures, limits its application to criminal cases 
+and clarifies its provisions amid earlier concerns over constitutionality.",B2,5.2503,False,
+According,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"According to the North's state-run Korean Central News Agency 
+on Thursday, Kim Jong-un presented a report at the 9th Congress, reaffirming the regime’s strategic line of bolstering its nuclear capabilities.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
+predecessor,predecessor,NOUN,명사,/ˈpɹiːdɪsɛsɚ/,one who precedes you in time (as in holding a position or office),,,"Meanwhile, President Lee Jae Myung once again vowed to continue his peace drive against North Korea, as he was critical of a hawkish stance 
+by his predecessor.",B2,5.1798,False,forerunner|harbinger|herald|precursor
