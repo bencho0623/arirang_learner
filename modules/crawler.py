@@ -1072,7 +1072,20 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
         audio_ok = mp3_ok or mp4_ok
         actual_audio_path = mp3_path if mp3_ok else mp4_path
         meta_ok = meta_path.exists() and meta_path.stat().st_size > 0
-        if txt_ok and audio_ok and meta_ok:
+        meta_date_ok = True
+        meta_url_date_ok = True
+        if meta_ok:
+            try:
+                meta_obj = json.loads(meta_path.read_text(encoding="utf-8"))
+                meta_date_raw = str(meta_obj.get("date", "")).strip()
+                meta_date_compact = re.sub(r"[^0-9]", "", meta_date_raw)[:8]
+                meta_date_ok = meta_date_compact == date_compact
+                meta_mp3_url = str(meta_obj.get("mp3_url", "")).strip()
+                meta_url_date_ok = _is_media_date_match(meta_mp3_url, date_compact)
+            except Exception:  # noqa: BLE001
+                meta_date_ok = False
+                meta_url_date_ok = False
+        if txt_ok and audio_ok and meta_ok and meta_date_ok and meta_url_date_ok:
             LOGGER.info("Skip download: already success for key=%s", key)
             skipped = dict(episode)
             skipped.update(
@@ -1087,11 +1100,13 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
             return skipped
         LOGGER.warning(
             "History says success but files are missing or empty. Re-downloading key=%s "
-            "(txt=%s audio=%s meta=%s)",
+            "(txt=%s audio=%s meta=%s meta_date=%s meta_url_date=%s)",
             key,
             txt_ok,
             audio_ok,
             meta_ok,
+            meta_date_ok,
+            meta_url_date_ok,
         )
 
     script_text = _sanitize_script_source(episode.get("script_text", "") or "")
