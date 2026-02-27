@@ -1,5 +1,5 @@
 {
-  "created_at": "2026-02-27T01:35:12.465510",
+  "created_at": "2026-02-27T01:59:06.752039",
   "count": 30,
   "items": [
     {
@@ -226,7 +226,7 @@
       "lemma": "envoy",
       "pos": "NOUN",
       "pos_ko": "명사",
-      "phonetic": "",
+      "phonetic": "/ˈɛn.vɔɪ/",
       "definition_en": "a diplomat having less authority than an ambassador",
       "translation_ko": "",
       "example_en": "",
@@ -246,10 +246,10 @@
       "lemma": "revise",
       "pos": "VERB",
       "pos_ko": "동사",
-      "phonetic": "",
+      "phonetic": "/ɹɪˈvaɪ̯z/",
       "definition_en": "the act of rewriting something",
       "translation_ko": "",
-      "example_en": "revise a thesis",
+      "example_en": "",
       "context_sentence": "South Korea's National Assembly today passed a revised Criminal Act bill, creating the crime of \"legal distortion,\" after a ruling party-led motion brought an end to an opposition filibuster \nand the bill cleared the chamber in a vote.",
       "cefr_level": "B2",
       "frequency_score": 5.52,
@@ -335,7 +335,7 @@
       "lemma": "distortion",
       "pos": "NOUN",
       "pos_ko": "명사",
-      "phonetic": "",
+      "phonetic": "/dɪsˈtɔːʃən/",
       "definition_en": "a change for the worse",
       "translation_ko": "",
       "example_en": "",
