@@ -13,6 +13,7 @@ import json
 import logging
 from pathlib import Path
 import re
+import time
 from typing import Any
 from urllib.parse import urljoin
 
@@ -400,8 +401,6 @@ def _extract_script_and_media_from_api_cache(
                 score += 2
             if media_url:
                 score += 1
-            if media_url and not _is_media_date_match(media_url, target_date_yyyymmdd):
-                media_url = ""
             if score > 0:
                 candidates.append((score, content.strip(), media_url.strip()))
 
@@ -584,6 +583,35 @@ def _resolve_kollus_media(cfg: dict[str, Any]) -> tuple[str, str, str]:
         return kollus_url, media_url, inferred
 
 
+def _resolve_kollus_media_with_retry(cfg: dict[str, Any], target_date: str) -> tuple[str, str, str]:
+    """Retry resolving fallback media URL to reduce transient failures."""
+    retry_count = int(_cfg_get(cfg, "crawl.media_retry_count", 5))
+    retry_delay = float(_cfg_get(cfg, "crawl.media_retry_delay", 2.0))
+
+    last: tuple[str, str, str] = ("", "", target_date)
+    for attempt in range(1, retry_count + 1):
+        try:
+            kollus_url, media_url, inferred = _resolve_kollus_media(cfg)
+            last = (kollus_url, media_url, inferred)
+            if _is_downloadable_audio_url(media_url):
+                return kollus_url, media_url, inferred
+            LOGGER.warning(
+                "Fallback media retry %s/%s: media URL missing/invalid",
+                attempt,
+                retry_count,
+            )
+        except Exception as exc:  # noqa: BLE001
+            LOGGER.warning(
+                "Fallback media retry %s/%s failed: %s",
+                attempt,
+                retry_count,
+                exc,
+            )
+        if attempt < retry_count:
+            time.sleep(retry_delay)
+    return last
+
+
 async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, Any]:
     """Load podcast page with Playwright and capture script/mp3 via network interception."""
 
@@ -606,7 +634,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             nonlocal mp3_url
             url = response.url
             content_type = response.headers.get("content-type", "")
-            if _is_downloadable_audio_url(url) and _is_media_date_match(url, target_date):
+            if _is_downloadable_audio_url(url):
                 mp3_url = url
 
             if "application/json" in content_type.lower() and any(
@@ -619,7 +647,7 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                         if not mp3_url:
                             nested_urls = _extract_urls_from_obj(data)
                             for candidate in nested_urls:
-                                if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
+                                if _is_downloadable_audio_url(candidate):
                                     mp3_url = candidate
                                     break
                 except Exception:
@@ -652,12 +680,12 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
                         media_info = chosen.get("media_info", {})
                         if isinstance(media_info, dict):
                             candidate = str(media_info.get("media_url", "")).strip()
-                            if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
+                            if _is_downloadable_audio_url(candidate):
                                 mp3_url = candidate
                     if not mp3_url:
                         urls = _extract_urls_from_obj(chosen)
                         for candidate in urls:
-                            if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
+                            if _is_downloadable_audio_url(candidate):
                                 mp3_url = candidate
                                 break
                     script_guess = str(chosen.get("content", "")).strip()
@@ -762,19 +790,18 @@ async def _async_fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, An
             with requests.Session() as session:
                 resp = _request_with_retry(session, "GET", iframe_src, cfg)
                 candidate = _extract_media_url_from_kollus_html(resp.text)
-                if _is_downloadable_audio_url(candidate) and _is_media_date_match(candidate, target_date):
+                if _is_downloadable_audio_url(candidate):
                     mp3_url = candidate
         except Exception as exc:  # noqa: BLE001
             LOGGER.warning("Failed to resolve media_url from iframe src: %s", exc)
 
     if mp3_url and not _is_media_date_match(mp3_url, target_date):
         LOGGER.warning(
-            "Reject mismatched media URL date. target=%s media_date=%s url=%s",
+            "Media URL date differs from target (allowed). target=%s media_date=%s url=%s",
             target_date,
             _extract_media_date_yyyymmdd(mp3_url),
             mp3_url,
         )
-        mp3_url = ""
 
     enriched = dict(episode)
     enriched["script_text"] = script_text
@@ -790,10 +817,10 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         enriched = asyncio.run(_async_fetch_episode_detail(episode, cfg))
         mp3 = str(enriched.get("mp3_url", "")).strip()
         target_date = str(enriched.get("date_str", "")).strip() or _get_target_date()[0]
-        if not _is_downloadable_audio_url(mp3) or not _is_media_date_match(mp3, target_date):
+        if not _is_downloadable_audio_url(mp3):
             LOGGER.warning("Playwright detail had no downloadable media URL. Using Kollus fallback.")
-            _, fallback_media, inferred = _resolve_kollus_media(cfg)
-            if _is_downloadable_audio_url(fallback_media) and _is_media_date_match(fallback_media, target_date):
+            _, fallback_media, inferred = _resolve_kollus_media_with_retry(cfg, target_date)
+            if _is_downloadable_audio_url(fallback_media):
                 enriched["mp3_url"] = fallback_media
                 if not enriched.get("date_str"):
                     enriched["date_str"] = inferred
@@ -806,11 +833,8 @@ def fetch_episode_detail(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[s
         mp3 = str(episode.get("mp3_url_prefetched", "")).strip()
         target_date = str(enriched.get("date_str", "")).strip() or _get_target_date()[0]
         inferred = target_date
-        if not _is_downloadable_audio_url(mp3) or not _is_media_date_match(mp3, target_date):
-            _, mp3, inferred = _resolve_kollus_media(cfg)
-            if not _is_media_date_match(mp3, target_date):
-                mp3 = ""
-                inferred = target_date
+        if not _is_downloadable_audio_url(mp3):
+            _, mp3, inferred = _resolve_kollus_media_with_retry(cfg, target_date)
         enriched["mp3_url"] = mp3
         enriched["date_str"] = inferred
         if not enriched.get("script_text"):
@@ -892,9 +916,12 @@ def download_episode(episode: dict[str, Any], cfg: dict[str, Any]) -> dict[str, 
     if not _is_downloadable_audio_url(str(mp3_url)):
         raise ValueError(f"episode.mp3_url is not a downloadable audio file: {mp3_url}")
     if not _is_media_date_match(str(mp3_url), date_compact):
-        raise ValueError(
-            "episode.mp3_url date mismatch: "
-            f"target={date_compact} media_date={_extract_media_date_yyyymmdd(str(mp3_url))} url={mp3_url}"
+        LOGGER.warning(
+            "episode.mp3_url date differs from target (allowed): "
+            "target=%s media_date=%s url=%s",
+            date_compact,
+            _extract_media_date_yyyymmdd(str(mp3_url)),
+            mp3_url,
         )
 
     txt_path.write_text(script_text, encoding="utf-8")
