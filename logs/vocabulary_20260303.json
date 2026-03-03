@@ -1,0 +1,548 @@
+{
+  "created_at": "2026-03-03T23:01:29.928101",
+  "count": 30,
+  "items": [
+    {
+      "word": "evacuees",
+      "lemma": "evacuee",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a person who has been evacuated from a dangerous place",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "For security reasons, the ministry is not disclosing the exact number of evacuees, nor details such as timing or routes out of Iran.",
+      "cefr_level": "C2",
+      "frequency_score": 7.0701,
+      "is_b2_plus": false,
+      "derivatives": [
+        "evacuee"
+      ]
+    },
+    {
+      "word": "sunnier",
+      "lemma": "sunnier",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "bright and pleasant; promoting a feeling of cheer",
+      "translation_ko": "",
+      "example_en": "a cheery hello",
+      "context_sentence": "Tomorrow we are waking up to another chilly morning, Seoul and Daegu at 1 degree, Gwangju at 2 degrees under sunnier skies.",
+      "cefr_level": "C1",
+      "frequency_score": 6.8013,
+      "is_b2_plus": false,
+      "derivatives": [
+        "cheery",
+        "gay",
+        "sunny"
+      ]
+    },
+    {
+      "word": "slated",
+      "lemma": "slat",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/slæt/",
+      "definition_en": "a thin strip (wood or metal)",
+      "translation_ko": "",
+      "example_en": "slats of a window blind",
+      "context_sentence": "Many people's eyes were on potential talks between the U.S. and North Korea,... with U.S. President Donald Trump slated to visit Beijing from March 31st to April 2nd,... to hold talks with his Chinese counterpart Xi Jinping.",
+      "cefr_level": "C1",
+      "frequency_score": 6.6498,
+      "is_b2_plus": false,
+      "derivatives": [
+        "spline"
+      ]
+    },
+    {
+      "word": "jitters",
+      "lemma": "jitter",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈdʒɪt.ə(ɹ)/",
+      "definition_en": "small rapid variations in a waveform resulting from fluctuations in the voltage supply or mechanical vibrations or other sources",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "A \"Black Tuesday\" in Korea was marked by heavy foreign selling, driven by investor jitters over escalating risks in the Middle East.",
+      "cefr_level": "C1",
+      "frequency_score": 6.5302,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "precondition",
+      "lemma": "precondition",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "an assumption on which rests the validity or effect of something else",
+      "translation_ko": "",
+      "example_en": "A marriage licence is a precondition for a wedding.",
+      "context_sentence": "Given that it is highly unlikely the U.S. will recognize North Korea as a nuclear state,... which is the regime's precondition for talks,... the possibility of any dialogue is low.",
+      "cefr_level": "C1",
+      "frequency_score": 6.3696,
+      "is_b2_plus": false,
+      "derivatives": [
+        "condition",
+        "given",
+        "presumption",
+        "stipulation"
+      ]
+    },
+    {
+      "word": "proactively",
+      "lemma": "proactively",
+      "pos": "ADV",
+      "pos_ko": "부사",
+      "phonetic": "",
+      "definition_en": "In a proactive manner; so as to look or plan ahead.",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The Financial Services Commission has also pledged to proactively... deploy its existing 100 trillion won market stabilization fund... if necessary.",
+      "cefr_level": "C1",
+      "frequency_score": 6.1798,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "paradoxically",
+      "lemma": "paradoxically",
+      "pos": "ADV",
+      "pos_ko": "부사",
+      "phonetic": "",
+      "definition_en": "in a paradoxical manner",
+      "translation_ko": "",
+      "example_en": "paradoxically, ice ages seem to occur when the sun gets hotter",
+      "context_sentence": "With some arguing that Iran’s case could paradoxically push Kim toward dialogue to manage tensions, attention is focused on what kind of strategic decision he will make, and when that will come.",
+      "cefr_level": "C1",
+      "frequency_score": 6.06,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "seok",
+      "lemma": "seok",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Prime Minister Kim Min-seok led Tuesday's session,... instructing the Foreign and Defense Ministries to ensure the safety of Korean nationals and deployed troops, provide guidance to short-term visitors seeking to return home, and prepare transportation plans upon evacuating.",
+      "cefr_level": "C1",
+      "frequency_score": 6.06,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "underscored",
+      "lemma": "underscore",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈʌn.də(ɹ)ˌskɔː(ɹ)/",
+      "definition_en": "a line drawn underneath (especially under written matter)",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Lee underscored the importance of expanding bilateral ties beyond trade and investment into promising new sectors and stepping up cooperation amid a shifting international order during the talks held in Manila amid the widening conflict in the Middle East.",
+      "cefr_level": "C1",
+      "frequency_score": 6.0301,
+      "is_b2_plus": false,
+      "derivatives": [
+        "emphasise",
+        "emphasize",
+        "underline"
+      ]
+    },
+    {
+      "word": "convening",
+      "lemma": "convene",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/kənˈvɪin/",
+      "definition_en": "meet formally",
+      "translation_ko": "",
+      "example_en": "The council convened last week",
+      "context_sentence": "2.\nSouth Korea is prioritizing the safety of its nationals as Middle East tensions escalate,... with the government convening its third emergency inter-ministerial meeting in four days.",
+      "cefr_level": "B2",
+      "frequency_score": 5.9586,
+      "is_b2_plus": true,
+      "derivatives": [
+        "convoke"
+      ]
+    },
+    {
+      "word": "lawmaker",
+      "lemma": "lawmaker",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a maker of laws; someone who gives a code of laws",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "On Tuesday, a lawmaker on the foreign affairs committee revealed that around 21,000 South Korean nationals are currently in 13 Middle Eastern countries.",
+      "cefr_level": "B2",
+      "frequency_score": 5.9318,
+      "is_b2_plus": false,
+      "derivatives": [
+        "lawgiver"
+      ]
+    },
+    {
+      "word": "deepening",
+      "lemma": "deepen",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈdiːpən/",
+      "definition_en": "make more intense, stronger, or more marked; ,",
+      "translation_ko": "",
+      "example_en": "The efforts were intensified",
+      "context_sentence": "The Philippine president also noted deepening collaboration in maritime security and the defense industry based on \"mutual trust\" amid the changing international order, expressing hope to advance strategic cooperation.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8097,
+      "is_b2_plus": false,
+      "derivatives": [
+        "change",
+        "compound",
+        "heighten",
+        "intensify"
+      ]
+    },
+    {
+      "word": "deepening",
+      "lemma": "deepening",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a process of becoming deeper and more profound",
+      "translation_ko": "",
+      "example_en": "They deepened the well by 200 feet.",
+      "context_sentence": "Lee expressed hope to build on the momentum of closer bilateral ties to contribute to South Korea's deepening relations with the Association of Southeast Asian Nations, a major trading partner.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8097,
+      "is_b2_plus": false,
+      "derivatives": [
+        "change",
+        "compound",
+        "deepen",
+        "heighten",
+        "intensify"
+      ]
+    },
+    {
+      "word": "widening",
+      "lemma": "widen",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈwaɪdən/",
+      "definition_en": "become broader or wider or more extensive",
+      "translation_ko": "",
+      "example_en": "The road widened",
+      "context_sentence": "Lee underscored the importance of expanding bilateral ties beyond trade and investment into promising new sectors and stepping up cooperation amid a shifting international order during the talks held in Manila amid the widening conflict in the Middle East.",
+      "cefr_level": "B2",
+      "frequency_score": 5.7496,
+      "is_b2_plus": false,
+      "derivatives": [
+        "broaden",
+        "extend",
+        "let out"
+      ]
+    },
+    {
+      "word": "stabilization",
+      "lemma": "stabilization",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "the act of stabilizing something or making it more stable",
+      "translation_ko": "",
+      "example_en": "he worked for price stabilization for farm products",
+      "context_sentence": "The Financial Services Commission has also pledged to proactively... deploy its existing 100 trillion won market stabilization fund... if necessary.",
+      "cefr_level": "B2",
+      "frequency_score": 5.699,
+      "is_b2_plus": false,
+      "derivatives": [
+        "stabilisation"
+      ]
+    },
+    {
+      "word": "instructing",
+      "lemma": "instruct",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˌɪnˈstɹʌkt/",
+      "definition_en": "impart skills or knowledge to",
+      "translation_ko": "",
+      "example_en": "I taught them French",
+      "context_sentence": "Prime Minister Kim Min-seok led Tuesday's session,... instructing the Foreign and Defense Ministries to ensure the safety of Korean nationals and deployed troops, provide guidance to short-term visitors seeking to return home, and prepare transportation plans upon evacuating.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6904,
+      "is_b2_plus": false,
+      "derivatives": [
+        "apprise",
+        "apprize",
+        "learn",
+        "teach"
+      ]
+    },
+    {
+      "word": "prioritizing",
+      "lemma": "prioritize",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/pɹaɪˈɒɹətaɪz/",
+      "definition_en": "assign a priority to",
+      "translation_ko": "",
+      "example_en": "we have too many things to do and must prioritize",
+      "context_sentence": "2.\nSouth Korea is prioritizing the safety of its nationals as Middle East tensions escalate,... with the government convening its third emergency inter-ministerial meeting in four days.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6904,
+      "is_b2_plus": false,
+      "derivatives": [
+        "prioritise"
+      ]
+    },
+    {
+      "word": "escalate",
+      "lemma": "escalate",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈɛs.kə.leɪt/",
+      "definition_en": "increase in extent or intensity",
+      "translation_ko": "",
+      "example_en": "The Allies escalated the bombing",
+      "context_sentence": "2.\nSouth Korea is prioritizing the safety of its nationals as Middle East tensions escalate,... with the government convening its third emergency inter-ministerial meeting in four days.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6498,
+      "is_b2_plus": false,
+      "derivatives": [
+        "intensify",
+        "step up"
+      ]
+    },
+    {
+      "word": "contingency",
+      "lemma": "contingency",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/kənˈtɪndʒənsi/",
+      "definition_en": "a possible event or occurrence or result",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "3.\nFinancial authorities here... including the Bank of Korea... are operating a 24-hour monitoring system in light of the volatile situation in the Middle East... and have shared related contingency plans.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5607,
+      "is_b2_plus": true,
+      "derivatives": [
+        "contingence",
+        "eventuality"
+      ]
+    },
+    {
+      "word": "coincides",
+      "lemma": "coincide",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˌkoʊɪnˈsaɪd/",
+      "definition_en": "go with, fall together",
+      "translation_ko": "",
+      "example_en": "The two squares coincide nicely.",
+      "context_sentence": "For the first time in 36 years, a total lunar eclipse coincides with the holiday.",
+      "cefr_level": "B2",
+      "frequency_score": 5.51,
+      "is_b2_plus": false,
+      "derivatives": [
+        "co-occur",
+        "concur",
+        "cooccur"
+      ]
+    },
+    {
+      "word": "chilly",
+      "lemma": "chilly",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "very hot and finely tapering pepper of special pungency",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Tomorrow we are waking up to another chilly morning, Seoul and Daegu at 1 degree, Gwangju at 2 degrees under sunnier skies.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5003,
+      "is_b2_plus": false,
+      "derivatives": [
+        "chile",
+        "chili",
+        "chili pepper",
+        "chilli",
+        "parky"
+      ]
+    },
+    {
+      "word": "evacuating",
+      "lemma": "evacuate",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ɪˈvæk.ju.eɪt/",
+      "definition_en": "move out of an unsafe location into safety",
+      "translation_ko": "",
+      "example_en": "After the earthquake, residents were evacuated",
+      "context_sentence": "Prime Minister Kim Min-seok led Tuesday's session,... instructing the Foreign and Defense Ministries to ensure the safety of Korean nationals and deployed troops, provide guidance to short-term visitors seeking to return home, and prepare transportation plans upon evacuating.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4698,
+      "is_b2_plus": false,
+      "derivatives": [
+        "empty",
+        "void"
+      ]
+    },
+    {
+      "word": "ministerial",
+      "lemma": "ministerial",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/ˌmɪn.əˈstiɹ.i.əl/",
+      "definition_en": "of or relating to a minister of religion or the minister's office",
+      "translation_ko": "",
+      "example_en": "ministerial duties",
+      "context_sentence": "2.\nSouth Korea is prioritizing the safety of its nationals as Middle East tensions escalate,... with the government convening its third emergency inter-ministerial meeting in four days.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4498,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "benchmark",
+      "lemma": "benchmark",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "a standard by which something can be measured or judged",
+      "translation_ko": "",
+      "example_en": "his painting sets the benchmark of quality",
+      "context_sentence": "According to the Korea Exchange on Tuesday, the benchmark KOSPI ended at around 5-thousand-7-hundred-91, dropping over seven percent from the previous session, its biggest fall ever.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4001,
+      "is_b2_plus": true,
+      "derivatives": [
+        "bench mark"
+      ]
+    },
+    {
+      "word": "residing",
+      "lemma": "reside",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ɹɪˈzaɪd/",
+      "definition_en": "make one's home in a particular place or community",
+      "translation_ko": "",
+      "example_en": "may parents reside in Florida",
+      "context_sentence": "The government is also reportedly prepared to provide evacuation support, if necessary, to South Korean nationals residing in Israel.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3298,
+      "is_b2_plus": false,
+      "derivatives": [
+        "domicile",
+        "domiciliate",
+        "lodge in",
+        "occupy",
+        "repose",
+        "rest",
+        "shack"
+      ]
+    },
+    {
+      "word": "diplomats",
+      "lemma": "diplomat",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈdɪ.plə.mæt/",
+      "definition_en": "an official engaged in international negotiations",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The Prime Minister on Tuesday evening had a conference call with Korean diplomats in the region to discuss measures going forward.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3098,
+      "is_b2_plus": false,
+      "derivatives": [
+        "diplomatist"
+      ]
+    },
+    {
+      "word": "troops",
+      "lemma": "troop",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/tɹuːp/",
+      "definition_en": "a group of soldiers",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Prime Minister Kim Min-seok led Tuesday's session,... instructing the Foreign and Defense Ministries to ensure the safety of Korean nationals and deployed troops, provide guidance to short-term visitors seeking to return home, and prepare transportation plans upon evacuating.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3098,
+      "is_b2_plus": false,
+      "derivatives": [
+        "flock",
+        "parade",
+        "promenade",
+        "scout group",
+        "scout troop"
+      ]
+    },
+    {
+      "word": "counterpart",
+      "lemma": "counterpart",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈkaʊntəˌpɑːt/",
+      "definition_en": "a person or thing having the same function or characteristics as another",
+      "translation_ko": "",
+      "example_en": "Those brass knobs and their hollow counterparts interlock perfectly",
+      "context_sentence": "Many people's eyes were on potential talks between the U.S. and North Korea,... with U.S. President Donald Trump slated to visit Beijing from March 31st to April 2nd,... to hold talks with his Chinese counterpart Xi Jinping.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3002,
+      "is_b2_plus": false,
+      "derivatives": [
+        "opposite number",
+        "similitude",
+        "twin",
+        "vis-a-vis"
+      ]
+    },
+    {
+      "word": "deployed",
+      "lemma": "deploy",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɪˈplɔɪ/",
+      "definition_en": "place troops or weapons in battle formation",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Prime Minister Kim Min-seok led Tuesday's session,... instructing the Foreign and Defense Ministries to ensure the safety of Korean nationals and deployed troops, provide guidance to short-term visitors seeking to return home, and prepare transportation plans upon evacuating.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3002,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "bilateral",
+      "lemma": "bilateral",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/baɪˈlætəɹəl/",
+      "definition_en": "having identical parts on each side of an axis",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Lee underscored the importance of expanding bilateral ties beyond trade and investment into promising new sectors and stepping up cooperation amid a shifting international order during the talks held in Manila amid the widening conflict in the Middle East.",
+      "cefr_level": "B2",
+      "frequency_score": 5.2798,
+      "is_b2_plus": true,
+      "derivatives": [
+        "bilaterally symmetric",
+        "bilaterally symmetrical",
+        "isobilateral",
+        "two-sided"
+      ]
+    }
+  ]
+}
