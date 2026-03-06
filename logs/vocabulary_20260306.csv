@@ -1,0 +1,81 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+data,datum,NOUN,명사,/ˈdeɪtəm/,an item of factual information derived from measurement or research,,,"#5
+South Korea’s consumer inflation held steady at 2-point-zero percent in February, according to data released by the Ministry of Data and Statistics on Friday.",C1,6.4802,False,data point
+unconcerned,unconcerned,ADJ,형용사,,lacking in interest or care or feeling,,the average American...is unconcerned that his or her plight is the result of a complex of personal and economic and governmental actions...beyond the normal citizen's comprehension and control,"Global oil prices have surged by roughly 16 percent in roughly a weeks' time, but U.S. President Donald Trump is unconcerned, 
+as he stated during an interview with Reuters on Thursday that 
+the current rise in gasoline prices globally
+and its consequent impact on the U.S market is not as critical an issue
+ compared to the necessity of military action against the Iranian regime.",C1,6.2596,False,
+skyrocket,skyrocket,VERB,동사,,"propels bright light high in the sky, or used to propel a lifesaving line or harpoon",,,"#4
+The closure of the Hormuz Strait has caused oil and gas prices to skyrocket 
+and driven global energy trade into turmoil.",C1,6.2097,False,rocket
+centimeters,centimeter,NOUN,명사,,a metric unit of length equal to one hundredth of a meter,,,"Meanwhile, mountainous regions of Gangwon State could see 1 to 3 centimeters of snowfall.",C1,6.1101,False,centimetre|cm
+consequent,consequent,ADJ,형용사,/ˈkɑn.sɪ.kwənt/,following or accompanying as a consequence,,"an excessive growth of bureaucracy, with attendant problems","Global oil prices have surged by roughly 16 percent in roughly a weeks' time, but U.S. President Donald Trump is unconcerned, 
+as he stated during an interview with Reuters on Thursday that 
+the current rise in gasoline prices globally
+and its consequent impact on the U.S market is not as critical an issue
+ compared to the necessity of military action against the Iranian regime.",B2,5.9788,False,accompanying|attendant|concomitant|ensuant|incidental|resultant|sequent
+intensify,intensify,VERB,동사,,increase in extent or intensity,,The Allies escalated the bombing,"The conflict also continues to intensify in Lebanon.
+
+#2
+Presidential chief of staff Kang Hoon-sik said on Friday that a passenger flight carrying South Korean nationals had left Dubai and was scheduled to arrive at Incheon International Airport this evening.",B2,5.8386,False,compound|deepen|escalate|heighten|step up
+snowfall,snowfall,NOUN,명사,/ˈsnoʊfɔːl/,precipitation falling from clouds in the form of ice crystals,,There has been snowfall every day this week.,"Meanwhile, mountainous regions of Gangwon State could see 1 to 3 centimeters of snowfall.",B2,5.7799,False,snow
+mountainous,mountainous,ADJ,형용사,/ˈmaʊntɪnəs/,having hills and crags,,hilly terrain,"Meanwhile, mountainous regions of Gangwon State could see 1 to 3 centimeters of snowfall.",B2,5.6198,False,cragged|craggy|hilly
+scattered,scatter,VERB,동사,/ˈskætə/,a haphazard distribution in all directions,,,"Although the main band of heavy rain has moved away, scattered rain and snow will continue until tonight across the central regions and Jeonbuk State.",B2,5.6108,False,break up|dispel|disperse|dissipate|dot|dust|scattering|spread|spread out|sprinkle|strewing
+contingency,contingency,NOUN,명사,/kənˈtɪndʒənsi/,a possible event or occurrence or result,,,"#3 
+South Korea will import six million barrels of crude oil 
+from the United Arab Emirates as a contingency measure 
+following the closure of the Strait of Hormuz, 
+through which about 70 percent of its crude oil imports pass.",B2,5.5607,True,contingence|eventuality
+tankers,tanker,NOUN,명사,,a cargo ship designed to carry crude oil in bulk,,,"Presidential Chief of Staff Kang Hoon-sik said on Friday that 
+two Korean oil tankers will be loaded with a combined four million barrels supplied by the Abu Dhabi National Oil Company.",B2,5.5607,False,oil tanker|oiler|tank driver|tank ship
+chilly,chilly,ADJ,형용사,,very hot and finely tapering pepper of special pungency,,,"Moving to the weather forecast,
+Spring feels far away with icy rain and chilly winds.",B2,5.5003,False,chile|chili|chili pepper|chilli|parky
+turmoil,turmoil,NOUN,명사,/ˈtɜːmɔɪl/,a violent disturbance,,the convulsions of the stock market,"#4
+The closure of the Hormuz Strait has caused oil and gas prices to skyrocket 
+and driven global energy trade into turmoil.",B2,5.4802,False,agitation|convulsion|excitement|hullabaloo|tumult|upheaval
+travelers,traveler,NOUN,명사,/ˈtɹæv.l̩.ɚ/,a person who changes location,,,"Kang said 18,000 South Koreans are currently in 14 Middle East nations, 
+with around 4,900 of them being short-term travelers.",B2,5.4295,False,traveller
+remarks,remark,NOUN,명사,/ɹɪˈmɑːk/,a statement that expresses a personal opinion or belief or adds information,,from time to time she contributed a personal comment on his account,His remarks came during a briefing at Cheong,B2,5.3401,False,comment|input|mention|note|notice|observe|point out
+volatile,volatile,ADJ,형용사,/ˈvɒl.əˌtaɪ.(ə)l/,a volatile substance; a substance that changes readily from solid or liquid to a vapor,,it was heated to evaporate the volatiles,Regional security remains highly volatile.,B2,5.2798,True,explosive|fickle
+briefing,briefing,NOUN,명사,/ˈbɹiːfɪŋ/,"detailed instructions, as for a military operation",,The U.S. president was briefed on the military coup and its implications on African stability.,His remarks came during a briefing at Cheong,B2,5.2596,False,brief
+evacuation,evacuation,NOUN,명사,,the act of removing the contents of something,,,Wa Dae on government support for the evacuation of Koreans from the United Arab Emirates.,B2,5.2596,True,elimination|emptying|excreting|excretion|voidance|voiding
+dispatched,dispatch,VERB,동사,/dəˈspætʃ/,an official report (usually sent in haste),,,"He said commercial flights from Abu Dhabi are expected to resume on Saturday, while a chartered Korean Air flight will also be dispatched, noting that he held talks with Khaldoon Khalifa Al Mubarak, chairman of Abu Dhabi's Executive Affairs Authority.",B2,5.2403,False,communique|despatch|expedition|expeditiousness|send off|shipment
+shipment,shipment,NOUN,명사,/ˈʃɪpmənt/,goods carried by a large vehicle,,,"The shipment will be loaded at a UAE port that does not require passage 
+through the Strait of Hormuz.",B2,5.2403,False,cargo|consignment|despatch|dispatch|freight|lading|load|loading|payload
+according,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"#5
+South Korea’s consumer inflation held steady at 2-point-zero percent in February, according to data released by the Ministry of Data and Statistics on Friday.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
+globally,globally,ADV,부사,/ˈɡləʊbəli/,throughout the world,,this is globally significant,"Global oil prices have surged by roughly 16 percent in roughly a weeks' time, but U.S. President Donald Trump is unconcerned, 
+as he stated during an interview with Reuters on Thursday that 
+the current rise in gasoline prices globally
+and its consequent impact on the U.S market is not as critical an issue
+ compared to the necessity of military action against the Iranian regime.",B2,5.1798,False,
+surged,surge,VERB,동사,/sɜːdʒ/,a sudden forceful flow,,He felt a surge of excitement.,"Global oil prices have surged by roughly 16 percent in roughly a weeks' time, but U.S. President Donald Trump is unconcerned, 
+as he stated during an interview with Reuters on Thursday that 
+the current rise in gasoline prices globally
+and its consequent impact on the U.S market is not as critical an issue
+ compared to the necessity of military action against the Iranian regime.",B2,5.1798,False,billow|heave|rush|soar|soar up|soar upwards|spate|upsurge|zoom
+gasoline,gasoline,NOUN,명사,/ˈɡæs.ə.lin/,a volatile flammable mixture of hydrocarbons (hexane and heptane and octane etc.) derived from petroleum; used mainly as a fuel in internal-combustion engines,,,"Global oil prices have surged by roughly 16 percent in roughly a weeks' time, but U.S. President Donald Trump is unconcerned, 
+as he stated during an interview with Reuters on Thursday that 
+the current rise in gasoline prices globally
+and its consequent impact on the U.S market is not as critical an issue
+ compared to the necessity of military action against the Iranian regime.",B2,5.15,False,gas|gasolene|petrol
+petroleum,petroleum,NOUN,명사,/pəˈtɹoʊliəm/,a dark oil consisting mainly of hydrocarbons,,,"Yet the key factor behind the stable headline figure was petroleum prices, 
+which fell 2-point-4 percent from a year earlier,
+turning negative for the first time in six months.",B2,5.1002,False,crude|crude oil|fossil oil|oil|rock oil
+necessity,necessity,NOUN,명사,/nɪˈsɛsəti/,the condition of being essential or indispensable,,I bought a new table out of necessity. My old one was ruined.,"Global oil prices have surged by roughly 16 percent in roughly a weeks' time, but U.S. President Donald Trump is unconcerned, 
+as he stated during an interview with Reuters on Thursday that 
+the current rise in gasoline prices globally
+and its consequent impact on the U.S market is not as critical an issue
+ compared to the necessity of military action against the Iranian regime.",B2,5.0899,False,essential|necessary|requirement|requisite
+indicators,indicator,NOUN,명사,,a number or ratio (a value on a scale of measurement) derived from a series of observed facts; can reveal relative changes as a function of time,,,"Service prices rose 2-point-6 percent, driven by personal services
+while core inflation indicators remained in the mid-2 percent range.",B2,5.0799,False,index|index number|indicant
+incoming,incoming,ADJ,형용사,,the act of entering,,she made a grand entrance,"In the United Arab Emirates, emergency alerts were broadcast to mobile phones across Dubai, warning residents of a potential incoming missile threat 
+and directing them to take immediate shelter.",B2,5.0701,False,entering|entrance|entry|ingress
+maritime,maritime,ADJ,형용사,/ˈmæ.ɹɪˌtaɪm/,relating to or involving ships or shipping or navigation or seamen,,nautical charts,"In a separate maritime incident, 
+Sri Lankan authorities took control of an Iranian vessel off its coast.",B2,5.04,False,marine|nautical
+crude,crude,ADJ,형용사,/kɹʉd/,a dark oil consisting mainly of hydrocarbons,,,"#3 
+South Korea will import six million barrels of crude oil 
+from the United Arab Emirates as a contingency measure 
+following the closure of the Strait of Hormuz, 
+through which about 70 percent of its crude oil imports pass.",B2,5.0,False,crude oil|earthy|fossil oil|gross|oil|petroleum|primitive|rock oil|rough|rude|unprocessed|unrefined|vulgar
