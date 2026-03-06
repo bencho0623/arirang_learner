@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.03.05", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260305_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260305/28675079/28675079_20260305-tgpx092i_audio_arirang-mp3-normal-20260305220242.mp4?hdnts=exp=3545684040~acl=/kr/media1/arirang/20260305/28675079/*~hmac=a25908f627729a219955a2136913f0cac739c68fc93070bd67f05c1faafde4c6", "script_text": "Welcome to Arirang News This is Park Kee hoon\nAnd we start with the top headlines at this hour.\n\n1.\nThe Ministry of Foreign Affairs Thursday imposed a travel ban on all of Iran amid rising security concerns linked to the escalating conflict\nin the Middle East.\nA Level 3 travel alert, which advises nationals to leave the country,\nwas upgraded to a travel ban effective at 6 p.m., the ministry said,\namid escalating tensions in the Middle East following\nU.S. and Israeli strikes on Iran.\nThe ministry warned that Korean nationals who visit or stay in Iran without authorization may face punishment under relevant laws,\nadvising those planning to travel to the region to cancel their trips\nand urging those currently there to evacuate.\n\n2.\nJust a day after returning from his four-day trip to Southeast Asia, President Lee Jae Myung convened an extraordinary Cabinet meeting\non Thursday to discuss the situation in the Middle East.\nLee described the safety of Korean nationals in affected regions\nas the government's most urgent priority.\nHe instructed officials to closely monitor the situation and prepare contingency plans for possible emergency evacuations,\nincluding the use of military aircraft and chartered flights if necessary.\nThe President also urged vigilance over potential economic fallout\nfrom the closure of the Strait of Hormuz, through which about a fifth of the world's oil is shipped.\nHe placed particular emphasis on energy supplies such as crude oil and gas, noting that disruptions would have direct repercussions across related industries and people's livelihoods.\nPresident Lee says if handled properly, the situation could rather\nserve as a chance to strengthen the economy,\nfrom stabilizing overheated financial markets to accelerating the country's transition away from crude oil toward renewable energy.\n\n3.\nAt the same cabinet meeting,\nPresident Lee Jae Myung also emphasized protecting the economy.\nHis remarks came specifically after the national average price of gasoline surpassed 1,800 won for the first time in about\nthree years and seven months.\nThe national average price for regular gasoline rose 2.5 percent\non Thursday from the previous day to 1,821 won per liter,\nwhile automotive diesel jumped 4.76 percent to 1,811 won per liter.\nThe president strongly emphasized the need to crack down on foul play, taking advantage of the current situation, and ordered the Cabinet\nto devise measures to prevent price gouging.\n\n4.\nThe government issued Thursday a precautionary alert\nover a possible energy supply disruption amid an ongoing geopolitical crisis in the Middle East, vowing a stern response to unfair market practices involving energy supply and prices.\nThe government issued the Level 1, or blue, alert in the country's\nfour-tier national resource security warning system to respond preemptively to a possible disruption in Korea's energy supply due to the Iran crisis, according to the Ministry of Trade, Industry and Resources.\nThe ministry said the country will raise its readiness\nagainst a potential prolonging of the Middle East conflict.\n\n5.\nBTS has unveiled a trailer for the upcoming concert special\n\"BTS THE COMEBACK LIVE\" on Netflix, heightening anticipation\nfor the group’s long-awaited return.\nThe clip features flashbacks of past concerts and the cheers of fans\nknown as ARMY, as the members share how much they have missed performing together on stage.\nIn the clip, leader RM says, \"We promised our fans that we’d be back,\" reflecting the group’s commitment to return.\nThe live event will be streamed from Gwanghwamun Square\non March 21 at 8 PM, and introduce tracks from the group’s fifth album, \"Arirang,\" a 14-song album led off by the track \"Swim.\""};
+    const rawVocabData = [{"word": "repercussions", "lemma": "repercussion", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a remote or indirect consequence of some action", "translation_ko": "", "example_en": "his declaration had unforeseen repercussions", "context_sentence": "He placed particular emphasis on energy supplies such as crude oil and gas, noting that disruptions would have direct repercussions across related industries and people's livelihoods.", "cefr_level": "C1", "frequency_score": 6.7496, "is_b2_plus": false, "derivatives": ["backlash", "rebound", "recoil", "reverberation"]}, {"word": "preemptively", "lemma": "preemptively", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "The government issued the Level 1, or blue, alert in the country's \nfour-tier national resource security warning system to respond preemptively to a possible disruption in Korea's energy supply due to the Iran crisis, according to the Ministry of Trade, Industry and Resources.", "cefr_level": "C1", "frequency_score": 6.6904, "is_b2_plus": false, "derivatives": []}, {"word": "gouging", "lemma": "gouging", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "force with the thumb", "translation_ko": "", "example_en": "gouge out his eyes", "context_sentence": "The president strongly emphasized the need to crack down on foul play, taking advantage of the current situation, and ordered the Cabinet \nto devise measures to prevent price gouging.", "cefr_level": "C1", "frequency_score": 6.3298, "is_b2_plus": false, "derivatives": ["extort", "force out", "gouge", "rack", "rout", "squeeze", "wring"]}, {"word": "overheated", "lemma": "overheat", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˌəʊvəˈhiːt/", "definition_en": "get excessively and undesirably hot", "translation_ko": "", "example_en": "The car engines overheated", "context_sentence": "President Lee says if handled properly, the situation could rather \nserve as a chance to strengthen the economy, \nfrom stabilizing overheated financial markets to accelerating the country's transition away from crude oil toward renewable energy.", "cefr_level": "C1", "frequency_score": 6.3002, "is_b2_plus": false, "derivatives": []}, {"word": "prolonging", "lemma": "prolonging", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "lengthen in time; cause to be or last longer", "translation_ko": "", "example_en": "We prolonged our stay", "context_sentence": "The ministry said the country will raise its readiness \nagainst a potential prolonging of the Middle East conflict.", "cefr_level": "C1", "frequency_score": 6.2, "is_b2_plus": false, "derivatives": ["draw out", "extend", "keep up", "prolong", "protract", "sustain"]}, {"word": "heightening", "lemma": "heighten", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "become more extreme", "translation_ko": "", "example_en": "The tension heightened", "context_sentence": "5.\nBTS has unveiled a trailer for the upcoming concert special \n\"BTS THE COMEBACK LIVE\" on Netflix, heightening anticipation \nfor the group’s long-awaited return.", "cefr_level": "C1", "frequency_score": 6.1599, "is_b2_plus": false, "derivatives": ["enhance", "raise", "rise", "sharpen"]}, {"word": "hoon", "lemma": "hoon", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "A worthless person; a hooligan or lout.", "translation_ko": "", "example_en": "", "context_sentence": "Welcome to Arirang News This is Park Kee hoon", "cefr_level": "C1", "frequency_score": 6.0101, "is_b2_plus": false, "derivatives": []}, {"word": "precautionary", "lemma": "precautionary", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "taken in advance to protect against possible danger or failure", "translation_ko": "", "example_en": "gave precautionary advice", "context_sentence": "The government issued Thursday a precautionary alert \nover a possible energy supply disruption amid an ongoing geopolitical crisis in the Middle East, vowing a stern response to unfair market practices involving energy supply and prices.", "cefr_level": "C1", "frequency_score": 6.0101, "is_b2_plus": false, "derivatives": ["precautional"]}, {"word": "convened", "lemma": "convene", "pos": "VERB", "pos_ko": "동사", "phonetic": "/kənˈvɪin/", "definition_en": "meet formally", "translation_ko": "", "example_en": "The council convened last week", "context_sentence": "Just a day after returning from his four-day trip to Southeast Asia, President Lee Jae Myung convened an extraordinary Cabinet meeting \non Thursday to discuss the situation in the Middle East.", "cefr_level": "B2", "frequency_score": 5.9586, "is_b2_plus": true, "derivatives": ["convoke"]}, {"word": "geopolitical", "lemma": "geopolitical", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "of or relating to geopolitics", "translation_ko": "", "example_en": "", "context_sentence": "The government issued Thursday a precautionary alert \nover a possible energy supply disruption amid an ongoing geopolitical crisis in the Middle East, vowing a stern response to unfair market practices involving energy supply and prices.", "cefr_level": "B2", "frequency_score": 5.8508, "is_b2_plus": true, "derivatives": []}, {"word": "vigilance", "lemma": "vigilance", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈvɪdʒɪləns/", "definition_en": "the process of paying close and continuous attention", "translation_ko": "", "example_en": "wakefulness, watchfulness, and bellicosity make a good hunter", "context_sentence": "The President also urged vigilance over potential economic fallout \nfrom the closure of the Strait of Hormuz, through which about a fifth of the world's oil is shipped.", "cefr_level": "B2", "frequency_score": 5.8386, "is_b2_plus": false, "derivatives": ["alertness", "wakefulness", "watchfulness", "weather eye"]}, {"word": "devise", "lemma": "devise", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɪˈvaɪz/", "definition_en": "a will disposing of real property", "translation_ko": "", "example_en": "", "context_sentence": "The president strongly emphasized the need to crack down on foul play, taking advantage of the current situation, and ordered the Cabinet \nto devise measures to prevent price gouging.", "cefr_level": "B2", "frequency_score": 5.8097, "is_b2_plus": false, "derivatives": ["contrive", "excogitate", "forge", "formulate", "get up", "invent", "machinate", "organise", "organize", "prepare"]}, {"word": "unveiled", "lemma": "unveil", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "remove the veil from", "translation_ko": "", "example_en": "Women must not unveil themselves in public in Islamic societies", "context_sentence": "5.\nBTS has unveiled a trailer for the upcoming concert special \n\"BTS THE COMEBACK LIVE\" on Netflix, heightening anticipation \nfor the group’s long-awaited return.", "cefr_level": "B2", "frequency_score": 5.8013, "is_b2_plus": false, "derivatives": ["bring out", "reveal", "uncover"]}, {"word": "instructed", "lemma": "instruct", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˌɪnˈstɹʌkt/", "definition_en": "impart skills or knowledge to", "translation_ko": "", "example_en": "I taught them French", "context_sentence": "He instructed officials to closely monitor the situation and prepare contingency plans for possible emergency evacuations, \nincluding the use of military aircraft and chartered flights if necessary.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["apprise", "apprize", "learn", "teach"]}, {"word": "escalating", "lemma": "escalate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈɛs.kə.leɪt/", "definition_en": "increase in extent or intensity", "translation_ko": "", "example_en": "The Allies escalated the bombing", "context_sentence": "The Ministry of Foreign Affairs Thursday imposed a travel ban on all of Iran amid rising security concerns linked to the escalating conflict \nin the Middle East.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": false, "derivatives": ["intensify", "step up"]}, {"word": "surpassed", "lemma": "surpass", "pos": "VERB", "pos_ko": "동사", "phonetic": "/sɚˈpæs/", "definition_en": "distinguish oneself", "translation_ko": "", "example_en": "She excelled in math", "context_sentence": "His remarks came specifically after the national average price of gasoline surpassed 1,800 won for the first time in about \nthree years and seven months.", "cefr_level": "B2", "frequency_score": 5.6308, "is_b2_plus": false, "derivatives": ["exceed", "excel", "go by", "go past", "outdo", "outgo", "outmatch", "outperform", "outstrip", "pass", "pass by", "stand out", "surmount", "transcend", "travel by"]}, {"word": "livelihoods", "lemma": "livelihood", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈlaɪvlɪhʊd/", "definition_en": "the financial means whereby one lives", "translation_ko": "", "example_en": "each child was expected to pay for their keep", "context_sentence": "He placed particular emphasis on energy supplies such as crude oil and gas, noting that disruptions would have direct repercussions across related industries and people's livelihoods.", "cefr_level": "B2", "frequency_score": 5.58, "is_b2_plus": false, "derivatives": ["bread and butter", "keep", "living", "support", "sustenance"]}, {"word": "contingency", "lemma": "contingency", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/kənˈtɪndʒənsi/", "definition_en": "a possible event or occurrence or result", "translation_ko": "", "example_en": "", "context_sentence": "He instructed officials to closely monitor the situation and prepare contingency plans for possible emergency evacuations, \nincluding the use of military aircraft and chartered flights if necessary.", "cefr_level": "B2", "frequency_score": 5.5607, "is_b2_plus": true, "derivatives": ["contingence", "eventuality"]}, {"word": "liter", "lemma": "liter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈliː.tə/", "definition_en": "a metric unit of capacity, formerly defined as the volume of one kilogram of pure water under standard conditions; now equal to 1,000 cubic centimeters (or approximately 1.75 pints)", "translation_ko": "", "example_en": "You should be able to fill four cups with one litre of water.", "context_sentence": "The national average price for regular gasoline rose 2.5 percent \non Thursday from the previous day to 1,821 won per liter, \nwhile automotive diesel jumped 4.76 percent to 1,811 won per liter.", "cefr_level": "B2", "frequency_score": 5.5406, "is_b2_plus": false, "derivatives": ["cubic decimeter", "cubic decimetre", "l", "litre"]}, {"word": "stabilizing", "lemma": "stabilize", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "make stable and keep from fluctuating or put into an equilibrium", "translation_ko": "", "example_en": "The drug stabilized her blood pressure", "context_sentence": "President Lee says if handled properly, the situation could rather \nserve as a chance to strengthen the economy, \nfrom stabilizing overheated financial markets to accelerating the country's transition away from crude oil toward renewable energy.", "cefr_level": "B2", "frequency_score": 5.5406, "is_b2_plus": false, "derivatives": ["brace", "stabilise", "steady"]}, {"word": "flashbacks", "lemma": "flashback", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a transition (in literary or theatrical works or films) to an earlier event or scene that interrupts the normal chronological development of the story", "translation_ko": "", "example_en": "", "context_sentence": "The clip features flashbacks of past concerts and the cheers of fans \nknown as ARMY, as the members share how much they have missed performing together on stage.", "cefr_level": "B2", "frequency_score": 5.5302, "is_b2_plus": false, "derivatives": ["flashback"]}, {"word": "evacuate", "lemma": "evacuate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɪˈvæk.ju.eɪt/", "definition_en": "move out of an unsafe location into safety", "translation_ko": "", "example_en": "After the earthquake, residents were evacuated", "context_sentence": "The ministry warned that Korean nationals who visit or stay in Iran without authorization may face punishment under relevant laws, \nadvising those planning to travel to the region to cancel their trips \nand urging those currently there to evacuate.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["empty", "void"]}, {"word": "readiness", "lemma": "readiness", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the state of having been made ready or prepared for use or action (especially military action)", "translation_ko": "", "example_en": "putting them in readiness", "context_sentence": "The ministry said the country will raise its readiness \nagainst a potential prolonging of the Middle East conflict.", "cefr_level": "B2", "frequency_score": 5.4101, "is_b2_plus": false, "derivatives": ["eagerness", "facility", "forwardness", "preparation", "preparedness", "set", "zeal"]}, {"word": "awaited", "lemma": "await", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "look forward to the probable occurrence of", "translation_ko": "", "example_en": "We were expecting a visit from our relatives", "context_sentence": "5.\nBTS has unveiled a trailer for the upcoming concert special \n\"BTS THE COMEBACK LIVE\" on Netflix, heightening anticipation \nfor the group’s long-awaited return.", "cefr_level": "B2", "frequency_score": 5.3696, "is_b2_plus": false, "derivatives": ["expect", "look", "wait"]}, {"word": "accelerating", "lemma": "accelerate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/æk.ˈsɛl.ə.ˌɹeɪt/", "definition_en": "move faster", "translation_ko": "", "example_en": "The car accelerated", "context_sentence": "President Lee says if handled properly, the situation could rather \nserve as a chance to strengthen the economy, \nfrom stabilizing overheated financial markets to accelerating the country's transition away from crude oil toward renewable energy.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["quicken", "speed", "speed up"]}, {"word": "remarks", "lemma": "remark", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ɹɪˈmɑːk/", "definition_en": "a statement that expresses a personal opinion or belief or adds information", "translation_ko": "", "example_en": "from time to time she contributed a personal comment on his account", "context_sentence": "His remarks came specifically after the national average price of gasoline surpassed 1,800 won for the first time in about \nthree years and seven months.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["comment", "input", "mention", "note", "notice", "observe", "point out"]}, {"word": "emphasized", "lemma": "emphasize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈɛm.fə.saɪz/", "definition_en": "to stress, single out as important", "translation_ko": "", "example_en": "Dr. Jones emphasizes exercise in addition to a change in diet", "context_sentence": "At the same cabinet meeting, \nPresident Lee Jae Myung also emphasized protecting the economy.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["accent", "accentuate", "emphasise", "punctuate", "stress", "underline", "underscore"]}, {"word": "fallout", "lemma": "fallout", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈfɔːlaʊt/", "definition_en": "the radioactive particles that settle to the ground after a nuclear explosion", "translation_ko": "", "example_en": "", "context_sentence": "The President also urged vigilance over potential economic fallout \nfrom the closure of the Strait of Hormuz, through which about a fifth of the world's oil is shipped.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["radioactive dust", "side effect"]}, {"word": "disruptions", "lemma": "disruption", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪsˈɹʌpʃən/", "definition_en": "an act of delaying or interrupting the continuity", "translation_ko": "", "example_en": "it was presented without commercial breaks", "context_sentence": "He placed particular emphasis on energy supplies such as crude oil and gas, noting that disruptions would have direct repercussions across related industries and people's livelihoods.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["break", "commotion", "dislocation", "disturbance", "flutter", "gap", "hoo-ha", "hoo-hah", "hurly burly", "interruption", "kerfuffle", "perturbation", "to-do"]}, {"word": "anticipation", "lemma": "anticipation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an expectation", "translation_ko": "", "example_en": "", "context_sentence": "5.\nBTS has unveiled a trailer for the upcoming concert special \n\"BTS THE COMEBACK LIVE\" on Netflix, heightening anticipation \nfor the group’s long-awaited return.", "cefr_level": "B2", "frequency_score": 5.2596, "is_b2_plus": false, "derivatives": ["expectancy", "expectation", "prediction", "prevision"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
