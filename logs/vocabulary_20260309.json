@@ -1,0 +1,576 @@
+{
+  "created_at": "2026-03-09T23:47:04.745075",
+  "count": 30,
+  "items": [
+    {
+      "word": "subzero",
+      "lemma": "subzero",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Even southern regions will see subzero temperatures with frost in inland regions.",
+      "cefr_level": "C1",
+      "frequency_score": 6.6596,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "sidecar",
+      "lemma": "sidecar",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a cocktail made of orange liqueur with lemon juice and brandy",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The index slid right after the opening bell, triggering a sell-side sidecar.",
+      "cefr_level": "C1",
+      "frequency_score": 6.4597,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "preemptive",
+      "lemma": "preemptive",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/pɹiːˈɛmp.tɪv/",
+      "definition_en": "designed or having the power to deter or prevent an anticipated situation or occurrence",
+      "translation_ko": "",
+      "example_en": "a preemptive business offer",
+      "context_sentence": "Devising preemptive measures that can cover worst-case scenarios, with a sense of urgency.",
+      "cefr_level": "C1",
+      "frequency_score": 6.2,
+      "is_b2_plus": false,
+      "derivatives": [
+        "pre-emptive"
+      ]
+    },
+    {
+      "word": "centimeters",
+      "lemma": "centimeter",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a metric unit of length equal to one hundredth of a meter",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The east coast of Gangwon State and parts of Gyeongsang-do province will see rain through tonight, with mountainous regions of Gangwon seeing up to 5 centimeters of snowfall.",
+      "cefr_level": "C1",
+      "frequency_score": 6.1101,
+      "is_b2_plus": false,
+      "derivatives": [
+        "centimetre",
+        "cm"
+      ]
+    },
+    {
+      "word": "Qatari",
+      "lemma": "qatari",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "a native or inhabitant of Qatar",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The Korean Embassy in Qatar had been requesting the Qatari government and airlines to resume flights to Seoul,... in order to facilitate the swift and safe return of Korean nationals staying in the Middle East.",
+      "cefr_level": "C1",
+      "frequency_score": 6.0899,
+      "is_b2_plus": false,
+      "derivatives": [
+        "Katari",
+        "Qatari"
+      ]
+    },
+    {
+      "word": "plenary",
+      "lemma": "plenary",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "full in all respects",
+      "translation_ko": "",
+      "example_en": "a plenary session of the legislature",
+      "context_sentence": "The bill heads to the parliament's plenary session this coming Thursday for final passage.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8996,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "deepened",
+      "lemma": "deepen",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈdiːpən/",
+      "definition_en": "make more intense, stronger, or more marked; ,",
+      "translation_ko": "",
+      "example_en": "The efforts were intensified",
+      "context_sentence": "Losses later deepened past eight percent, setting off a circuit breaker that halted trading for twenty minutes.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8097,
+      "is_b2_plus": false,
+      "derivatives": [
+        "change",
+        "compound",
+        "heighten",
+        "intensify"
+      ]
+    },
+    {
+      "word": "Devising",
+      "lemma": "devise",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɪˈvaɪz/",
+      "definition_en": "a will disposing of real property",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Devising preemptive measures that can cover worst-case scenarios, with a sense of urgency.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8097,
+      "is_b2_plus": false,
+      "derivatives": [
+        "contrive",
+        "excogitate",
+        "forge",
+        "formulate",
+        "get up",
+        "invent",
+        "machinate",
+        "organise",
+        "organize",
+        "prepare"
+      ]
+    },
+    {
+      "word": "paves",
+      "lemma": "pave",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/peɪv/",
+      "definition_en": "a setting with precious stones so closely set that no metal shows",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The bill paves the path for a dedicated investment corporation and a risk management committee to oversee projects in sectors such as shipbuilding and semiconductors.",
+      "cefr_level": "B2",
+      "frequency_score": 5.7905,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "snowfall",
+      "lemma": "snowfall",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "precipitation falling from clouds in the form of ice crystals",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The east coast of Gangwon State and parts of Gyeongsang-do province will see rain through tonight, with mountainous regions of Gangwon seeing up to 5 centimeters of snowfall.",
+      "cefr_level": "B2",
+      "frequency_score": 5.7799,
+      "is_b2_plus": false,
+      "derivatives": [
+        "snow"
+      ]
+    },
+    {
+      "word": "hovering",
+      "lemma": "hover",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "be undecided about something; waver between conflicting positions or courses of action",
+      "translation_ko": "",
+      "example_en": "He oscillates between accepting the new position and retirement",
+      "context_sentence": "Tomorrow morning will be colder, but highs will be higher, hovering right around the seasonal norms.",
+      "cefr_level": "B2",
+      "frequency_score": 5.7399,
+      "is_b2_plus": false,
+      "derivatives": [
+        "brood",
+        "bulk large",
+        "levitate",
+        "linger",
+        "loom",
+        "oscillate",
+        "vacillate",
+        "vibrate"
+      ]
+    },
+    {
+      "word": "airspace",
+      "lemma": "airspace",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "the space in the atmosphere immediately above the earth",
+      "translation_ko": "",
+      "example_en": "Various European countries transferred the aviation control of their adjoining airspace to Eurocontrol, while each retaining legal jurisdiction.",
+      "context_sentence": "Qatar’s airspace is partially open, with only some emergency flights to Europe currently in operation.",
+      "cefr_level": "B2",
+      "frequency_score": 5.719,
+      "is_b2_plus": false,
+      "derivatives": [
+        "air space"
+      ]
+    },
+    {
+      "word": "Celsius",
+      "lemma": "celsius",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "Swedish astronomer who devised the centigrade thermometer (1701-1744)",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Daegu and Gwangju at minus 1 degree Celsius.",
+      "cefr_level": "B2",
+      "frequency_score": 5.71,
+      "is_b2_plus": false,
+      "derivatives": [
+        "Anders Celsius",
+        "Celsius"
+      ]
+    },
+    {
+      "word": "shipbuilding",
+      "lemma": "shipbuilding",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "the construction of ships",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The bill paves the path for a dedicated investment corporation and a risk management committee to oversee projects in sectors such as shipbuilding and semiconductors.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6696,
+      "is_b2_plus": false,
+      "derivatives": [
+        "ship building"
+      ]
+    },
+    {
+      "word": "mountainous",
+      "lemma": "mountainous",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "having hills and crags",
+      "translation_ko": "",
+      "example_en": "hilly terrain",
+      "context_sentence": "The east coast of Gangwon State and parts of Gyeongsang-do province will see rain through tonight, with mountainous regions of Gangwon seeing up to 5 centimeters of snowfall.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6198,
+      "is_b2_plus": false,
+      "derivatives": [
+        "cragged",
+        "craggy",
+        "hilly"
+      ]
+    },
+    {
+      "word": "collusion",
+      "lemma": "collusion",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/kəˈluːʒən/",
+      "definition_en": "secret agreement",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "President Lee once again called for strong measures against price collusion related to oil products... and mentioned the need to stabilize prices.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5702,
+      "is_b2_plus": false,
+      "derivatives": [
+        "connivance"
+      ]
+    },
+    {
+      "word": "liter",
+      "lemma": "liter",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈliː.tə/",
+      "definition_en": "a metric unit of capacity, formerly defined as the volume of one kilogram of pure water under standard conditions; now equal to 1,000 cubic centimeters (or approximately 1.75 pints)",
+      "translation_ko": "",
+      "example_en": "You should be able to fill four cups with one litre of water.",
+      "context_sentence": "According to the Oil Price Information Network, as of 9 a.m. Monday, KST, the average price nationwide in Korea was approximately 1-thousand-897-point-7 won, or roughly 1 dollar and 27 cents, per liter.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5406,
+      "is_b2_plus": false,
+      "derivatives": [
+        "cubic decimeter",
+        "cubic decimetre",
+        "l",
+        "litre"
+      ]
+    },
+    {
+      "word": "stabilize",
+      "lemma": "stabilize",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "make stable and keep from fluctuating or put into an equilibrium",
+      "translation_ko": "",
+      "example_en": "The drug stabilized her blood pressure",
+      "context_sentence": "President Lee once again called for strong measures against price collusion related to oil products... and mentioned the need to stabilize prices.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5406,
+      "is_b2_plus": false,
+      "derivatives": [
+        "brace",
+        "stabilise",
+        "steady"
+      ]
+    },
+    {
+      "word": "envoy",
+      "lemma": "envoy",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈɛn.vɔɪ/",
+      "definition_en": "a diplomat having less authority than an ambassador",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "During his visit, he is expected to meet with Korea’s chief nuclear envoy, Jeong Yeon-doo {정연두},... as well as Deputy Minister Chung Eui-hye {정의혜} and Park Jong-han {박종한}, the director-general for Economic Diplomacy Coordination.",
+      "cefr_level": "B2",
+      "frequency_score": 5.52,
+      "is_b2_plus": false,
+      "derivatives": [
+        "emissary",
+        "envoi",
+        "envoy extraordinary",
+        "minister plenipotentiary"
+      ]
+    },
+    {
+      "word": "plunging",
+      "lemma": "plunge",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/plʌndʒ/",
+      "definition_en": "a brief swim in water",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "South Korea’s benchmark KOSPI closed sharply lower Monday, plunging about six percent to 5,251-point 87.",
+      "cefr_level": "B2",
+      "frequency_score": 5.51,
+      "is_b2_plus": false,
+      "derivatives": [
+        "dip",
+        "dive",
+        "immerse",
+        "plunk"
+      ]
+    },
+    {
+      "word": "oversee",
+      "lemma": "oversee",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/əʊvə(ɹ)siː/",
+      "definition_en": "watch and direct",
+      "translation_ko": "",
+      "example_en": "Who is overseeing this project?",
+      "context_sentence": "The bill paves the path for a dedicated investment corporation and a risk management committee to oversee projects in sectors such as shipbuilding and semiconductors.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4895,
+      "is_b2_plus": false,
+      "derivatives": [
+        "manage",
+        "superintend",
+        "supervise"
+      ]
+    },
+    {
+      "word": "semiconductors",
+      "lemma": "semiconductor",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a substance as germanium or silicon whose electrical conductivity is intermediate between that of a metal and an insulator; its conductivity increases with temperature and in the presence of impurities",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The bill paves the path for a dedicated investment corporation and a risk management committee to oversee projects in sectors such as shipbuilding and semiconductors.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4698,
+      "is_b2_plus": false,
+      "derivatives": [
+        "semiconducting material",
+        "semiconductor device",
+        "semiconductor unit"
+      ]
+    },
+    {
+      "word": "urgency",
+      "lemma": "urgency",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈɝ.dʒən.si/",
+      "definition_en": "the state of being urgent; an earnest and insistent necessity",
+      "translation_ko": "",
+      "example_en": "the urgency of a demand",
+      "context_sentence": "Devising preemptive measures that can cover worst-case scenarios, with a sense of urgency.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4498,
+      "is_b2_plus": false,
+      "derivatives": [
+        "importunity",
+        "urging"
+      ]
+    },
+    {
+      "word": "disrupting",
+      "lemma": "disrupt",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɪsˈɹʌpt/",
+      "definition_en": "make a break in",
+      "translation_ko": "",
+      "example_en": "We interrupt the program for the following messages",
+      "context_sentence": "The conflict in the Middle East has effectively closed off the Strait of Hormuz, disrupting supply routes for the roughly 20 percent of global oil exports.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4101,
+      "is_b2_plus": false,
+      "derivatives": [
+        "break up",
+        "cut off",
+        "interrupt"
+      ]
+    },
+    {
+      "word": "benchmark",
+      "lemma": "benchmark",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a standard by which something can be measured or judged",
+      "translation_ko": "",
+      "example_en": "his painting sets the benchmark of quality",
+      "context_sentence": "Global benchmark prices climbed sharply, with West Texas Intermediate jumping about 15 percent to 107 dollars and 54 cents per barrel as of 7 a.m., Korea standard time, the first time since July 2022 that it has traded above 100 dollars.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4001,
+      "is_b2_plus": true,
+      "derivatives": [
+        "bench mark"
+      ]
+    },
+    {
+      "word": "breaker",
+      "lemma": "breaker",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈbɹeɪkə/",
+      "definition_en": "a quarry worker who splits off blocks of stone",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Losses later deepened past eight percent, setting off a circuit breaker that halted trading for twenty minutes.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4001,
+      "is_b2_plus": false,
+      "derivatives": [
+        "breakers",
+        "circuit breaker",
+        "ledgeman",
+        "surf"
+      ]
+    },
+    {
+      "word": "unanimously",
+      "lemma": "unanimously",
+      "pos": "ADV",
+      "pos_ko": "부사",
+      "phonetic": "",
+      "definition_en": "of one mind; without dissent",
+      "translation_ko": "",
+      "example_en": "the Senate unanimously approved the bill",
+      "context_sentence": "In the meantime,\n\nA National Assembly special committee has advanced a bill supporting South Korea's planned 3-hundred-50-billion-U.S.-dollar investment in the U.S.\n\nThe special committee approved the bill unanimously.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3799,
+      "is_b2_plus": false,
+      "derivatives": [
+        "nem con",
+        "nemine contradicente"
+      ]
+    },
+    {
+      "word": "podium",
+      "lemma": "podium",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a platform raised above the surrounding level to give prominence to the person on it",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Onto sporting event,\n\nSouth Korea's Kim Yun-ji topped the podium in the women's sitting para biathlon in Italy on Sunday, making her the country's first female to win a Winter Paralympic gold.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3696,
+      "is_b2_plus": false,
+      "derivatives": [
+        "ambo",
+        "dais",
+        "pulpit",
+        "rostrum",
+        "soapbox",
+        "stump"
+      ]
+    },
+    {
+      "word": "departed",
+      "lemma": "depart",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɪˈpɑːt/",
+      "definition_en": "move away from a place into another direction",
+      "translation_ko": "",
+      "example_en": "Go away before I start to cry",
+      "context_sentence": "About 300 South Koreans departed Doha aboard a Qatar Airways flight on Monday, after emergency direct flights between Qatar and South Korea were allowed, although regular services remain suspended.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3298,
+      "is_b2_plus": false,
+      "derivatives": [
+        "deviate",
+        "diverge",
+        "go",
+        "go away",
+        "leave",
+        "part",
+        "pull up stakes",
+        "quit",
+        "set forth",
+        "set off",
+        "set out",
+        "start",
+        "start out",
+        "take leave",
+        "take off"
+      ]
+    },
+    {
+      "word": "dusty",
+      "lemma": "dusty",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "covered with a layer of dust",
+      "translation_ko": "",
+      "example_en": "a dusty pile of books",
+      "context_sentence": "Moving to weather forecast,\nTomorrow looks will be as dusty as today.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3298,
+      "is_b2_plus": false,
+      "derivatives": [
+        "cold",
+        "dust-covered",
+        "moth-eaten",
+        "stale"
+      ]
+    }
+  ]
+}
