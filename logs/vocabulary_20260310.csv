@@ -1,0 +1,53 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+HYBE,hybe,ADJ,형용사,,,,,The pop-up will run at Shinsegae Department Store’s main branch and HYBE headquarters from March 20th until April.,C2,8.0,False,
+KOSPI,kospi,NOUN,명사,,,,,"With the same reasoning behind the KOSPI's moves, the won closed at 1,469.3 won per dollar, down 26.2 won from the day before.",C2,7.5302,False,
+refiners,refiner,NOUN,명사,,one whose work is to refine a specific thing,,he was a sugar refiner,"He warned of possible price gouging by oil refiners, citing rising fuel prices despite South Korea holding petroleum reserves equivalent to seven months of supply.",C1,6.719,False,
+subcontracted,subcontract,VERB,동사,,a contract assigning to another party some obligations of a prior contract,,,"Lee noted the case of Hanwha Ocean eliminating discrimination between its employees and subcontracted workers for equal performance-based bonuses,... and said he hoped to see more of such cases in Korean society.",C1,6.6799,False,farm out|job
+unimaginably,unimaginably,ADV,부사,,to an unimaginable extent,,,"4.
+Kim Yo-jong, the sister of North Korean leader Kim Jong-un and a department director of the ruling Workers’ Party of Korea, warned on Tuesday about the joint military drills between South Korea and the U.S.
+
+In a statement carried by the Korean Central News Agency, she said hostile forces’ military demonstrations ""near"" the regime’s sovereign and security areas could lead to “unimaginably terrible consequences.”
+
+Calling the drills “a provocative and aggressive war rehearsal,” Kim said that regardless of any justification or adjustments, the exercise remains a large-scale, high-intensity war drill.",C1,6.6596,False,unthinkably
+sidecar,sidecar,NOUN,명사,,a cocktail made of orange liqueur with lemon juice and brandy,,,"3.
+South Korea's benchmark KOSPI closed at 5,532.59 on Tuesday, up 5.35 percent from the day before, showing heavy swings that even triggered a buy-side sidecar in early trading.",C1,6.4597,False,
+gouging,gouging,NOUN,명사,,force with the thumb,,gouge out his eyes,"He warned of possible price gouging by oil refiners, citing rising fuel prices despite South Korea holding petroleum reserves equivalent to seven months of supply.",C1,6.3298,False,extort|force out|gouge|rack|rout|squeeze|wring
+subsided,subside,VERB,동사,,wear off or die down,,The pain subsided,"According to the Japanese outlet Kyodo NEws, the passenger train service had been halted upon the outbreak of the COVID-19 pandemic, and even after the virus subsided, North Korea continued to refuse Chinese visitors, and only tourists from Russia were able to visit.",C1,6.1198,False,lessen|settle|sink
+fluctuations,fluctuation,NOUN,명사,,a wave motion,,the fluctuations of the sea,"""
+
+Since Operation Epic Fury began early this month, the benchmark KOSPI has shown extreme fluctuations, triggering both sell-side and buy-side sidecars nearly every trading day.",C1,6.1101,True,variation|wavering
+fluctuating,fluctuate,VERB,동사,,cause to fluctuate or move in a wavelike pattern,,,"Meanwhile, the Korean won is also fluctuating as it recovered on Tuesday after the exchange rate touched 1,500 won against the dollar at one point during the recent turmoil.",C1,6.0101,False,vacillate|waver
+Presiding,preside,VERB,동사,,act as president,,preside over companies and corporations,"Presiding over a Cabinet meeting on Tuesday, Lee said stabilizing prices is the government's most urgent task, as uncertainty grows in energy supplies, logistics, and financial markets.",C1,6.0101,False,
+logistics,logistic,NOUN,명사,/lɒdʒˈɪs.tɪk/,of or relating to logistics,,logistic requirements,"Presiding over a Cabinet meeting on Tuesday, Lee said stabilizing prices is the government's most urgent task, as uncertainty grows in energy supplies, logistics, and financial markets.",B2,5.8894,False,logistical
+instructed,instruct,VERB,동사,/ˌɪnˈstɹʌkt/,impart skills or knowledge to,,I taught them French,President Lee instructed the Finance Minister to ensure the measure minimizes the burden on customers.,B2,5.6904,False,apprise|apprize|learn|teach
+lingering,linger,VERB,동사,,remain present although waning or gradually dying,,Her perfume lingered on,"Moving to weather forecast,
+Dust that flowed in from overseas yesterday, combined with locally generated pollution, has been lingering due to stagnant air.",B2,5.6904,False,dawdle|footle|hang around|hover|lallygag|loaf|loiter|lollygag|lounge|lurk|mess about|mill about|mill around|tarry
+stagnant,stagnant,ADJ,형용사,,not circulating or flowing,,dead air,"Moving to weather forecast,
+Dust that flowed in from overseas yesterday, combined with locally generated pollution, has been lingering due to stagnant air.",B2,5.6904,False,dead|moribund
+supplementary,supplementary,ADJ,형용사,,functioning in a supporting capacity,,the main library and its auxiliary branches,The President even mentioned preparing a supplementary budget to ease the burden on consumers if the Middle East situation drags on.,B2,5.6402,False,auxiliary|subsidiary|supplemental
+conglomerates,conglomerate,NOUN,명사,,a composite rock made up of particles of varying size,,,"Speaking at a meeting with private firms at the Blue House on Tuesday, he said fostering an environment where large conglomerates cooperate with smaller firms was crucial for sustainable growth.",B2,5.6108,False,accumulate|amass|cumulate|empire|gather|pile up|pudding stone
+hinders,hinder,VERB,동사,,be a hindrance or obstacle to,,She is impeding the progress of our project,"President Lee Jae Myung says an ""all-in"" approach has now become an obstacle that hinders growth, as he called for corporate co-prosperity.",B2,5.6108,False,back|block|blockade|embarrass|hamper|handicap|hind|impede|obstruct|stymie|stymy
+haze,haze,NOUN,명사,,atmospheric moisture or dust or smoke that causes reduced visibility,,,"Ultra-fine dust levels stayed at “bad” levels across most regions today, and the haze could linger into tomorrow.",B2,5.58,False,daze|fog
+collusion,collusion,NOUN,명사,/kəˈluːʒən/,secret agreement,,,The Fair Trade Commission has launched an investigation into possible collusion among refiners.,B2,5.5702,False,connivance
+provocative,provocative,ADJ,형용사,,"serving or tending to provoke, excite, or stimulate; stimulating discussion or exciting controversy; ; ; - Anthony Trollope",,a provocative remark,"4.
+Kim Yo-jong, the sister of North Korean leader Kim Jong-un and a department director of the ruling Workers’ Party of Korea, warned on Tuesday about the joint military drills between South Korea and the U.S.
+
+In a statement carried by the Korean Central News Agency, she said hostile forces’ military demonstrations ""near"" the regime’s sovereign and security areas could lead to “unimaginably terrible consequences.”
+
+Calling the drills “a provocative and aggressive war rehearsal,” Kim said that regardless of any justification or adjustments, the exercise remains a large-scale, high-intensity war drill.",B2,5.5607,False,
+stabilizing,stabilize,VERB,동사,,make stable and keep from fluctuating or put into an equilibrium,,The drug stabilized her blood pressure,"Presiding over a Cabinet meeting on Tuesday, Lee said stabilizing prices is the government's most urgent task, as uncertainty grows in energy supplies, logistics, and financial markets.",B2,5.5406,False,brace|stabilise|steady
+turmoil,turmoil,NOUN,명사,,a violent disturbance,,the convulsions of the stock market,"Meanwhile, the Korean won is also fluctuating as it recovered on Tuesday after the exchange rate touched 1,500 won against the dollar at one point during the recent turmoil.",B2,5.4802,False,agitation|convulsion|excitement|hullabaloo|tumult|upheaval
+benchmark,benchmark,ADJ,형용사,,a standard by which something can be measured or judged,,his painting sets the benchmark of quality,"3.
+South Korea's benchmark KOSPI closed at 5,532.59 on Tuesday, up 5.35 percent from the day before, showing heavy swings that even triggered a buy-side sidecar in early trading.",B2,5.4001,True,bench mark
+breaker,breaker,NOUN,명사,/ˈbɹeɪkə/,a quarry worker who splits off blocks of stone,,,This is significant as it followed a steep decline that triggered a circuit breaker just the day before.,B2,5.4001,False,breakers|circuit breaker|ledgeman|surf
+remarks,remark,NOUN,명사,,a statement that expresses a personal opinion or belief or adds information,,from time to time she contributed a personal comment on his account,"The gains came amid remarks from U.S. President Donald Trump, hinting that the conflict between the United States and Iran was ""very complete.",B2,5.3401,False,comment|input|mention|note|notice|observe|point out
+citing,cite,VERB,동사,/saɪt/,a short note recognizing a source of information or of a quoted passage,,the student's essay failed to list several important citations,"He warned of possible price gouging by oil refiners, citing rising fuel prices despite South Korea holding petroleum reserves equivalent to seven months of supply.",B2,5.3298,False,acknowledgment|advert|bring up|citation|credit|mention|name|quotation|quote|refer|reference
+pandemic,pandemic,NOUN,명사,,an epidemic that is geographically widespread; occurring throughout a region or even throughout the world,,,"According to the Japanese outlet Kyodo NEws, the passenger train service had been halted upon the outbreak of the COVID-19 pandemic, and even after the virus subsided, North Korea continued to refuse Chinese visitors, and only tourists from Russia were able to visit.",B2,5.3197,True,
+rehearsal,rehearsal,NOUN,명사,,a practice session in preparation for a public performance (as of a play or speech or concert),,he missed too many rehearsals,"4.
+Kim Yo-jong, the sister of North Korean leader Kim Jong-un and a department director of the ruling Workers’ Party of Korea, warned on Tuesday about the joint military drills between South Korea and the U.S.
+
+In a statement carried by the Korean Central News Agency, she said hostile forces’ military demonstrations ""near"" the regime’s sovereign and security areas could lead to “unimaginably terrible consequences.”
+
+Calling the drills “a provocative and aggressive war rehearsal,” Kim said that regardless of any justification or adjustments, the exercise remains a large-scale, high-intensity war drill.",B2,5.3197,False,dry run
+suspended,suspend,VERB,동사,,hang freely,,The secret police suspended their victims from the ceiling and beat them,"Meanwhile, 
+Train services between North Korea and China will resume on Thursday this week, after being suspended for some six years.",B2,5.3197,False,debar|freeze|set aside
