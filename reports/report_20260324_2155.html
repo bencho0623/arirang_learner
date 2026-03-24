@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.03.24", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260324_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260324/28821669/28821669_20260324-oalgxhk0_audio_arirang-mp3-normal-20260324221531.mp4?hdnts=exp=3548965686~acl=/kr/media1/arirang/20260324/28821669/*~hmac=c1650f4a587e7d97e619a1d558bfda308a5a84e78c89e05aa24a1768a9199f58", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nDevising an emergency response system in a preemptive manner,... so that the conflict in the Middle East does not pose grave threats to lives in Korea.\nThat's what President Lee Jae Myung has instructed his officials to do, with response measures topping Tuesday's Cabinet meeting agenda for a third straight week.\nWith global oil prices rising, authorities will update the fuel price cap rule and announce it later this week.\nThe president also vowed to strongly punish any attempts at price collusion,... adding that the prosecution has launched investigations into oil refiners.\nTo reduce private vehicle use on workdays, public institutions will adopt a system limiting use based on the last digit of license plate numbers.\nAs for private firms, Lee asked them to join the campaign to save energy.\nPresident Lee revisited the need to swiftly organize a \"war-response\" extra budget.\n\n2.\nThe United States is stepping up pressure on countries, including South Korea, to give up their developing country status at the World Trade Organization.\nThe U.S.\nTrade Representative released a reform report on Tuesday, signaling Washington's intent to crack down on what it sees as \"free-riding\" within the WTO system.\nCiting U.S.\nTrade Representative Jamieson Greer, the report describes the current global order in international trade as “untenable and unsustainable.\"\nWashington argues that reforming \"special and differential treatment,\" or \"SDT,\" is key to restoring the organization's credibility.\nSDT allows developing countries greater flexibility, including slower tariff cuts and extended timelines for implementing trade commitments.\nThe report points to four countries...\nBrazil, Singapore, South Korea and Costa Rica.\nThe United States also outlined reform steps, proposing stronger incentives for countries that comply with notification requirements by properly reporting trade-related measures.\n\n3.\nSouth Korea's Cabinet today approved two bills aimed at stripping prosecutors of their investigative powers.\nThe bills stipulate creating two new agencies, one that will exclusively handle investigations under the interior ministry... and the other in charge of indictments under the justice ministry.\nThe investigation agency will look into six major crimes, including corruption and those related to the economy or drugs.\nThe current Prosecutors' Office will be abolished in October, - the first major change in 78 years, following decades of debate over readjusting the prosecutions' powers.\nThe legislation was led by the ruling Democratic Party amid objections from the main opposition People Power Party.\n\n4.\nSouth Korea expressed strong regret on Tuesday,... over Japan’s approval of high school textbooks that claim Dokdo as Japanese territory,... urging immediate corrections.\nThe foreign ministry summoned Hirotaka Matsuo,... deputy chief of mission at the Japanese Embassy,... to lodge a complaint,... saying the country cannot accept any such claims.\nSeoul also protested Japan’s approval of textbook passages that downplay the coercive nature of wartime forced labor and sexual slavery by the Japanese military.\nThe ministry stressed that a correct understanding of history among future generations is essential for building future-oriented ties between the two countries, and urged Japan to take a more responsible approach to history education.\n\n5.\nNorth Korean leader Kim Jong-un has formally labeled South Korea the “most hostile state” and warned of merciless consequences if Pyongyang is provoked.\nAccording to the Korean Central News Agency on Tuesday,...\nKim made the remarks on the final day of the first session of the Supreme People’s Assembly, declaring that Seoul has now been officially designated as North Korea’s principal adversary.\nHe warned that South Korea would “pay the price” for any provocation and reaffirmed that North Korea’s status as a nuclear weapons state will never change, vowing continued efforts to confront what he described as hostile forces.\nThe comments came as Kim secured a third consecutive term as chairman of the State Affairs Commission, the country’s top policy-guidance body created in 2016.\nMeanwhile, Russian President Vladimir Putin congratulated Kim on his reelection and expressed hope for deeper cooperation between Moscow and Pyongyang.\nIn a message released by the Kremlin on Monday, Putin praised Kim’s role in strengthening what he called a friendly and allied relationship between the two countries, adding that continued collaboration would serve their fundamental national interests.\nMoving to weather forecast,\nWe’ll continue to see the warmth, but there will be large day-to-night temperature swings.\nWith stagnant air, fine dust is building up.\nTomorrow, ultrafine dust levels will reach “bad” across the capital area, the Chungcheong-do provinces, inland Gangwon and Jeonbuk states.\nAs for temperatures, Seoul will start the day at 8 degrees Celsius, Daejeon at 7 degrees, Busan at 11 degrees.\nRain will begin on Jeju-do Island late tonight, then spread to the southern coastlines by early tomorrow morning.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "ultrafine", "lemma": "ultrafine", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "Tomorrow, ultrafine dust levels will reach “bad” across the capital area, the Chungcheong-do provinces, inland Gangwon and Jeonbuk states.", "cefr_level": "C2", "frequency_score": 7.0701, "is_b2_plus": false, "derivatives": []}, {"word": "refiners", "lemma": "refiner", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "one whose work is to refine a specific thing", "translation_ko": "", "example_en": "he was a sugar refiner", "context_sentence": "The president also vowed to strongly punish any attempts at price collusion,... adding that the prosecution has launched investigations into oil refiners.", "cefr_level": "C1", "frequency_score": 6.719, "is_b2_plus": false, "derivatives": []}, {"word": "readjusting", "lemma": "readjust", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "adjust anew", "translation_ko": "", "example_en": "After moving back to America, he had to readjust", "context_sentence": "The current Prosecutors' Office will be abolished in October, - the first major change in 78 years, following decades of debate over readjusting the prosecutions' powers.", "cefr_level": "C1", "frequency_score": 6.4202, "is_b2_plus": false, "derivatives": ["readapt", "reset"]}, {"word": "stipulate", "lemma": "stipulate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈstɪpjuˌleɪt/", "definition_en": "specify as a condition or requirement in a contract or agreement; make an express demand or provision in an agreement", "translation_ko": "", "example_en": "The will stipulates that she can live in the house for the rest of her life", "context_sentence": "The bills stipulate creating two new agencies, one that will exclusively handle investigations under the interior ministry... and the other in charge of indictments under the justice ministry.", "cefr_level": "C1", "frequency_score": 6.2299, "is_b2_plus": false, "derivatives": ["condition", "qualify", "specify"]}, {"word": "preemptive", "lemma": "preemptive", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/pɹiːˈɛmp.tɪv/", "definition_en": "designed or having the power to deter or prevent an anticipated situation or occurrence", "translation_ko": "", "example_en": "a preemptive business offer", "context_sentence": "Devising an emergency response system in a preemptive manner,... so that the conflict in the Middle East does not pose grave threats to lives in Korea.", "cefr_level": "C1", "frequency_score": 6.2, "is_b2_plus": false, "derivatives": ["pre-emptive"]}, {"word": "reaffirmed", "lemma": "reaffirm", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "affirm once again", "translation_ko": "", "example_en": "He reaffirmed his faith in the church", "context_sentence": "He warned that South Korea would “pay the price” for any provocation and reaffirmed that North Korea’s status as a nuclear weapons state will never change, vowing continued efforts to confront what he described as hostile forces.", "cefr_level": "C1", "frequency_score": 6.1701, "is_b2_plus": false, "derivatives": []}, {"word": "downplay", "lemma": "downplay", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "represent as less significant or important", "translation_ko": "", "example_en": "", "context_sentence": "Seoul also protested Japan’s approval of textbook passages that downplay the coercive nature of wartime forced labor and sexual slavery by the Japanese military.", "cefr_level": "C1", "frequency_score": 6.0899, "is_b2_plus": false, "derivatives": ["background", "minimise", "minimize", "play down", "understate"]}, {"word": "workdays", "lemma": "workday", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a day on which work is done", "translation_ko": "", "example_en": "It will take five workdays to process your application.", "context_sentence": "To reduce private vehicle use on workdays, public institutions will adopt a system limiting use based on the last digit of license plate numbers.", "cefr_level": "C1", "frequency_score": 6.06, "is_b2_plus": false, "derivatives": ["work day", "working day"]}, {"word": "coercive", "lemma": "coercive", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "serving or intended to coerce", "translation_ko": "", "example_en": "authority is directional instead of coercive", "context_sentence": "Seoul also protested Japan’s approval of textbook passages that downplay the coercive nature of wartime forced labor and sexual slavery by the Japanese military.", "cefr_level": "C1", "frequency_score": 6.02, "is_b2_plus": false, "derivatives": []}, {"word": "untenable", "lemma": "untenable", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "(of theories etc) incapable of being defended or justified", "translation_ko": "", "example_en": "The theory of cold fusion was untenable.", "context_sentence": "Citing U.S. Trade Representative Jamieson Greer, the report describes the current global order in international trade as “untenable and unsustainable.", "cefr_level": "B2", "frequency_score": 5.9914, "is_b2_plus": false, "derivatives": ["indefensible"]}, {"word": "merciless", "lemma": "merciless", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "having or showing no mercy", "translation_ko": "", "example_en": "the merciless enemy", "context_sentence": "5.\nNorth Korean leader Kim Jong-un has formally labeled South Korea the “most hostile state” and warned of merciless consequences if Pyongyang is provoked.", "cefr_level": "B2", "frequency_score": 5.9586, "is_b2_plus": false, "derivatives": ["unmerciful"]}, {"word": "unsustainable", "lemma": "unsustainable", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "Not sustainable", "translation_ko": "", "example_en": "", "context_sentence": "Citing U.S. Trade Representative Jamieson Greer, the report describes the current global order in international trade as “untenable and unsustainable.", "cefr_level": "B2", "frequency_score": 5.8508, "is_b2_plus": false, "derivatives": []}, {"word": "Devising", "lemma": "devise", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɪˈvaɪz/", "definition_en": "a will disposing of real property", "translation_ko": "", "example_en": "", "context_sentence": "Devising an emergency response system in a preemptive manner,... so that the conflict in the Middle East does not pose grave threats to lives in Korea.", "cefr_level": "B2", "frequency_score": 5.8097, "is_b2_plus": false, "derivatives": ["contrive", "excogitate", "forge", "formulate", "get up", "invent", "machinate", "organise", "organize", "prepare"]}, {"word": "provocation", "lemma": "provocation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "unfriendly behavior that causes anger or resentment", "translation_ko": "", "example_en": "", "context_sentence": "He warned that South Korea would “pay the price” for any provocation and reaffirmed that North Korea’s status as a nuclear weapons state will never change, vowing continued efforts to confront what he described as hostile forces.", "cefr_level": "B2", "frequency_score": 5.8097, "is_b2_plus": false, "derivatives": ["aggravation", "incitation", "incitement", "irritation"]}, {"word": "adversary", "lemma": "adversary", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "someone who offers opposition", "translation_ko": "", "example_en": "", "context_sentence": "Kim made the remarks on the final day of the first session of the Supreme People’s Assembly, declaring that Seoul has now been officially designated as North Korea’s principal adversary.", "cefr_level": "B2", "frequency_score": 5.71, "is_b2_plus": false, "derivatives": ["antagonist", "opponent", "opposer", "resister"]}, {"word": "instructed", "lemma": "instruct", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˌɪnˈstɹʌkt/", "definition_en": "impart skills or knowledge to", "translation_ko": "", "example_en": "I taught them French", "context_sentence": "That's what President Lee Jae Myung has instructed his officials to do, with response measures topping Tuesday's Cabinet meeting agenda for a third straight week.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["apprise", "apprize", "learn", "teach"]}, {"word": "stagnant", "lemma": "stagnant", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "not circulating or flowing", "translation_ko": "", "example_en": "dead air", "context_sentence": "With stagnant air, fine dust is building up.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["dead", "moribund"]}, {"word": "reelection", "lemma": "reelection", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "election again", "translation_ko": "", "example_en": "he did not run for reelection", "context_sentence": "Meanwhile, Russian President Vladimir Putin congratulated Kim on his reelection and expressed hope for deeper cooperation between Moscow and Pyongyang.", "cefr_level": "B2", "frequency_score": 5.6799, "is_b2_plus": false, "derivatives": []}, {"word": "revisited", "lemma": "revisit", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "visit again", "translation_ko": "", "example_en": "We revisited Rome after 25 years", "context_sentence": "President Lee revisited the need to swiftly organize a \"war-response\" extra budget.", "cefr_level": "B2", "frequency_score": 5.6402, "is_b2_plus": false, "derivatives": []}, {"word": "designated", "lemma": "designate", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "assign a name or title to", "translation_ko": "", "example_en": "", "context_sentence": "Kim made the remarks on the final day of the first session of the Supreme People’s Assembly, declaring that Seoul has now been officially designated as North Korea’s principal adversary.", "cefr_level": "B2", "frequency_score": 5.6308, "is_b2_plus": false, "derivatives": ["assign", "delegate", "denominate", "depute", "destine", "doom", "fate", "indicate", "intend", "point", "show", "specify"]}, {"word": "collusion", "lemma": "collusion", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/kəˈluːʒən/", "definition_en": "secret agreement", "translation_ko": "", "example_en": "", "context_sentence": "The president also vowed to strongly punish any attempts at price collusion,... adding that the prosecution has launched investigations into oil refiners.", "cefr_level": "B2", "frequency_score": 5.5702, "is_b2_plus": false, "derivatives": ["connivance"]}, {"word": "oriented", "lemma": "orient", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "the countries of Asia", "translation_ko": "", "example_en": "The weather vane points North", "context_sentence": "The ministry stressed that a correct understanding of history among future generations is essential for building future-oriented ties between the two countries, and urged Japan to take a more responsible approach to history education.", "cefr_level": "B2", "frequency_score": 5.5607, "is_b2_plus": false, "derivatives": ["East", "Orient", "eastern hemisphere", "orientate", "point"]}, {"word": "abolished", "lemma": "abolish", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "do away with", "translation_ko": "", "example_en": "Slavery was abolished in the mid-19th century in America and in Russia", "context_sentence": "The current Prosecutors' Office will be abolished in October, - the first major change in 78 years, following decades of debate over readjusting the prosecutions' powers.", "cefr_level": "B2", "frequency_score": 5.52, "is_b2_plus": false, "derivatives": ["get rid of"]}, {"word": "tariff", "lemma": "tariff", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈtæɹəf/", "definition_en": "a government tax on imports or exports", "translation_ko": "", "example_en": "they signed a treaty to lower duties on trade between their countries", "context_sentence": "SDT allows developing countries greater flexibility, including slower tariff cuts and extended timelines for implementing trade commitments.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": true, "derivatives": ["duty"]}, {"word": "provoked", "lemma": "provoke", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "call forth (emotions, feelings, and responses)", "translation_ko": "", "example_en": "arouse pity", "context_sentence": "5.\nNorth Korean leader Kim Jong-un has formally labeled South Korea the “most hostile state” and warned of merciless consequences if Pyongyang is provoked.", "cefr_level": "B2", "frequency_score": 5.5003, "is_b2_plus": false, "derivatives": ["arouse", "beset", "call forth", "chevvy", "chevy", "chivvy", "chivy", "elicit", "enkindle", "evoke", "fire", "harass", "harry", "hassle", "kick up"]}, {"word": "coastlines", "lemma": "coastline", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the outline of a coast", "translation_ko": "", "example_en": "", "context_sentence": "Rain will begin on Jeju-do Island late tonight, then spread to the southern coastlines by early tomorrow morning.", "cefr_level": "B2", "frequency_score": 5.4895, "is_b2_plus": false, "derivatives": ["coastline"]}, {"word": "swiftly", "lemma": "swiftly", "pos": "ADV", "pos_ko": "부사", "phonetic": "/ˈswɪftli/", "definition_en": "in a swift manner", "translation_ko": "", "example_en": "she moved swiftly", "context_sentence": "President Lee revisited the need to swiftly organize a \"war-response\" extra budget.", "cefr_level": "B2", "frequency_score": 5.4597, "is_b2_plus": false, "derivatives": ["fleetly"]}, {"word": "summoned", "lemma": "summon", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "call in an official matter, such as to attend court", "translation_ko": "", "example_en": "", "context_sentence": "The foreign ministry summoned Hirotaka Matsuo,... deputy chief of mission at the Japanese Embassy,... to lodge a complaint,... saying the country cannot accept any such claims.", "cefr_level": "B2", "frequency_score": 5.4498, "is_b2_plus": false, "derivatives": ["cite", "come up", "marshal", "mobilise", "mobilize", "muster", "muster up", "rally", "summons"]}, {"word": "congratulated", "lemma": "congratulate", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "say something to someone that expresses praise", "translation_ko": "", "example_en": "He complimented her on her last physics paper", "context_sentence": "Meanwhile, Russian President Vladimir Putin congratulated Kim on his reelection and expressed hope for deeper cooperation between Moscow and Pyongyang.", "cefr_level": "B2", "frequency_score": 5.4101, "is_b2_plus": false, "derivatives": ["compliment", "felicitate", "plume", "preen", "pride"]}, {"word": "wartime", "lemma": "wartime", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a period of time during which there is armed conflict", "translation_ko": "", "example_en": "", "context_sentence": "Seoul also protested Japan’s approval of textbook passages that downplay the coercive nature of wartime forced labor and sexual slavery by the Japanese military.", "cefr_level": "B2", "frequency_score": 5.4101, "is_b2_plus": false, "derivatives": []}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
