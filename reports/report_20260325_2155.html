@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.03.25", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260325_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260325/28830977/28830977_20260325-war3y3ew_audio_arirang-mp3-normal-20260325222317.mp4?hdnts=exp=3549132338~acl=/kr/media1/arirang/20260325/28830977/*~hmac=d672642281b434942006c9250dd58862237e9606fe96b99fca043ccbad792107", "script_text": "Welcome to Arirang News\nThis is Kim Ji Eun,\nAnd We start with the top headlines at this hour\n#1\nIsraeli forces launched a wave of strikes on infrastructure in Tehran\nfrom Tuesday night into Wednesday.\nIranian state media says the Revolutionary Guards responded\nwith a new round of attacks on targets in Israel,\nas well as U.S. bases in the region, including Kuwait and Jordan.\nDrones hit a fuel tank at Kuwait International Airport, causing a fire,\nwhile an Iranian missile strike also wounded at least nine people in central Israel.\nDespite the ongoing conflict, U.S.\nPresident Donald Trump said Tuesday that\ntalks with Iran were ongoing, adding that Tehran is eager to reach a deal.\nIn fact, Trump said he had received a \"present\" from Iran,\nworth a huge amount of money, without revealing what exactly it was.\nHowever, Tehran has denied that any negotiations are underway,\nvowing to continue its fight.\n#2\nSouth Korea has launched its domestically produced supersonic fighter jet.\nIt was a decade in the making, and President Lee Jae Myung\nhailed the first delivery of a KF-21 as a symbol of South Korea's\n\"aspiration for self-reliant defense\" over more than half a century.\nHe was speaking at a ceremony on Wednesday at the Korea Aerospace Industries headquarters in the southern city of Sacheon,\nto celebrate the launch of South Korea's new supersonic fighter jet produced using its own technology.\nThe event was attended by related officials, foreign ambassadors,\nand private firms.\n#3\nThe South Korean Navy submarine Dosan Ahn Chang-ho left the Peninsula\non Wednesday, to take part in a joint exercise with the Royal Canadian Navy,\nin the first trans-Pacific deployment for Korea's naval submarine.\nThe 3-thousand-ton vessel is set to sail 14-thousand kilometres\nto Esquimalt Harbour in Victoria, arriving in late May,\nbefore conducting combined drills with Canada in early June.\nIt will then join the U.S.-led RIMPAC exercise in Hawaii later that month.\nThe mission will mark the first Pacific crossing by a South Korean Navy submarine, and its longest voyage on record.\nThe Navy says the deployment is meant to underscore\nboth the submarine’s operational capability and cooperation\nbetween the South Korean and Canadian navies.\n#4\nSouth Korea's demographic landscape saw a rare bright spot\nat the start of the year, with births and marriages\nboth posting double-digit growth.\nAccording to the Ministry of Data and Statistics on Wednesday,\n26-thousand-9-hundred-16 babies were born in January 2026.\nThat is an 11-point-7 percent jump from a year earlier,\nand the highest volume for any January in seven years.\nFollowing nine consecutive years of decline since 2016,\nJanuary births have now recorded double-digit growth for two straight years.\nThe total fertility rate—\nthe average number of children a woman is expected to have—\nneared the 1-point-zero mark,\nrising by zero-point-one-zero on-year to zero-point-nine-nine.\n#5\nNetflix says 18-point-4 million people worldwide tuned in to watch\n\"BTS Comeback Live: ARIRANG\" on Saturday.\nThe figures include people who watched the initial livestream as well as those who streamed the performance again within the following day\nAccording to Netflix on Tuesday, the show ranked in the weekly top 10 in 80 countries, while reaching the number one spot in 24 countries,\nincluding South Korea, Mexico, Japan, the Philippines, Indonesia, and Bulgaria.\nNetflix also reported that its concert-related content\nhas reached 2-point-6-2 billion global social impressions to date,\nsolely on its official channels,\nwhile numerous hashtags linked to BTS and Netflix trended around the world.\nMoving to the weather forecast,\nIt’s been unusually mild lately.\nTemperatures are about a month ahead of the average.\nBut we do have a large day-to-night temperature swing of around 15 to 20 degrees.\nAir quality is still a big concern.\nUltrafine dust levels will stay “bad” nationwide.\nUnder clear skies, dry weather advisories are in place.\nThe current temperature are\n_______ Degrees in Seoul\n_______ Degrees in Gwangju\n_______ Degrees in Busan\nAnd _______ Degrees on Jejudo island\nYou’re listening to, Arirang Radio"};
+    const rawVocabData = [{"word": "Ultrafine", "lemma": "ultrafine", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "(of particles) Very fine", "translation_ko": "", "example_en": "", "context_sentence": "Ultrafine dust levels will stay “bad” nationwide.", "cefr_level": "C2", "frequency_score": 7.0701, "is_b2_plus": false, "derivatives": []}, {"word": "livestream", "lemma": "livestream", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "To broadcast as a live stream.", "translation_ko": "", "example_en": "", "context_sentence": "The figures include people who watched the initial livestream as well as those who streamed the performance again within the following day", "cefr_level": "C1", "frequency_score": 6.0799, "is_b2_plus": false, "derivatives": []}, {"word": "underscore", "lemma": "underscore", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈʌn.də(ɹ)ˌskɔː(ɹ)/", "definition_en": "a line drawn underneath (especially under written matter)", "translation_ko": "", "example_en": "", "context_sentence": "The Navy says the deployment is meant to underscore \nboth the submarine’s operational capability and cooperation \nbetween the South Korean and Canadian navies.", "cefr_level": "C1", "frequency_score": 6.0301, "is_b2_plus": false, "derivatives": ["emphasise", "emphasize", "underline"]}, {"word": "supersonic", "lemma": "supersonic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "(of speed) greater than the speed of sound in a given medium (especially air)", "translation_ko": "", "example_en": "a supersonic bomber flies so fast that it must release its bombs while the target is still over the horizon", "context_sentence": "#2 \nSouth Korea has launched its domestically produced supersonic fighter jet.", "cefr_level": "B2", "frequency_score": 5.8508, "is_b2_plus": false, "derivatives": ["ultrasonic"]}, {"word": "kilometres", "lemma": "kilometre", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/kɪˈlɒmɪtə/", "definition_en": "a metric unit of length equal to 1000 meters (or 0.621371 miles)", "translation_ko": "", "example_en": "", "context_sentence": "The 3-thousand-ton vessel is set to sail 14-thousand kilometres \nto Esquimalt Harbour in Victoria, arriving in late May, \nbefore conducting combined drills with Canada in early June.", "cefr_level": "B2", "frequency_score": 5.7905, "is_b2_plus": false, "derivatives": ["kilometer", "klick", "km"]}, {"word": "domestically", "lemma": "domestically", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "with respect to the internal affairs of a government", "translation_ko": "", "example_en": "domestically, the president proposes a more moderate economic policy", "context_sentence": "#2 \nSouth Korea has launched its domestically produced supersonic fighter jet.", "cefr_level": "B2", "frequency_score": 5.7399, "is_b2_plus": false, "derivatives": []}, {"word": "aspiration", "lemma": "aspiration", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌæspəˈɹeɪʃən/", "definition_en": "a will to succeed", "translation_ko": "", "example_en": "Morgan has an aspiration of winning the game.", "context_sentence": "It was a decade in the making, and President Lee Jae Myung \nhailed the first delivery of a KF-21 as a symbol of South Korea's \n\"aspiration for self-reliant defense\" over more than half a century.", "cefr_level": "B2", "frequency_score": 5.699, "is_b2_plus": false, "derivatives": ["ambition", "breathing in", "dream", "inhalation", "inspiration", "intake"]}, {"word": "reliant", "lemma": "reliant", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "relying on another for support", "translation_ko": "", "example_en": "dependent on Middle Eastern oil", "context_sentence": "It was a decade in the making, and President Lee Jae Myung \nhailed the first delivery of a KF-21 as a symbol of South Korea's \n\"aspiration for self-reliant defense\" over more than half a century.", "cefr_level": "B2", "frequency_score": 5.5901, "is_b2_plus": false, "derivatives": []}, {"word": "hashtags", "lemma": "hashtag", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈhæʃˌtæɡ/", "definition_en": "A metadata tag, signaled by a preceding hash sign (#), used to label content.", "translation_ko": "", "example_en": "", "context_sentence": "Netflix also reported that its concert-related content \nhas reached 2-point-6-2 billion global social impressions to date, \nsolely on its official channels,\nwhile numerous hashtags linked to BTS and Netflix trended around the world.", "cefr_level": "B2", "frequency_score": 5.3298, "is_b2_plus": false, "derivatives": []}, {"word": "unusually", "lemma": "unusually", "pos": "ADV", "pos_ko": "부사", "phonetic": "/ʌnˈjuːʒuəli/", "definition_en": "to a remarkable degree or extent", "translation_ko": "", "example_en": "she was unusually tall", "context_sentence": "Moving to the weather forecast,\nIt’s been unusually mild lately.", "cefr_level": "B2", "frequency_score": 5.2403, "is_b2_plus": false, "derivatives": ["outstandingly", "remarkably", "unco"]}, {"word": "digit", "lemma": "digit", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈdɪdʒɪt/", "definition_en": "one of the elements that collectively form a system of numeration", "translation_ko": "", "example_en": "0 and 1 are digits", "context_sentence": "#4\nSouth Korea's demographic landscape saw a rare bright spot \nat the start of the year, with births and marriages \nboth posting double-digit growth.", "cefr_level": "B2", "frequency_score": 5.2299, "is_b2_plus": false, "derivatives": ["dactyl", "figure", "finger", "finger's breadth", "fingerbreadth"]}, {"word": "fertility", "lemma": "fertility", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/fɚːˈtɪləti/", "definition_en": "the ratio of live births in an area to the population of that area; expressed per 1000 population per year", "translation_ko": "", "example_en": "Muckspreading increases the fertility of the soil.", "context_sentence": "The total fertility rate—\nthe average number of children a woman is expected to have—\nneared the 1-point-zero mark, \nrising by zero-point-one-zero on-year to zero-point-nine-nine.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": false, "derivatives": ["birth rate", "birthrate", "fecundity", "fertility rate", "natality", "prolificacy", "rankness", "richness"]}, {"word": "negotiations", "lemma": "negotiation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/nɪˌɡəʊʃiˈeɪʃən/", "definition_en": "a discussion intended to produce an agreement", "translation_ko": "", "example_en": "the buyout negotiation lasted several days", "context_sentence": "However, Tehran has denied that any negotiations are underway, \nvowing to continue its fight.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": true, "derivatives": ["dialogue", "talks"]}, {"word": "According", "lemma": "accord", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "harmony of people's opinions or actions or characters", "translation_ko": "", "example_en": "the two parties were in agreement", "context_sentence": "According to the Ministry of Data and Statistics on Wednesday, \n26-thousand-9-hundred-16 babies were born in January 2026.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["accordance", "agree", "agreement", "concord", "conformity", "consort", "fit in", "harmonise", "harmonize", "pact", "treaty"]}, {"word": "submarine", "lemma": "submarine", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/sʌb.məˈɹiːn/", "definition_en": "a submersible warship usually armed with torpedoes", "translation_ko": "", "example_en": "", "context_sentence": "#3\nThe South Korean Navy submarine Dosan Ahn Chang-ho left the Peninsula \non Wednesday, to take part in a joint exercise with the Royal Canadian Navy, \nin the first trans-Pacific deployment for Korea's naval submarine.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["Cuban sandwich", "Italian sandwich", "U-boat", "bomber", "grinder", "hero", "hero sandwich", "hoagie", "hoagy", "pigboat", "poor boy", "sub", "submarine sandwich", "torpedo", "wedge"]}, {"word": "underway", "lemma": "underway", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "currently in progress", "translation_ko": "", "example_en": "there is mischief afoot", "context_sentence": "However, Tehran has denied that any negotiations are underway, \nvowing to continue its fight.", "cefr_level": "B2", "frequency_score": 5.1302, "is_b2_plus": false, "derivatives": ["afoot"]}, {"word": "voyage", "lemma": "voyage", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈvɔɪ.ɪdʒ/", "definition_en": "an act of traveling by water", "translation_ko": "", "example_en": "", "context_sentence": "The mission will mark the first Pacific crossing by a South Korean Navy submarine, and its longest voyage on record.", "cefr_level": "B2", "frequency_score": 5.1101, "is_b2_plus": false, "derivatives": ["navigate", "ocean trip", "sail"]}, {"word": "deployment", "lemma": "deployment", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪˈplɔɪmənt/", "definition_en": "the distribution of forces in preparation for battle or work", "translation_ko": "", "example_en": "", "context_sentence": "#3\nThe South Korean Navy submarine Dosan Ahn Chang-ho left the Peninsula \non Wednesday, to take part in a joint exercise with the Royal Canadian Navy, \nin the first trans-Pacific deployment for Korea's naval submarine.", "cefr_level": "B2", "frequency_score": 5.0899, "is_b2_plus": false, "derivatives": []}, {"word": "demographic", "lemma": "demographic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/dɛməˈɡɹæfɪk/", "definition_en": "a statistic characterizing human populations (or segments of human populations broken down by age or sex or income etc.)", "translation_ko": "", "example_en": "", "context_sentence": "#4\nSouth Korea's demographic landscape saw a rare bright spot \nat the start of the year, with births and marriages \nboth posting double-digit growth.", "cefr_level": "B2", "frequency_score": 5.0799, "is_b2_plus": true, "derivatives": []}, {"word": "hailed", "lemma": "hail", "pos": "VERB", "pos_ko": "동사", "phonetic": "/heɪl/", "definition_en": "precipitation of ice pellets when there are strong rising air currents", "translation_ko": "", "example_en": "", "context_sentence": "It was a decade in the making, and President Lee Jae Myung \nhailed the first delivery of a KF-21 as a symbol of South Korea's \n\"aspiration for self-reliant defense\" over more than half a century.", "cefr_level": "B2", "frequency_score": 5.0799, "is_b2_plus": false, "derivatives": ["acclaim", "come", "herald"]}, {"word": "Drones", "lemma": "drone", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɹəʊn/", "definition_en": "stingless male bee in a colony of social bees (especially honeybees) whose sole function is to mate with the queen", "translation_ko": "", "example_en": "", "context_sentence": "Drones hit a fuel tank at Kuwait International Airport, causing a fire, \nwhile an Iranian missile strike also wounded at least nine people in central Israel.", "cefr_level": "B2", "frequency_score": 5.0, "is_b2_plus": false, "derivatives": ["bourdon", "dawdler", "drone pipe", "droning", "laggard", "lagger", "monotone", "pilotless aircraft", "poke", "radio-controlled aircraft", "trailer"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
