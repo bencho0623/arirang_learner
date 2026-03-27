@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.03.27", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260327_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260327/28908157/28908157_20260327-v25yxwn4_audio_arirang-mp3-normal-20260327222236.mp4?hdnts=exp=3549477594~acl=/kr/media1/arirang/20260327/28908157/*~hmac=17f173b2184a6d079c13e3dbfdcf6badf2048c1bc4050b524f5fcb2b742cc7f3", "script_text": "Welcome to Arirang News\nThis is Kim Ji Eun,\nAnd We start with the top headlines at this hour\n#1\nU.S.\nPresident Donald Trump announced a ten-day pause on the destruction of Iranian energy plants, pushing an existing deadline from March 27 to April 6.\nThe U.S. decision to halt the strikes on the energy infrastructure was made to allow room for diplomacy.\nTaking to social media on Thursday, Trump noted the extension was requested by the Iranian government and that ongoing talks are progressing well.\nOn Thursday, Israel announced it had killed the commander of the Islamic Revolutionary Guard Corps Navy.\nThis key military figure was directly responsible for overseeing the ongoing blockade of the Strait of Hormuz.\nNetanyahu also claimed the killing was a coordinated strategic effort with the United States to achieve broader wartime objectives.\nIt has already been four weeks since the war began, and as the conflict in the Middle East persists, its broader impact on the global economy and geopolitical risks may intensify.\n#2\nSeoul is \"reviewing\" whether to attend the Group of Seven leaders' summit in June, after France invited the leaders of South Korea, India, Brazil and Kenya.\nThe Blue House said Friday that Seoul is currently considering whether to attend, taking into account diplomatic schedules as well as domestic and international circumstances.\nThe Elysee had extended the invitation on Thursday, with the intention of expanding support among key markets to address global economic imbalances.\nThe announcement comes as Middle East tensions and energy risks are expected to feature prominently in discussions among advanced economies.\nAhead of the leaders' summit, Minister Cho Hyun is attending the G7 foreign ministers' meeting in Paris, holding a series of bilateral talks with his counterparts.\nAccording to Seoul’s foreign ministry, Cho met with the U.S.\nUnder Secretary of State for Political Affairs Allison Hooker on Thursday.\nHe expressed concern over the situation in the Strait of Hormuz and stressed that de-escalation is urgently needed to guarantee safe navigation for all vessels, including Korean ships, and to stabilise global energy and logistics supply chains.\n#3\nThe U.S.\nForces Korea has reportedly formed a new unit dedicated to integrating U.S. nuclear forces, with South Korea's conventional capabilities.\nAccording to military sources on Friday, the USFK elevated the Conventional Nuclear Integration --- or CNI --- team, that had been under the J5 Strategic Planning and Policy Directorate, into an independent office called the J10 Strategic Integration Element, and has been operating it since June last year.\nThis is seen as part of efforts to strengthen extended deterrence for South Korea.\n#4\nIndustry Minister Kim Jung-kwan presided over an emergency government meeting on Friday to formulate plans to stabilize industrial supply chains and manage energy demands amid the prolonged Middle East crisis.\nKim called for cooperation among senior officials from business associations, urging them to step up efforts to secure alternative supply sources, and especially to refrain from collusion and hoarding.\nThe minister also vowed to make efforts to prevent disruptions in production across major industries, including the medical and everyday goods sectors, due to potential shortages of industrial materials such as naphtha.\n#5\nSpring has officially arrived, as streets lined with cherry blossoms welcome visitors to Jinhae-gu District in the southern coastal city of Changwon.\nRunning through April 5th, the Jinhae Gunhangje marks the full arrival of spring nationwide, with cherry blossoms expected to reach peak bloom throughout the week.\nSome visitors have even traveled all the way to Korea specifically to experience this festival, eager to take in the cherry blossoms at their peak.\nNow in its 64th year, the festival features a wide range of events, with the city anticipating about 3.5 million visitors.\nMoving to the weather forecast,\nSpring has officially arrived.\nBut with less rain this spring and stagnant air, fine dust is building up.\nAs for ultrafine dust levels, most regions will be seeing bad levels.\nLevels in the south of the country may briefly spike to “very bad” in the morning.\nLooking ahead, rain is forecast, with showers beginning early Monday morning in the southwest, western Gyeongsangnam-do Province, and Jeju-do Island before spreading to other parts.\nThe current temperature are\n_______ Degrees in Seoul\n_______ Degrees in Gwangju\n_______ Degrees in Busan\nAnd _______ Degrees on Jejudo island\nYou’re listening to, Arirang Radio"};
+    const rawVocabData = [{"word": "ultrafine", "lemma": "ultrafine", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "As for ultrafine dust levels, most regions will be seeing bad levels.", "cefr_level": "C2", "frequency_score": 7.0701, "is_b2_plus": false, "derivatives": []}, {"word": "naphtha", "lemma": "naphtha", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "any of various volatile flammable liquid hydrocarbon mixtures; used chiefly as solvents", "translation_ko": "", "example_en": "", "context_sentence": "The minister also vowed to make efforts to prevent disruptions in production across major industries, including the medical and everyday goods sectors, due to potential shortages of industrial materials such as naphtha.", "cefr_level": "C1", "frequency_score": 6.8697, "is_b2_plus": false, "derivatives": []}, {"word": "stabilise", "lemma": "stabilise", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "support or hold steady and make steadfast, with or as if with a brace", "translation_ko": "", "example_en": "brace your elbows while working on the potter's wheel", "context_sentence": "He expressed concern over the situation in the Strait of Hormuz and stressed that de-escalation is urgently needed to guarantee safe navigation for all vessels, including Korean ships, and to stabilise global energy and logistics supply chains.", "cefr_level": "C1", "frequency_score": 6.3002, "is_b2_plus": false, "derivatives": ["brace", "stabilize", "steady"]}, {"word": "deterrence", "lemma": "deterrence", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪˈtɛɹəns/", "definition_en": "a negative motivational influence", "translation_ko": "", "example_en": "", "context_sentence": "This is seen as part of efforts to strengthen extended deterrence for South Korea.", "cefr_level": "C1", "frequency_score": 6.0101, "is_b2_plus": false, "derivatives": ["determent", "disincentive", "intimidation"]}, {"word": "presided", "lemma": "preside", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "act as president", "translation_ko": "", "example_en": "preside over companies and corporations", "context_sentence": "#4\nIndustry Minister Kim Jung-kwan presided over an emergency government meeting on Friday to formulate plans to stabilize industrial supply chains and manage energy demands amid the prolonged Middle East crisis.", "cefr_level": "C1", "frequency_score": 6.0101, "is_b2_plus": false, "derivatives": []}, {"word": "hoarding", "lemma": "hoarding", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈhɔːdɪŋ/", "definition_en": "large outdoor signboard", "translation_ko": "", "example_en": "", "context_sentence": "Kim called for cooperation among senior officials from business associations, urging them to step up efforts to secure alternative supply sources, and especially to refrain from collusion and hoarding.", "cefr_level": "B2", "frequency_score": 5.8996, "is_b2_plus": false, "derivatives": ["accumulate", "amass", "billboard", "cache", "collect", "compile", "hive up", "hoard", "lay away", "pile up", "roll up", "squirrel away", "stash"]}, {"word": "logistics", "lemma": "logistic", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/lɒdʒˈɪs.tɪk/", "definition_en": "of or relating to logistics", "translation_ko": "", "example_en": "logistic requirements", "context_sentence": "He expressed concern over the situation in the Strait of Hormuz and stressed that de-escalation is urgently needed to guarantee safe navigation for all vessels, including Korean ships, and to stabilise global energy and logistics supply chains.", "cefr_level": "B2", "frequency_score": 5.8894, "is_b2_plus": false, "derivatives": ["logistical"]}, {"word": "geopolitical", "lemma": "geopolitical", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "of or relating to geopolitics", "translation_ko": "", "example_en": "", "context_sentence": "It has already been four weeks since the war began, and as the conflict in the Middle East persists, its broader impact on the global economy and geopolitical risks may intensify.", "cefr_level": "B2", "frequency_score": 5.8508, "is_b2_plus": true, "derivatives": []}, {"word": "intensify", "lemma": "intensify", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "increase in extent or intensity", "translation_ko": "", "example_en": "The Allies escalated the bombing", "context_sentence": "It has already been four weeks since the war began, and as the conflict in the Middle East persists, its broader impact on the global economy and geopolitical risks may intensify.", "cefr_level": "B2", "frequency_score": 5.8386, "is_b2_plus": false, "derivatives": ["compound", "deepen", "escalate", "heighten", "step up"]}, {"word": "prolonged", "lemma": "prolong", "pos": "VERB", "pos_ko": "동사", "phonetic": "/pɹoʊˈlɑŋ/", "definition_en": "lengthen in time; cause to be or last longer", "translation_ko": "", "example_en": "We prolonged our stay", "context_sentence": "#4\nIndustry Minister Kim Jung-kwan presided over an emergency government meeting on Friday to formulate plans to stabilize industrial supply chains and manage energy demands amid the prolonged Middle East crisis.", "cefr_level": "B2", "frequency_score": 5.7905, "is_b2_plus": false, "derivatives": ["draw out", "extend", "keep up", "protract", "sustain"]}, {"word": "formulate", "lemma": "formulate", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "elaborate, as of theories and hypotheses", "translation_ko": "", "example_en": "Could you develop the ideas in your thesis", "context_sentence": "#4\nIndustry Minister Kim Jung-kwan presided over an emergency government meeting on Friday to formulate plans to stabilize industrial supply chains and manage energy demands amid the prolonged Middle East crisis.", "cefr_level": "B2", "frequency_score": 5.7696, "is_b2_plus": false, "derivatives": ["articulate", "contrive", "develop", "devise", "excogitate", "explicate", "forge", "give voice", "invent", "phrase", "word"]}, {"word": "stagnant", "lemma": "stagnant", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "not circulating or flowing", "translation_ko": "", "example_en": "dead air", "context_sentence": "But with less rain this spring and stagnant air, fine dust is building up.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["dead", "moribund"]}, {"word": "escalation", "lemma": "escalation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an increase to counteract a perceived discrepancy", "translation_ko": "", "example_en": "higher wages caused an escalation of prices", "context_sentence": "He expressed concern over the situation in the Strait of Hormuz and stressed that de-escalation is urgently needed to guarantee safe navigation for all vessels, including Korean ships, and to stabilise global energy and logistics supply chains.", "cefr_level": "B2", "frequency_score": 5.6799, "is_b2_plus": true, "derivatives": []}, {"word": "elevated", "lemma": "elevate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈɛləveɪt/", "definition_en": "give a promotion to or assign to a higher position", "translation_ko": "", "example_en": "John was kicked upstairs when a replacement was hired", "context_sentence": "According to military sources on Friday, the USFK elevated the Conventional Nuclear Integration --- or CNI --- team, that had been under the J5 Strategic Planning and Policy Directorate, into an independent office called the J10 Strategic Integration Element, and has been operating it since June last year.", "cefr_level": "B2", "frequency_score": 5.6198, "is_b2_plus": false, "derivatives": ["advance", "bring up", "get up", "kick upstairs", "lift", "promote", "raise", "upgrade"]}, {"word": "prominently", "lemma": "prominently", "pos": "ADV", "pos_ko": "부사", "phonetic": "/ˈpɹɒmɪnəntli/", "definition_en": "in a prominent way", "translation_ko": "", "example_en": "the new car was prominently displayed in the driveway", "context_sentence": "The announcement comes as Middle East tensions and energy risks are expected to feature prominently in discussions among advanced economies.", "cefr_level": "B2", "frequency_score": 5.5901, "is_b2_plus": false, "derivatives": ["conspicuously"]}, {"word": "collusion", "lemma": "collusion", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/kəˈluːʒən/", "definition_en": "secret agreement", "translation_ko": "", "example_en": "", "context_sentence": "Kim called for cooperation among senior officials from business associations, urging them to step up efforts to secure alternative supply sources, and especially to refrain from collusion and hoarding.", "cefr_level": "B2", "frequency_score": 5.5702, "is_b2_plus": false, "derivatives": ["connivance"]}, {"word": "imbalances", "lemma": "imbalance", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a lack of balance or state of disequilibrium", "translation_ko": "", "example_en": "a hormonal imbalance", "context_sentence": "The Elysee had extended the invitation on Thursday, with the intention of expanding support among key markets to address global economic imbalances.", "cefr_level": "B2", "frequency_score": 5.5406, "is_b2_plus": false, "derivatives": ["asymmetry", "dissymmetry", "instability", "unbalance"]}, {"word": "stabilize", "lemma": "stabilize", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "make stable and keep from fluctuating or put into an equilibrium", "translation_ko": "", "example_en": "The drug stabilized her blood pressure", "context_sentence": "#4\nIndustry Minister Kim Jung-kwan presided over an emergency government meeting on Friday to formulate plans to stabilize industrial supply chains and manage energy demands amid the prolonged Middle East crisis.", "cefr_level": "B2", "frequency_score": 5.5406, "is_b2_plus": false, "derivatives": ["brace", "stabilise", "steady"]}, {"word": "urgently", "lemma": "urgently", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "with great urgency", "translation_ko": "", "example_en": "health care reform is needed urgently", "context_sentence": "He expressed concern over the situation in the Strait of Hormuz and stressed that de-escalation is urgently needed to guarantee safe navigation for all vessels, including Korean ships, and to stabilise global energy and logistics supply chains.", "cefr_level": "B2", "frequency_score": 5.52, "is_b2_plus": false, "derivatives": ["desperately"]}, {"word": "dedicated", "lemma": "dedicate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈdɛdɪkeɪt/", "definition_en": "give entirely to a specific person, activity, or cause", "translation_ko": "", "example_en": "She committed herself to the work of God", "context_sentence": "#3\nThe U.S. Forces Korea has reportedly formed a new unit dedicated to integrating U.S. nuclear forces, with South Korea's conventional capabilities.", "cefr_level": "B2", "frequency_score": 5.4895, "is_b2_plus": false, "derivatives": ["commit", "consecrate", "devote", "give"]}, {"word": "overseeing", "lemma": "oversee", "pos": "VERB", "pos_ko": "동사", "phonetic": "/əʊvə(ɹ)siː/", "definition_en": "watch and direct", "translation_ko": "", "example_en": "Who is overseeing this project?", "context_sentence": "This key military figure was directly responsible for overseeing the ongoing blockade of the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.4895, "is_b2_plus": false, "derivatives": ["manage", "superintend", "supervise"]}, {"word": "persists", "lemma": "persist", "pos": "VERB", "pos_ko": "동사", "phonetic": "/pəˈsɪst/", "definition_en": "continue to exist", "translation_ko": "", "example_en": "These stories die hard", "context_sentence": "It has already been four weeks since the war began, and as the conflict in the Middle East persists, its broader impact on the global economy and geopolitical risks may intensify.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["die hard", "endure", "hang in", "hang on", "hold on", "persevere", "prevail", "remain", "run", "stay"]}, {"word": "blockade", "lemma": "blockade", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/blɒˈkeɪd/", "definition_en": "a war measure that isolates some area of importance to the enemy", "translation_ko": "", "example_en": "", "context_sentence": "This key military figure was directly responsible for overseeing the ongoing blockade of the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.4295, "is_b2_plus": false, "derivatives": ["bar", "barricade", "block", "block off", "block up", "embarrass", "encirclement", "hinder", "obstruct", "stop", "stymie", "stymy"]}, {"word": "wartime", "lemma": "wartime", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a period of time during which there is armed conflict", "translation_ko": "", "example_en": "", "context_sentence": "Netanyahu also claimed the killing was a coordinated strategic effort with the United States to achieve broader wartime objectives.", "cefr_level": "B2", "frequency_score": 5.4101, "is_b2_plus": false, "derivatives": []}, {"word": "blossoms", "lemma": "blossom", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "reproductive organ of angiosperm plants especially one having showy or colorful parts", "translation_ko": "", "example_en": "", "context_sentence": "#5\nSpring has officially arrived, as streets lined with cherry blossoms welcome visitors to Jinhae-gu District in the southern coastal city of Changwon.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": ["bloom", "blossom forth", "blossom out", "efflorescence", "flower", "flush", "heyday", "peak", "prime", "unfold"]}, {"word": "refrain", "lemma": "refrain", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɹɪˈfɹeɪn/", "definition_en": "the part of a song where a soloist is joined by a group of singers", "translation_ko": "", "example_en": "", "context_sentence": "Kim called for cooperation among senior officials from business associations, urging them to step up efforts to secure alternative supply sources, and especially to refrain from collusion and hoarding.", "cefr_level": "B2", "frequency_score": 5.3696, "is_b2_plus": false, "derivatives": ["abstain", "chorus", "desist", "forbear"]}, {"word": "circumstances", "lemma": "circumstance", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/-æns/", "definition_en": "a condition that accompanies or influences some event or activity", "translation_ko": "", "example_en": "", "context_sentence": "The Blue House said Friday that Seoul is currently considering whether to attend, taking into account diplomatic schedules as well as domestic and international circumstances.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["condition", "consideration", "context", "setting"]}, {"word": "counterparts", "lemma": "counterpart", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈkaʊntəˌpɑːt/", "definition_en": "a person or thing having the same function or characteristics as another", "translation_ko": "", "example_en": "Those brass knobs and their hollow counterparts interlock perfectly", "context_sentence": "Ahead of the leaders' summit, Minister Cho Hyun is attending the G7 foreign ministers' meeting in Paris, holding a series of bilateral talks with his counterparts.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": ["opposite number", "similitude", "twin", "vis-a-vis"]}, {"word": "diplomacy", "lemma": "diplomacy", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "negotiation between nations", "translation_ko": "", "example_en": "National diplomacy typically deploys its dexterity to secure advantage for one's nation.", "context_sentence": "The U.S. decision to halt the strikes on the energy infrastructure was made to allow room for diplomacy.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["delicacy", "diplomatic negotiations", "discreetness", "finesse", "statecraft", "statesmanship"]}, {"word": "disruptions", "lemma": "disruption", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪsˈɹʌpʃən/", "definition_en": "an act of delaying or interrupting the continuity", "translation_ko": "", "example_en": "it was presented without commercial breaks", "context_sentence": "The minister also vowed to make efforts to prevent disruptions in production across major industries, including the medical and everyday goods sectors, due to potential shortages of industrial materials such as naphtha.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["break", "commotion", "dislocation", "disturbance", "flutter", "gap", "hoo-ha", "hoo-hah", "hurly burly", "interruption", "kerfuffle", "perturbation", "to-do"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
