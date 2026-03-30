@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.03.30", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260330_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260330/29101265/29101265_20260330-g6o5o3ld_audio_arirang-mp3-normal-20260330220709.mp4?hdnts=exp=3549996430~acl=/kr/media1/arirang/20260330/29101265/*~hmac=22b9dc181515652bc934f880d589a9e3f2c7af5f6ea6b911d6a988024ce4db58", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nIran has dismissed a 15-point U.S. proposal aimed at halting the ongoing conflict, calling the demands \"excessive, unrealistic, and unreasonable.\"\nIran's Foreign Ministry spokesperson Esmaeil Baghaei confirmed Monday that there had been no direct negotiations with the U.S., adding that all communications were limited to intermediaries.\nBaghaei also addressed recent diplomatic efforts in the region, confirming that Iran has not participated in recent meetings organized by Pakistan, stating they were held within a framework Tehran has not agreed to.\n\n2.\nSeoul's gasoline prices have resumed their upward trend, hitting their highest level since mid-month.\nAs of Monday, the average gasoline price nationwide rose 0.7 percent from the previous day to 1,878 won,... or approximately 1.24 U.S. dollars, per liter.\nIn Seoul, prices climbed to the 1,920 won range, marking the highest level since March 11.\nThis upward trend appears to reflect the government's move to raise the price caps on petroleum products.\nThe government introduced a price cap system on refinery supply prices starting March 13, with plans to adjust the ceiling every two weeks.\nIn line with this, the Ministry of Trade, Industry and Resources announced the first adjustment of price caps on Friday.\nWith prices rising following the adjustment, analysts say the nationwide average gasoline price is likely to break the 2,000 won mark in the near term.\n\n3.\nIn the meantime,\nSouth Korea's financial markets closed lower Monday, reeling one month into \"Operation Epic Fury\" in the Middle East.\nThe benchmark KOSPI ended the session at 5,277.30, dropping nearly 3 percent from the previous trading day.\nThe index has taken a severe hit since the conflict began.\nJust before the operation launched on February 27th, the KOSPI closed at 6,244.13.\nMonday's close represents a steep decline of roughly 15 percent over the past four weeks.\nForeign investors have been the primary drivers of this downward trend, dumping domestic shares amid a rapid flight from risk assets.\nThis flight to safety is also heavily impacting the South Korean currency.\nThe won closed Monday at 1,515.7 won against the U.S. dollar.\nThe exchange rate was already facing upward pressure earlier this year, closing at 1,485 won before the war started.\nHowever, the onset of the conflict acted as a major catalyst, rapidly pushing the rate past the psychological defense line of 1,500 won.\n\n4.\nPresident Lee Jae Myung has pledged o better protect the public from state violence.\nSpeaking at a town-hall meeting on Jejudo Island on this Monday... he said the government will abolish the statute of limitations for criminal and civil cases related to state violence including the April 3rd Massacre to hold those responsible to account.\nThe April 3rd Massacre saw the deaths of thousands of Jeju residents between 1947 and 1954 amid a brutal government crackdown on protests against a separate general election in the south amid the Cold War era.\n\n5.\nBTS's new album \"ARIRANG,\" ranked number one on the Billboard 200 for the week of April 4th.\nThe group now has its seventh number one album, a feat that began with \"Love Yourself: Tear\" in 2018 --- the first K-pop album to top the chart.\nThe latest album earned 641-thousand units, with the chart based on a combination of physical sales, digital downloads, and streaming.\nIt’s the biggest week for a group album since December 2014, when the chart began using units.\nOver the weekend, BTS also topped the UK's Official Albums Chart with \"ARIRANG\" at number one, the third time in the group's career.\nThey first made history in 2019 with \"Map of the Soul: Persona\" becoming the first K-pop act to top the chart.\nThe lead track \"SWIM\" ranks second on the Official Singles Chart, leaving the group with a chance to climb to number one.\nThis already marks a new record, surpassing the group's previous peak of third place with \"Butter\" and \"Dynamite,\" respectively.\nThe critic added that the latest album features several tracks that could earn recognition from prestigious awards such as the Grammys, noting that a win is possible if the songs remain on the charts through autumn.\nMoving to weather forecast,\nMild weather has been continuing nationwide, bringing spring blossoms into full bloom.\nBut rain is on the way at the start of the week.\nRain will ease off by late tomorrow morning.\nHowever, the mountainous areas and the east coast of Gangwon State, along with the east coast of Gyeongsangbuk-do Province, could see rain lasting into the afternoon.\nThe amount of rain will generally range from 5 to 50 millimeters, with heavier showers along the southern coast and on Jeju-do Island.\nMeanwhile, Jeju could see gusty winds, thunder, and lightning through tomorrow.\nSeoul will start the day at 9 degrees Celsius on Tuesday, Daejeon at 10 degrees, Busan at 13 degrees.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "KOSPI", "lemma": "kospi", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "The benchmark KOSPI ended the session at 5,277.30, dropping nearly 3 percent from the previous trading day.", "cefr_level": "C2", "frequency_score": 7.5302, "is_b2_plus": false, "derivatives": []}, {"word": "gusty", "lemma": "gusty", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "blowing in puffs or short intermittent blasts", "translation_ko": "", "example_en": "puffy off-shore winds", "context_sentence": "Meanwhile, Jeju could see gusty winds, thunder, and lightning through tomorrow.", "cefr_level": "C1", "frequency_score": 6.4101, "is_b2_plus": false, "derivatives": ["puffy"]}, {"word": "Jeju", "lemma": "jeju", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "The April 3rd Massacre saw the deaths of thousands of Jeju residents between 1947 and 1954 amid a brutal government crackdown on protests against a separate general election in the south amid the Cold War era.", "cefr_level": "C1", "frequency_score": 6.2197, "is_b2_plus": false, "derivatives": []}, {"word": "millimeters", "lemma": "millimeter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a metric unit of length equal to one thousandth of a meter", "translation_ko": "", "example_en": "", "context_sentence": "The amount of rain will generally range from 5 to 50 millimeters, with heavier showers along the southern coast and on Jeju-do Island.", "cefr_level": "B2", "frequency_score": 5.8697, "is_b2_plus": false, "derivatives": ["millimetre", "mm"]}, {"word": "intermediaries", "lemma": "intermediary", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a negotiator who acts as a link between parties", "translation_ko": "", "example_en": "", "context_sentence": "Iran's Foreign Ministry spokesperson Esmaeil Baghaei confirmed Monday that there had been no direct negotiations with the U.S., adding that all communications were limited to intermediaries.", "cefr_level": "B2", "frequency_score": 5.821, "is_b2_plus": false, "derivatives": ["go-between", "intercessor", "intermediator", "mediator"]}, {"word": "crackdown", "lemma": "crackdown", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "severely repressive actions", "translation_ko": "", "example_en": "", "context_sentence": "The April 3rd Massacre saw the deaths of thousands of Jeju residents between 1947 and 1954 amid a brutal government crackdown on protests against a separate general election in the south amid the Cold War era.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": false, "derivatives": []}, {"word": "surpassing", "lemma": "surpass", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "distinguish oneself", "translation_ko": "", "example_en": "She excelled in math", "context_sentence": "This already marks a new record, surpassing the group's previous peak of third place with \"Butter\" and \"Dynamite,\" respectively.", "cefr_level": "B2", "frequency_score": 5.6308, "is_b2_plus": false, "derivatives": ["exceed", "excel", "go by", "go past", "outdo", "outgo", "outmatch", "outperform", "outstrip", "pass", "pass by", "stand out", "surmount", "transcend", "travel by"]}, {"word": "mountainous", "lemma": "mountainous", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "having hills and crags", "translation_ko": "", "example_en": "hilly terrain", "context_sentence": "However, the mountainous areas and the east coast of Gangwon State, along with the east coast of Gyeongsangbuk-do Province, could see rain lasting into the afternoon.", "cefr_level": "B2", "frequency_score": 5.6198, "is_b2_plus": false, "derivatives": ["cragged", "craggy", "hilly"]}, {"word": "liter", "lemma": "liter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈliː.tə/", "definition_en": "a metric unit of capacity, formerly defined as the volume of one kilogram of pure water under standard conditions; now equal to 1,000 cubic centimeters (or approximately 1.75 pints)", "translation_ko": "", "example_en": "You should be able to fill four cups with one litre of water.", "context_sentence": "As of Monday, the average gasoline price nationwide rose 0.7 percent from the previous day to 1,878 won,... or approximately 1.24 U.S. dollars, per liter.", "cefr_level": "B2", "frequency_score": 5.5406, "is_b2_plus": false, "derivatives": ["cubic decimeter", "cubic decimetre", "l", "litre"]}, {"word": "abolish", "lemma": "abolish", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "do away with", "translation_ko": "", "example_en": "Slavery was abolished in the mid-19th century in America and in Russia", "context_sentence": "he said the government will abolish the statute of limitations for criminal and civil cases related to state violence including the April 3rd Massacre to hold those responsible to account.", "cefr_level": "B2", "frequency_score": 5.52, "is_b2_plus": false, "derivatives": ["get rid of"]}, {"word": "refinery", "lemma": "refinery", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an industrial plant for purifying a crude substance", "translation_ko": "", "example_en": "", "context_sentence": "The government introduced a price cap system on refinery supply prices starting March 13, with plans to adjust the ceiling every two weeks.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": false, "derivatives": []}, {"word": "unrealistic", "lemma": "unrealistic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "not realistic", "translation_ko": "", "example_en": "unrealistic expectations", "context_sentence": "Iran has dismissed a 15-point U.S. proposal aimed at halting the ongoing conflict, calling the demands \"excessive, unrealistic, and unreasonable.\"", "cefr_level": "B2", "frequency_score": 5.4597, "is_b2_plus": false, "derivatives": []}, {"word": "benchmark", "lemma": "benchmark", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a standard by which something can be measured or judged", "translation_ko": "", "example_en": "his painting sets the benchmark of quality", "context_sentence": "The benchmark KOSPI ended the session at 5,277.30, dropping nearly 3 percent from the previous trading day.", "cefr_level": "B2", "frequency_score": 5.4001, "is_b2_plus": true, "derivatives": ["bench mark"]}, {"word": "blossoms", "lemma": "blossom", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "reproductive organ of angiosperm plants especially one having showy or colorful parts", "translation_ko": "", "example_en": "", "context_sentence": "Moving to weather forecast,\nMild weather has been continuing nationwide, bringing spring blossoms into full bloom.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": ["bloom", "blossom forth", "blossom out", "efflorescence", "flower", "flush", "heyday", "peak", "prime", "unfold"]}, {"word": "spokesperson", "lemma": "spokesperson", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an advocate who represents someone else's policy or purpose", "translation_ko": "", "example_en": "the meeting was attended by spokespersons for all the major organs of government", "context_sentence": "Iran's Foreign Ministry spokesperson Esmaeil Baghaei confirmed Monday that there had been no direct negotiations with the U.S., adding that all communications were limited to intermediaries.", "cefr_level": "B2", "frequency_score": 5.3595, "is_b2_plus": false, "derivatives": ["interpreter", "representative", "voice"]}, {"word": "reeling", "lemma": "reel", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɹiːl/", "definition_en": "a roll of photographic film holding a series of frames to be projected by a movie projector", "translation_ko": "", "example_en": "", "context_sentence": "In the meantime,\nSouth Korea's financial markets closed lower Monday, reeling one month into \"Operation Epic Fury\" in the Middle East.", "cefr_level": "B2", "frequency_score": 5.3197, "is_b2_plus": false, "derivatives": ["Scottish reel", "bobbin", "spool"]}, {"word": "downward", "lemma": "downward", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈdaʊnwəd/", "definition_en": "extending or moving from a higher to a lower place", "translation_ko": "", "example_en": "the down staircase", "context_sentence": "Foreign investors have been the primary drivers of this downward trend, dumping domestic shares amid a rapid flight from risk assets.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["down", "downwardly", "downwards"]}, {"word": "limitations", "lemma": "limitation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a principle that limits the extent of something", "translation_ko": "", "example_en": "I am willing to accept certain restrictions on my movements", "context_sentence": "he said the government will abolish the statute of limitations for criminal and civil cases related to state violence including the April 3rd Massacre to hold those responsible to account.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["limit", "restriction"]}, {"word": "upward", "lemma": "upward", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈʌpwəd/", "definition_en": "directed up", "translation_ko": "", "example_en": "the cards were face upward", "context_sentence": "2.\nSeoul's gasoline prices have resumed their upward trend, hitting their highest level since mid-month.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["up", "upwardly", "upwards"]}, {"word": "onset", "lemma": "onset", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈɒnˌsɛt/", "definition_en": "the beginning or early stages", "translation_ko": "", "example_en": "the onset of pneumonia", "context_sentence": "However, the onset of the conflict acted as a major catalyst, rapidly pushing the rate past the psychological defense line of 1,500 won.", "cefr_level": "B2", "frequency_score": 5.2798, "is_b2_plus": false, "derivatives": ["attack", "oncoming", "onrush", "onslaught"]}, {"word": "unreasonable", "lemma": "unreasonable", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ʌnˈɹiːz(ə)nəbl̩/", "definition_en": "not reasonable; not showing good judgment", "translation_ko": "", "example_en": "", "context_sentence": "Iran has dismissed a 15-point U.S. proposal aimed at halting the ongoing conflict, calling the demands \"excessive, unrealistic, and unreasonable.\"", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": ["excessive", "inordinate", "undue"]}, {"word": "catalyst", "lemma": "catalyst", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "(chemistry) a substance that initiates or accelerates a chemical reaction without itself being affected", "translation_ko": "", "example_en": "", "context_sentence": "However, the onset of the conflict acted as a major catalyst, rapidly pushing the rate past the psychological defense line of 1,500 won.", "cefr_level": "B2", "frequency_score": 5.2403, "is_b2_plus": false, "derivatives": ["accelerator"]}, {"word": "negotiations", "lemma": "negotiation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/nɪˌɡəʊʃiˈeɪʃən/", "definition_en": "a discussion intended to produce an agreement", "translation_ko": "", "example_en": "the buyout negotiation lasted several days", "context_sentence": "Iran's Foreign Ministry spokesperson Esmaeil Baghaei confirmed Monday that there had been no direct negotiations with the U.S., adding that all communications were limited to intermediaries.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": true, "derivatives": ["dialogue", "talks"]}, {"word": "statute", "lemma": "statute", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an act passed by a legislative body", "translation_ko": "", "example_en": "", "context_sentence": "he said the government will abolish the statute of limitations for criminal and civil cases related to state violence including the April 3rd Massacre to hold those responsible to account.", "cefr_level": "B2", "frequency_score": 5.1701, "is_b2_plus": false, "derivatives": ["codified", "legislative act"]}, {"word": "dismissed", "lemma": "dismiss", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɪsˈmɪs/", "definition_en": "bar from attention or consideration", "translation_ko": "", "example_en": "She dismissed his advances", "context_sentence": "Iran has dismissed a 15-point U.S. proposal aimed at halting the ongoing conflict, calling the demands \"excessive, unrealistic, and unreasonable.\"", "cefr_level": "B2", "frequency_score": 5.15, "is_b2_plus": false, "derivatives": ["brush aside", "brush off", "can", "discount", "displace", "disregard", "drop", "fire", "force out", "give notice", "give the axe", "give the sack", "ignore", "push aside", "sack"]}, {"word": "gasoline", "lemma": "gasoline", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈɡæs.ə.lin/", "definition_en": "a volatile flammable mixture of hydrocarbons (hexane and heptane and octane etc.) derived from petroleum; used mainly as a fuel in internal-combustion engines", "translation_ko": "", "example_en": "", "context_sentence": "2.\nSeoul's gasoline prices have resumed their upward trend, hitting their highest level since mid-month.", "cefr_level": "B2", "frequency_score": 5.15, "is_b2_plus": false, "derivatives": ["gas", "gasolene", "petrol"]}, {"word": "prestigious", "lemma": "prestigious", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "having an illustrious reputation; respected", "translation_ko": "", "example_en": "our esteemed leader", "context_sentence": "The critic added that the latest album features several tracks that could earn recognition from prestigious awards such as the Grammys, noting that a win is possible if the songs remain on the charts through autumn.", "cefr_level": "B2", "frequency_score": 5.1403, "is_b2_plus": false, "derivatives": ["esteemed", "honored"]}, {"word": "adjustment", "lemma": "adjustment", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/əˈdʒʌst.mənt/", "definition_en": "making or becoming suitable; adjusting to circumstances", "translation_ko": "", "example_en": "", "context_sentence": "In line with this, the Ministry of Trade, Industry and Resources announced the first adjustment of price caps on Friday.", "cefr_level": "B2", "frequency_score": 5.1198, "is_b2_plus": false, "derivatives": ["accommodation", "adaptation", "adaption", "allowance", "alteration", "fitting", "modification", "readjustment", "registration"]}, {"word": "petroleum", "lemma": "petroleum", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/pəˈtɹoʊliəm/", "definition_en": "a dark oil consisting mainly of hydrocarbons", "translation_ko": "", "example_en": "", "context_sentence": "This upward trend appears to reflect the government's move to raise the price caps on petroleum products.", "cefr_level": "B2", "frequency_score": 5.1002, "is_b2_plus": false, "derivatives": ["crude", "crude oil", "fossil oil", "oil", "rock oil"]}, {"word": "bloom", "lemma": "bloom", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the organic process of bearing flowers", "translation_ko": "", "example_en": "you will stop all bloom if you let the flowers go to seed", "context_sentence": "Moving to weather forecast,\nMild weather has been continuing nationwide, bringing spring blossoms into full bloom.", "cefr_level": "B2", "frequency_score": 5.0701, "is_b2_plus": false, "derivatives": ["bloom of youth", "blooming", "blossom", "blush", "efflorescence", "flower", "flush", "heyday", "peak", "prime", "rosiness", "salad days"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
