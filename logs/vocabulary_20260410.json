@@ -1,0 +1,569 @@
+{
+  "created_at": "2026-04-10T23:03:43.952993",
+  "count": 30,
+  "items": [
+    {
+      "word": "naphtha",
+      "lemma": "naphtha",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈnæfθə/",
+      "definition_en": "any of various volatile flammable liquid hydrocarbon mixtures; used chiefly as solvents",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The chief adviser added that supply chain uncertainties would last for a while, vowing to continue looking for alternative supplies of oil and naphtha.",
+      "cefr_level": "C1",
+      "frequency_score": 6.8697,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "redeployed",
+      "lemma": "redeploy",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "deploy anew",
+      "translation_ko": "",
+      "example_en": "The U.S. must redeploy their troops in the Middle East",
+      "context_sentence": "For Seoul, the concern has been over the notion of strategic flexibility – \nthe ability for U.S. Forces Korea to be redeployed in other contingencies – \nand extended deterrence – \nAmerica's nuclear umbrella against North Korea's security threats.",
+      "cefr_level": "C1",
+      "frequency_score": 6.6498,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "northernmost",
+      "lemma": "northernmost",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "situated farthest north",
+      "translation_ko": "",
+      "example_en": "Alaska is our northernmost state",
+      "context_sentence": "#5\nSouth Korea on Friday resumed its tourist rail service to and from the country's northernmost Dorasan Station, close to the DMZ, after a suspension of around six and a half years.",
+      "cefr_level": "C1",
+      "frequency_score": 6.2798,
+      "is_b2_plus": false,
+      "derivatives": [
+        "northmost"
+      ]
+    },
+    {
+      "word": "islets",
+      "lemma": "islet",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈaɪ.lət/",
+      "definition_en": "a small island",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "#3\nSeoul on Thursday protested Tokyo's latest claim that the Korean islets of Dokdo are Japanese territory.",
+      "cefr_level": "C1",
+      "frequency_score": 6.2403,
+      "is_b2_plus": false,
+      "derivatives": [
+        "isle"
+      ]
+    },
+    {
+      "word": "unease",
+      "lemma": "unease",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "physical discomfort (as mild sickness or depression)",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "As unease grows among U.S. allies \nover the reliability of Washington’s security commitments under President Donald Trump, \nStephens acknowledges that such issues should be tackled \nthrough much-needed dialogue and consultations.",
+      "cefr_level": "C1",
+      "frequency_score": 6.2197,
+      "is_b2_plus": false,
+      "derivatives": [
+        "disquiet",
+        "malaise",
+        "uneasiness"
+      ]
+    },
+    {
+      "word": "deterrence",
+      "lemma": "deterrence",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a negative motivational influence",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "For Seoul, the concern has been over the notion of strategic flexibility – \nthe ability for U.S. Forces Korea to be redeployed in other contingencies – \nand extended deterrence – \nAmerica's nuclear umbrella against North Korea's security threats.",
+      "cefr_level": "C1",
+      "frequency_score": 6.0101,
+      "is_b2_plus": false,
+      "derivatives": [
+        "determent",
+        "disincentive",
+        "intimidation"
+      ]
+    },
+    {
+      "word": "hoon",
+      "lemma": "hoon",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "A worthless person; a hooligan or lout.",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The Ministry of Foreign Affairs said Kim Sang-hoon, Director-General for Asian and Pacific Affairs, summoned the Japanese Embassy's Deputy Chief of Mission Hirotaka Matsuo to convey Seoul’s protest.",
+      "cefr_level": "C1",
+      "frequency_score": 6.0101,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "resumption",
+      "lemma": "resumption",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "beginning again",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "After serving as a tourist destination, it closed in late 2019 due to COVID-19, until this Friday marked the full resumption of regular tourist rail service.",
+      "cefr_level": "B2",
+      "frequency_score": 5.9101,
+      "is_b2_plus": false,
+      "derivatives": [
+        "recommencement"
+      ]
+    },
+    {
+      "word": "waterways",
+      "lemma": "waterway",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a navigable body of water",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The goal is to find a diplomatic middle ground to a war that has claimed thousands of lives and disrupted vital waterways in the Strait of Hormuz.",
+      "cefr_level": "B2",
+      "frequency_score": 5.821,
+      "is_b2_plus": false,
+      "derivatives": [
+        "watercourse"
+      ]
+    },
+    {
+      "word": "provocations",
+      "lemma": "provocation",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˌpɹɒvəˈkeɪʃən/",
+      "definition_en": "unfriendly behavior that causes anger or resentment",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Spokesperson Park Il said unjust claims by Japan have no effect whatsoever on Korea’s sovereignty over Dokdo, and that Seoul will respond firmly to any provocations by Japan regarding the islets.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8097,
+      "is_b2_plus": false,
+      "derivatives": [
+        "aggravation",
+        "incitation",
+        "incitement",
+        "irritation"
+      ]
+    },
+    {
+      "word": "unfounded",
+      "lemma": "unfounded",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "without a basis in reason or fact",
+      "translation_ko": "",
+      "example_en": "baseless gossip",
+      "context_sentence": "Japan’s 2026 Diplomatic Bluebook, released on Friday, repeated its unfounded claim that Dokdo is \"an inherent part of Japan’s territory, both in light of historical facts and under international law.”",
+      "cefr_level": "B2",
+      "frequency_score": 5.7696,
+      "is_b2_plus": false,
+      "derivatives": [
+        "baseless",
+        "groundless",
+        "idle",
+        "unwarranted",
+        "wild"
+      ]
+    },
+    {
+      "word": "ceasefire",
+      "lemma": "ceasefire",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "In warfare, an agreed end to hostilities for a specific purpose. (Typically only temporary).",
+      "translation_ko": "",
+      "example_en": "The rebels agreed to a ceasefire while the peace talks were underway.",
+      "context_sentence": "#2\nNational Security Advisor Wi Sung-lac says the passage of ships is still not guaranteed in the Strait of Hormuz despite the ceasefire between the U.S. and Iran.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6799,
+      "is_b2_plus": true,
+      "derivatives": []
+    },
+    {
+      "word": "checkpoints",
+      "lemma": "checkpoint",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a place (as at a frontier) where travellers are stopped for inspection and clearance",
+      "translation_ko": "",
+      "example_en": "The travellers were stopped at the checkpoint.",
+      "context_sentence": "The main road leading to Islamabad’s heavily fortified Red Zone, a home to key government buildings and diplomatic missions, has been blocked, with military personnel deployed and checkpoints set up throughout the area.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6108,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "fortified",
+      "lemma": "fortified",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/ˈfɔːtɪfaɪd/",
+      "definition_en": "make strong or stronger",
+      "translation_ko": "",
+      "example_en": "This exercise will strengthen your upper body",
+      "context_sentence": "The main road leading to Islamabad’s heavily fortified Red Zone, a home to key government buildings and diplomatic missions, has been blocked, with military personnel deployed and checkpoints set up throughout the area.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5702,
+      "is_b2_plus": false,
+      "derivatives": [
+        "arm",
+        "beef up",
+        "build up",
+        "fort",
+        "fortify",
+        "gird",
+        "lace",
+        "spike",
+        "strengthen"
+      ]
+    },
+    {
+      "word": "unjust",
+      "lemma": "unjust",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/ʌnˈdʒʌst/",
+      "definition_en": "not fair; marked by injustice or partiality or deception",
+      "translation_ko": "",
+      "example_en": "used unfair methods",
+      "context_sentence": "Spokesperson Park Il said unjust claims by Japan have no effect whatsoever on Korea’s sovereignty over Dokdo, and that Seoul will respond firmly to any provocations by Japan regarding the islets.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5702,
+      "is_b2_plus": false,
+      "derivatives": [
+        "inequitable",
+        "unfair"
+      ]
+    },
+    {
+      "word": "contingencies",
+      "lemma": "contingency",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a possible event or occurrence or result",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "For Seoul, the concern has been over the notion of strategic flexibility – \nthe ability for U.S. Forces Korea to be redeployed in other contingencies – \nand extended deterrence – \nAmerica's nuclear umbrella against North Korea's security threats.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5607,
+      "is_b2_plus": true,
+      "derivatives": [
+        "contingence",
+        "eventuality"
+      ]
+    },
+    {
+      "word": "envoys",
+      "lemma": "envoy",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈɛn.vɔɪ/",
+      "definition_en": "a diplomat having less authority than an ambassador",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The White House has confirmed that a U.S. delegation, led by Vice President J.D. Vance alongside special envoys Jared Kushner and Steve Witkoff, is scheduled to arrive on Friday evening.",
+      "cefr_level": "B2",
+      "frequency_score": 5.52,
+      "is_b2_plus": false,
+      "derivatives": [
+        "emissary",
+        "envoi",
+        "envoy extraordinary",
+        "minister plenipotentiary"
+      ]
+    },
+    {
+      "word": "chilly",
+      "lemma": "chilly",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "very hot and finely tapering pepper of special pungency",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "However, it could feel a bit chilly in the early mornings and evenings with a big day-to-night temperature difference of around 15 degrees, so you might want to dress in layers.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5003,
+      "is_b2_plus": false,
+      "derivatives": [
+        "chile",
+        "chili",
+        "chili pepper",
+        "chilli",
+        "parky"
+      ]
+    },
+    {
+      "word": "tightened",
+      "lemma": "tighten",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈtaɪ.tən/",
+      "definition_en": "make tight or tighter",
+      "translation_ko": "",
+      "example_en": "Tighten the wire",
+      "context_sentence": "According to foreign media correspondents in the region, security has been tightened across the city.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4895,
+      "is_b2_plus": false,
+      "derivatives": [
+        "constrain",
+        "fasten",
+        "reduce",
+        "stiffen",
+        "tighten up"
+      ]
+    },
+    {
+      "word": "truce",
+      "lemma": "truce",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/tɹuːs/",
+      "definition_en": "a state of peace agreed to between opponents so they can discuss peace terms",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Speaking to reporters on Friday, Wi said the number of ships that have passed through the strait does not seem to have significantly increased following the agreed-upon two-week truce compared to before the war.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4802,
+      "is_b2_plus": false,
+      "derivatives": [
+        "armistice",
+        "cease-fire"
+      ]
+    },
+    {
+      "word": "summoned",
+      "lemma": "summon",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈsʌmən/",
+      "definition_en": "call in an official matter, such as to attend court",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The Ministry of Foreign Affairs said Kim Sang-hoon, Director-General for Asian and Pacific Affairs, summoned the Japanese Embassy's Deputy Chief of Mission Hirotaka Matsuo to convey Seoul’s protest.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4498,
+      "is_b2_plus": false,
+      "derivatives": [
+        "cite",
+        "come up",
+        "marshal",
+        "mobilise",
+        "mobilize",
+        "muster",
+        "muster up",
+        "rally",
+        "summons"
+      ]
+    },
+    {
+      "word": "disrupted",
+      "lemma": "disrupt",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɪsˈɹʌpt/",
+      "definition_en": "make a break in",
+      "translation_ko": "",
+      "example_en": "We interrupt the program for the following messages",
+      "context_sentence": "The goal is to find a diplomatic middle ground to a war that has claimed thousands of lives and disrupted vital waterways in the Strait of Hormuz.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4101,
+      "is_b2_plus": false,
+      "derivatives": [
+        "break up",
+        "cut off",
+        "interrupt"
+      ]
+    },
+    {
+      "word": "strait",
+      "lemma": "strait",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/stɹeɪt/",
+      "definition_en": "a narrow channel of the sea joining two larger bodies of water",
+      "translation_ko": "",
+      "example_en": "The Strait of Gibraltar",
+      "context_sentence": "Speaking to reporters on Friday, Wi said the number of ships that have passed through the strait does not seem to have significantly increased following the agreed-upon two-week truce compared to before the war.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4001,
+      "is_b2_plus": false,
+      "derivatives": [
+        "pass",
+        "sound",
+        "straits"
+      ]
+    },
+    {
+      "word": "daytime",
+      "lemma": "daytime",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "the time after sunrise and before sunset while it is light outside",
+      "translation_ko": "",
+      "example_en": "the dawn turned night into day",
+      "context_sentence": "On Sunday, daytime temperatures will climb quite a bit with Seoul reaching up to 23 degrees Celsius.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3401,
+      "is_b2_plus": false,
+      "derivatives": [
+        "day",
+        "daylight"
+      ]
+    },
+    {
+      "word": "navigate",
+      "lemma": "navigate",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "travel on water propelled by wind or by other means",
+      "translation_ko": "",
+      "example_en": "The QE2 will sail to Southampton tomorrow",
+      "context_sentence": "#4\nSeoul and Washington should reinforce dialogue and coordination, \nas the allies navigate a time of uncertainty.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3197,
+      "is_b2_plus": false,
+      "derivatives": [
+        "pilot",
+        "sail",
+        "voyage"
+      ]
+    },
+    {
+      "word": "reinforce",
+      "lemma": "reinforce",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˌɹiːɪnˈfɔː(ɹ)s/",
+      "definition_en": "make stronger",
+      "translation_ko": "",
+      "example_en": "he reinforced the concrete",
+      "context_sentence": "#4\nSeoul and Washington should reinforce dialogue and coordination, \nas the allies navigate a time of uncertainty.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3197,
+      "is_b2_plus": false,
+      "derivatives": [
+        "reenforce",
+        "reward"
+      ]
+    },
+    {
+      "word": "neighbour",
+      "lemma": "neighbour",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈneɪbə/",
+      "definition_en": "a person who lives (or is located) near another",
+      "translation_ko": "",
+      "example_en": "My neighbour has two noisy cats.",
+      "context_sentence": "As he entered the building, Matsuo did not respond to reporters’ questions, including why Japan claims Dokdo as its territory while describing South Korea as an important neighbour in the Diplomatic Bluebook, and whether Tokyo intends to withdraw the claim.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3098,
+      "is_b2_plus": false,
+      "derivatives": [
+        "neighbor"
+      ]
+    },
+    {
+      "word": "deployed",
+      "lemma": "deploy",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɪˈplɔɪ/",
+      "definition_en": "place troops or weapons in battle formation",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The main road leading to Islamabad’s heavily fortified Red Zone, a home to key government buildings and diplomatic missions, has been blocked, with military personnel deployed and checkpoints set up throughout the area.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3002,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "According",
+      "lemma": "accord",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "harmony of people's opinions or actions or characters",
+      "translation_ko": "",
+      "example_en": "the two parties were in agreement",
+      "context_sentence": "According to foreign media correspondents in the region, security has been tightened across the city.",
+      "cefr_level": "B2",
+      "frequency_score": 5.1898,
+      "is_b2_plus": false,
+      "derivatives": [
+        "accordance",
+        "agree",
+        "agreement",
+        "concord",
+        "conformity",
+        "consort",
+        "fit in",
+        "harmonise",
+        "harmonize",
+        "pact",
+        "treaty"
+      ]
+    },
+    {
+      "word": "convey",
+      "lemma": "convey",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/kənˈveɪ/",
+      "definition_en": "make known; pass on, of information",
+      "translation_ko": "",
+      "example_en": "She conveyed the message to me",
+      "context_sentence": "The Ministry of Foreign Affairs said Kim Sang-hoon, Director-General for Asian and Pacific Affairs, summoned the Japanese Embassy's Deputy Chief of Mission Hirotaka Matsuo to convey Seoul’s protest.",
+      "cefr_level": "B2",
+      "frequency_score": 5.1701,
+      "is_b2_plus": false,
+      "derivatives": [
+        "carry",
+        "channel",
+        "communicate",
+        "conduct",
+        "express",
+        "impart",
+        "transmit"
+      ]
+    }
+  ]
+}
