@@ -1,0 +1,54 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+interpellation,interpellation,NOUN,명사,,(parliament) a parliamentary procedure of demanding that a government official explain some act or policy,,,"The National Assembly convened Monday afternoon for the final day of its three-day interpellation session, with lawmakers turning their focus to education, society, and cultural affairs.”",C2,7.5406,False,interjection|interpolation|interposition
+destined,destine,VERB,동사,/ˈdɛstɪn/,decree or designate beforehand,,She was destined to become a great pianist,The blockade will not apply to ships that are destined for ports outside of Iran.,C2,7.2798,False,designate|doom|fate|intend|specify
+multipolar,multipolar,ADJ,형용사,,,,,"The regime supported China's policy of building a “multipolar world,"" 
+and said it is important to strengthen cooperation to safeguard common interests and ensure the sustained development of bilateral ties.",C1,6.9914,False,
+countermeasure,countermeasure,NOUN,명사,,an action taken to offset another action,,"We fear that this will be the beginning of a negative development of measures and countermeasures, at the end of which there will be no winner CNN-money, Why President Trump's obsession with German cars is misplaced, Jackie Wattles and Charles Riley, May 31, 2018",The move is allegedly seen as a countermeasure to Iran's continued control of the Strait of Hormuz despite a ceasefire agreement.,C1,6.6108,False,
+prosecutorial,prosecutorial,ADJ,형용사,,Relating to prosecuting of criminal cases.,,Prosecutorial misconduct can lead to the lawyer's disbarment.,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",C1,6.4001,False,
+indict,indict,VERB,동사,/ˌɪnˈdaɪt/,accuse formally of a crime,,a book that indicts modern values,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",C1,6.15,False,
+hoon,hoon,NOUN,명사,,A worthless person; a hooligan or lout.,,,Welcome to Arirang News This is Park Kee hoon,C1,6.0101,False,
+convened,convene,VERB,동사,/kənˈvɪin/,meet formally,,The council convened last week,"The National Assembly convened Monday afternoon for the final day of its three-day interpellation session, with lawmakers turning their focus to education, society, and cultural affairs.”",B2,5.9586,True,convoke
+lawmakers,lawmaker,NOUN,명사,,a maker of laws; someone who gives a code of laws,,,"The National Assembly convened Monday afternoon for the final day of its three-day interpellation session, with lawmakers turning their focus to education, society, and cultural affairs.”",B2,5.9318,False,lawgiver
+intensify,intensify,VERB,동사,,increase in extent or intensity,,The Allies escalated the bombing,"Global oil prices surge again as tensions around the 
+Strait of Hormuz intensify.",B2,5.8386,False,compound|deepen|escalate|heighten|step up
+alleged,allege,VERB,동사,,report or maintain,,He alleged that he was the victim of a crime,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",B2,5.821,False,aver|say
+pave,pave,VERB,동사,/peɪv/,a setting with precious stones so closely set that no metal shows,,,"Lee said the two leaders agreed to elevate bilateral relations 
+to pave the way for deeper cooperation across a broad range of sectors, expressing hope for further advancing ""mutually beneficial"" 
+defense industry ties.",B2,5.7905,False,
+mayoral,mayoral,ADJ,형용사,,of or relating to a mayor or the office of mayor,,mayoral elections,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",B2,5.719,False,
+unresolved,unresolved,ADJ,형용사,,not solved,,many crimes remain unsolved,"As tensions escalate amid unresolved ceasefire negotiations between Washington and Tehran, the U.S. will begin enforcing a maritime blockade on all vessels entering or leaving Iranian ports within hours.",B2,5.699,False,dissonant|open|undecided|undetermined|unsolved
+bolster,bolster,VERB,동사,/ˈbəʊlstə/,a pillow that is often put across a bed underneath the regular pillows,,,"2
+President Lee Jae Myung and Polish Prime Minister Donald Tusk 
+agreed to upgrade the bilateral ties to a comprehensive strategic partnership and bolster cooperation in the defense industry and energy supply chains during their summit talks Monday at the Blue House.",B2,5.6904,False,bolster up|long pillow|pad
+ceasefire,ceasefire,NOUN,명사,,"In warfare, an agreed end to hostilities for a specific purpose. (Typically only temporary).",,The rebels agreed to a ceasefire while the peace talks were underway.,"As tensions escalate amid unresolved ceasefire negotiations between Washington and Tehran, the U.S. will begin enforcing a maritime blockade on all vessels entering or leaving Iranian ports within hours.",B2,5.6799,True,
+escalate,escalate,VERB,동사,/ˈɛs.kə.leɪt/,increase in extent or intensity,,The Allies escalated the bombing,"As tensions escalate amid unresolved ceasefire negotiations between Washington and Tehran, the U.S. will begin enforcing a maritime blockade on all vessels entering or leaving Iranian ports within hours.",B2,5.6498,False,intensify|step up
+elevate,elevate,VERB,동사,/ˈɛləveɪt/,give a promotion to or assign to a higher position,,John was kicked upstairs when a replacement was hired,"Lee said the two leaders agreed to elevate bilateral relations 
+to pave the way for deeper cooperation across a broad range of sectors, expressing hope for further advancing ""mutually beneficial"" 
+defense industry ties.",B2,5.6198,False,advance|bring up|get up|kick upstairs|lift|promote|raise|upgrade
+illicit,illicit,ADJ,형용사,,contrary to accepted morality (especially sexual morality) or convention,,an illicit association with his secretary,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",B2,5.5702,False,illegitimate|outlaw|outlawed|unlawful
+allegations,allegation,NOUN,명사,/ˌæl.əˈɡeɪ.ʃən/,(law) a formal accusation against somebody (often in a court of law),,an allegation of malpractice,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",B2,5.5003,True,allegement
+safeguard,safeguard,VERB,동사,,a precautionary measure warding off impending danger or damage or injury etc.,,he put an ice pack on the injury as a precaution,"The regime supported China's policy of building a “multipolar world,"" 
+and said it is important to strengthen cooperation to safeguard common interests and ensure the sustained development of bilateral ties.",B2,5.4498,False,guard|precaution|safe-conduct
+blockade,blockade,NOUN,명사,/blɒˈkeɪd/,a war measure that isolates some area of importance to the enemy,,,"As tensions escalate amid unresolved ceasefire negotiations between Washington and Tehran, the U.S. will begin enforcing a maritime blockade on all vessels entering or leaving Iranian ports within hours.",B2,5.4295,False,bar|barricade|block|block off|block up|embarrass|encirclement|hinder|obstruct|stop|stymie|stymy
+disrupted,disrupt,VERB,동사,,make a break in,,We interrupt the program for the following messages,"With Iran closing off a key shipping route and Washington's blockade, 
+traffic through the Strait of Hormuz has become increasingly disrupted.",B2,5.4101,False,break up|cut off|interrupt
+misconduct,misconduct,NOUN,명사,/mɪsˈkɒndʌkt/,bad or dishonest management by persons supposed to act on another's behalf,,The student was threatened with a £2000 fine and banned from using the university's computing resources for two weeks due to gross misconduct on the Internet.,"At the heart of the controversy were allegations of prosecutorial misconduct, and a decision not to indict a ruling party mayoral candidate in Busan 
+over alleged illicit payments tied to a religious group.",B2,5.3401,False,actus reus|misbehave|misdemean|mishandle|mismanage|wrongdoing|wrongful conduct
+mutually,mutually,ADV,부사,/-lɪ/,in a mutual or shared manner,,the agreement was mutually satisfactory,"Lee said the two leaders agreed to elevate bilateral relations 
+to pave the way for deeper cooperation across a broad range of sectors, expressing hope for further advancing ""mutually beneficial"" 
+defense industry ties.",B2,5.3197,False,reciprocally
+Brent,brent,NOUN,명사,,small dark geese that breed in the north and migrate southward,,,"Brent crude futures jumped 8.7 percent from the previous session 
+to above 103 dollars a barrel.",B2,5.3098,False,brant|brant goose|brent goose
+bilateral,bilateral,ADJ,형용사,/baɪˈlætəɹəl/,having identical parts on each side of an axis,,,"2
+President Lee Jae Myung and Polish Prime Minister Donald Tusk 
+agreed to upgrade the bilateral ties to a comprehensive strategic partnership and bolster cooperation in the defense industry and energy supply chains during their summit talks Monday at the Blue House.",B2,5.2798,True,bilaterally symmetric|bilaterally symmetrical|isobilateral|two-sided
+fairness,fairness,NOUN,명사,,conformity with rules or standards,,the judge recognized the fairness of my claim,"Opposition lawmakers pressed Justice Minister Chung Sung-ho 
+on that decision, raising concerns about fairness and potential political bias in the investigation.",B2,5.2299,False,beauteousness|blondness|candor|candour|comeliness|equity|fair-mindedness|loveliness|paleness
+negotiations,negotiation,NOUN,명사,/nɪˌɡəʊʃiˈeɪʃən/,a discussion intended to produce an agreement,,the buyout negotiation lasted several days,"As tensions escalate amid unresolved ceasefire negotiations between Washington and Tehran, the U.S. will begin enforcing a maritime blockade on all vessels entering or leaving Iranian ports within hours.",B2,5.2197,True,dialogue|talks
+According,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"According to the Korean Central News Agency, the meeting took place on Friday, the last day of Wang Yi's two-day visit to Pyongyang which marked the first trip to the North since 2019.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
