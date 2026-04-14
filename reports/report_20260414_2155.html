@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.04.14", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260414_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260414/31337845/31337845_20260414-xrvopf7i_audio_arirang-mp3-normal-20260414220550.mp4?hdnts=exp=3552589274~acl=/kr/media1/arirang/20260414/31337845/*~hmac=65d7ffa61e217ebc79d9ded93d415e46ceabdfd40a697a45b56a324fe8471cb3", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nPresident Lee Jae Myung says South Korea must maintain its emergency response system following the breakdown of peace talks between the United States and Iran.\nChairing a Cabinet meeting on Tuesday, Lee warned that high oil prices and disruptions to global energy and raw material supplies are likely to persist.\nHe called for the swift implementation of the roughly 17 billion U.S. dollar supplementary budget to support people's livelihoods.\nThe government plans to begin distributing cash handouts to the bottom 70 percent of income earners starting April 27th.\nLee also urged the parties to the Middle East conflict to take what he called a \"brave step\" toward peace, based on \"universal human rights and the lessons of history.\"\n\n2.\nSouth Korea has started talks with Iran to secure the safe passage... of 26 Korean-flagged ships... currently in the Strait of Hormuz.\nSeoul's Foreign Ministry has reportedly dispatched a special delegation to Tehran... and details about the vessels have been disclosed to senior Iranian officials.\nThe 26 vessels and their 173 crew members remain stranded... in the strait... amid the conflict between the U.S. and Iran.\nThese latest talks come in light of the two-week cease-fire that paved the path for peace talks in Pakistan this past weekend.\nAlso... on the negotiating table... is humanitarian aid... in response to international calls for assistance in the Middle East.\n\n3.\nAs the Strait of Hormuz has remained closed for more than a month, oil-producing countries in the Middle East are looking to South Korea as a potential oil storage hub.\nSpeaking at a briefing in Sejong on Tuesday, Yang Ki-wook, director general of the office of Industry, Trade and Resource Security at the Ministry of Trade, Industry and Resources, said Middle Eastern countries want to use Korea's petroleum storage sites.\nDirector General Yang said exporters are trying to reduce their dependence on the Strait of Hormuz, explaining that countries such as Saudi Arabia, the UAE, and Kuwait could face even more economic damage than South Korea if the strait remains closed, as crude oil exports account for a major share of their economies.\nHe said those countries believe they can lower the risk by storing oil outside the strait, then selling it later if needed.\nYang added that several governments have already asked South Korea to begin talks on using oil storage facilities.\nUnder South Korea's joint oil storage project, foreign oil companies can store crude in facilities run by the Korea National Oil Corporation.\nIn return, Seoul earns rental fees and secures the right of first refusal, allowing the government to purchase the oil first during a supply emergency.\n\n4.\nThe U.S. and Iran could return to the negotiating table later this week, after their first round of talks ended over the weekend without a breakthrough.\nAccording to Reuters on Tuesday, multiple sources say the two sides may resume negotiations in the Pakistani capital, Islamabad, where the initial talks were held.\nWhile an exact date has not been set, an Iranian official said they are keeping their schedules open between the 17th and 19th, while a U.S. official told AP that talks could take place as early as the 16th.\nPakistani officials, who are mediating between the two sides, say they are in contact with both governments and that another round of talks is likely to take place over the weekend.\nAccording to the Wall Street Journal, Washington has proposed a framework of up to 20 years, while the New York Times reports that Tehran has put forward a counterproposal with a shorter timeline of around five years.\nThe report adds that the U.S. is also offering possible sanctions relief in return, marking a shift from its previous demand for a complete halt to enrichment.\n\n5.\nBeyondparallel, an analytic vehicle focused on Korean unification, reported on Monday that a building at Yongbyon, believed to be a new uranium enrichment plant, seems to have been completed.\nLast June, the International Atomic Energy Agency(IAEA) said North Korea was building a uranium enrichment plant to produce weapons-grade material for nuclear weapons.\nSatellite imagery from early April showed the completion of various facilities, such as a backup generator, administrative building, and garage, and people currently working on internal construction.\nMeanwhile, another satellite image of Pyongsan, Hwanghaebuk-do Province, shows signs that suggest North Korea is expanding its nuclear weapons production.\nThe construction of the roof, which is a noticeable blue color, indicated that work has been completed.\nIn particular, a facility processing uranium ore into “uranium concentrate,” a key raw material for nuclear weapons, appears to be operating.\nMoving to weather forecast,\nTomorrow, early summer heat will continue in the western regions.\nTemperatures will rise well above seasonal averages, reaching up to 27 degrees Celsius.\nMeanwhile, along the east coast, where there are easterly winds... and along with some rain on the south coast, it will feel relatively cooler.\nAs for air quality, ultrafine dust levels are expected to be “good” in most areas...and Jeju Island could see occasional rain through tomorrow morning.\nTomorrow, Seoul will start the day at 12 degrees, Chuncheon at 9 degrees, Busan at 13 degrees.\nLooking ahead, warm conditions with daytime highs above 25 degrees will continue.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "counterproposal", "lemma": "counterproposal", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a proposal offered as an alternative to an earlier proposal", "translation_ko": "", "example_en": "", "context_sentence": "According to the Wall Street Journal, Washington has proposed a framework of up to 20 years, while the New York Times reports that Tehran has put forward a counterproposal with a shorter timeline of around five years.", "cefr_level": "C2", "frequency_score": 7.3799, "is_b2_plus": false, "derivatives": []}, {"word": "ultrafine", "lemma": "ultrafine", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "As for air quality, ultrafine dust levels are expected to be “good” in most areas...and Jeju Island could see occasional rain through tomorrow morning.", "cefr_level": "C2", "frequency_score": 7.0701, "is_b2_plus": false, "derivatives": []}, {"word": "earners", "lemma": "earner", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "someone who earn wages in return for their labor", "translation_ko": "", "example_en": "", "context_sentence": "The government plans to begin distributing cash handouts to the bottom 70 percent of income earners starting April 27th.", "cefr_level": "C1", "frequency_score": 6.06, "is_b2_plus": false, "derivatives": ["wage earner"]}, {"word": "easterly", "lemma": "easterly", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a wind from the east", "translation_ko": "", "example_en": "", "context_sentence": "Meanwhile, along the east coast, where there are easterly winds... and along with some rain on the south coast, it will feel relatively cooler.", "cefr_level": "C1", "frequency_score": 6.0501, "is_b2_plus": false, "derivatives": ["east wind", "easter", "eastern"]}, {"word": "handouts", "lemma": "handout", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈhændaʊt/", "definition_en": "an announcement distributed to members of the press in order to supplement or replace an oral presentation", "translation_ko": "", "example_en": "", "context_sentence": "The government plans to begin distributing cash handouts to the bottom 70 percent of income earners starting April 27th.", "cefr_level": "C1", "frequency_score": 6.0, "is_b2_plus": false, "derivatives": ["press release", "release"]}, {"word": "mediating", "lemma": "mediate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈmidi.ət/", "definition_en": "act between parties with a view to reconciling differences", "translation_ko": "", "example_en": "He interceded in the family dispute", "context_sentence": "Pakistani officials, who are mediating between the two sides, say they are in contact with both governments and that another round of talks is likely to take place over the weekend.", "cefr_level": "B2", "frequency_score": 5.8697, "is_b2_plus": false, "derivatives": ["arbitrate", "in-between", "intercede", "intermediate", "liaise", "middle"]}, {"word": "paved", "lemma": "pave", "pos": "VERB", "pos_ko": "동사", "phonetic": "/peɪv/", "definition_en": "a setting with precious stones so closely set that no metal shows", "translation_ko": "", "example_en": "", "context_sentence": "These latest talks come in light of the two-week cease-fire that paved the path for peace talks in Pakistan this past weekend.", "cefr_level": "B2", "frequency_score": 5.7905, "is_b2_plus": false, "derivatives": []}, {"word": "exporters", "lemma": "exporter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a businessperson who transports goods abroad (for sale)", "translation_ko": "", "example_en": "India is the leading exporter of guar gum, making up nearly 85 per cent of the global production.", "context_sentence": "Director General Yang said exporters are trying to reduce their dependence on the Strait of Hormuz, explaining that countries such as Saudi Arabia, the UAE, and Kuwait could face even more economic damage than South Korea if the strait remains closed, as crude oil exports account for a major share of their economies.", "cefr_level": "B2", "frequency_score": 5.71, "is_b2_plus": false, "derivatives": []}, {"word": "analytic", "lemma": "analytic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "using or subjected to a methodology using algebra and calculus", "translation_ko": "", "example_en": "analytic statics", "context_sentence": "Beyondparallel, an analytic vehicle focused on Korean unification, reported on Monday that a building at Yongbyon, believed to be a new uranium enrichment plant, seems to have been completed.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["analytical", "uninflected"]}, {"word": "supplementary", "lemma": "supplementary", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "functioning in a supporting capacity", "translation_ko": "", "example_en": "the main library and its auxiliary branches", "context_sentence": "He called for the swift implementation of the roughly 17 billion U.S. dollar supplementary budget to support people's livelihoods.", "cefr_level": "B2", "frequency_score": 5.6402, "is_b2_plus": false, "derivatives": ["auxiliary", "subsidiary", "supplemental"]}, {"word": "unification", "lemma": "unification", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an occurrence that involves the production of a union", "translation_ko": "", "example_en": "", "context_sentence": "Beyondparallel, an analytic vehicle focused on Korean unification, reported on Monday that a building at Yongbyon, believed to be a new uranium enrichment plant, seems to have been completed.", "cefr_level": "B2", "frequency_score": 5.6402, "is_b2_plus": false, "derivatives": ["conjugation", "fusion", "jointure", "merger", "union", "uniting"]}, {"word": "livelihoods", "lemma": "livelihood", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈlaɪvlɪhʊd/", "definition_en": "the financial means whereby one lives", "translation_ko": "", "example_en": "each child was expected to pay for their keep", "context_sentence": "He called for the swift implementation of the roughly 17 billion U.S. dollar supplementary budget to support people's livelihoods.", "cefr_level": "B2", "frequency_score": 5.58, "is_b2_plus": false, "derivatives": ["bread and butter", "keep", "living", "support", "sustenance"]}, {"word": "sanctions", "lemma": "sanction", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "formal and explicit approval", "translation_ko": "", "example_en": "a Democrat usually gets the union's endorsement", "context_sentence": "The report adds that the U.S. is also offering possible sanctions relief in return, marking a shift from its previous demand for a complete halt to enrichment.", "cefr_level": "B2", "frequency_score": 5.5702, "is_b2_plus": true, "derivatives": ["O.K.", "approve", "authorisation", "authority", "authorization", "countenance", "endorsement", "imprimatur", "indorsement", "okay", "warrant"]}, {"word": "enrichment", "lemma": "enrichment", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "act of making fuller or more meaningful or rewarding", "translation_ko": "", "example_en": "", "context_sentence": "The report adds that the U.S. is also offering possible sanctions relief in return, marking a shift from its previous demand for a complete halt to enrichment.", "cefr_level": "B2", "frequency_score": 5.4802, "is_b2_plus": false, "derivatives": []}, {"word": "persist", "lemma": "persist", "pos": "VERB", "pos_ko": "동사", "phonetic": "/pəˈsɪst/", "definition_en": "continue to exist", "translation_ko": "", "example_en": "These stories die hard", "context_sentence": "Chairing a Cabinet meeting on Tuesday, Lee warned that high oil prices and disruptions to global energy and raw material supplies are likely to persist.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["die hard", "endure", "hang in", "hang on", "hold on", "persevere", "prevail", "remain", "run", "stay"]}, {"word": "strait", "lemma": "strait", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/stɹeɪt/", "definition_en": "a narrow channel of the sea joining two larger bodies of water", "translation_ko": "", "example_en": "The Strait of Gibraltar", "context_sentence": "The 26 vessels and their 173 crew members remain stranded... in the strait... amid the conflict between the U.S. and Iran.", "cefr_level": "B2", "frequency_score": 5.4001, "is_b2_plus": false, "derivatives": ["pass", "sound", "straits"]}, {"word": "daytime", "lemma": "daytime", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "the time after sunrise and before sunset while it is light outside", "translation_ko": "", "example_en": "the dawn turned night into day", "context_sentence": "Looking ahead, warm conditions with daytime highs above 25 degrees will continue.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["day", "daylight"]}, {"word": "dependence", "lemma": "dependence", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪˈpɛndəns/", "definition_en": "the state of relying on or being controlled by someone or something else", "translation_ko": "", "example_en": "He had a deep dependence on her for guidance.", "context_sentence": "Director General Yang said exporters are trying to reduce their dependence on the Strait of Hormuz, explaining that countries such as Saudi Arabia, the UAE, and Kuwait could face even more economic damage than South Korea if the strait remains closed, as crude oil exports account for a major share of their economies.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["addiction", "dependance", "dependency", "habituation"]}, {"word": "stranded", "lemma": "stranded", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "leave stranded or isolated with little hope of rescue", "translation_ko": "", "example_en": "the travellers were marooned", "context_sentence": "The 26 vessels and their 173 crew members remain stranded... in the strait... amid the conflict between the U.S. and Iran.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": ["ground", "isolated", "maroon", "marooned", "run aground", "strand"]}, {"word": "disruptions", "lemma": "disruption", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/dɪsˈɹʌpʃən/", "definition_en": "an act of delaying or interrupting the continuity", "translation_ko": "", "example_en": "it was presented without commercial breaks", "context_sentence": "Chairing a Cabinet meeting on Tuesday, Lee warned that high oil prices and disruptions to global energy and raw material supplies are likely to persist.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["break", "commotion", "dislocation", "disturbance", "flutter", "gap", "hoo-ha", "hoo-hah", "hurly burly", "interruption", "kerfuffle", "perturbation", "to-do"]}, {"word": "briefing", "lemma": "briefing", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈbɹiːfɪŋ/", "definition_en": "detailed instructions, as for a military operation", "translation_ko": "", "example_en": "The U.S. president was briefed on the military coup and its implications on African stability.", "context_sentence": "Speaking at a briefing in Sejong on Tuesday, Yang Ki-wook, director general of the office of Industry, Trade and Resource Security at the Ministry of Trade, Industry and Resources, said Middle Eastern countries want to use Korea's petroleum storage sites.", "cefr_level": "B2", "frequency_score": 5.2596, "is_b2_plus": false, "derivatives": ["brief"]}, {"word": "noticeable", "lemma": "noticeable", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "capable or worthy of being perceived", "translation_ko": "", "example_en": "noticeable shadows under her eyes", "context_sentence": "The construction of the roof, which is a noticeable blue color, indicated that work has been completed.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": ["detectable", "obtrusive"]}, {"word": "dispatched", "lemma": "dispatch", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dəˈspætʃ/", "definition_en": "an official report (usually sent in haste)", "translation_ko": "", "example_en": "", "context_sentence": "Seoul's Foreign Ministry has reportedly dispatched a special delegation to Tehran... and details about the vessels have been disclosed to senior Iranian officials.", "cefr_level": "B2", "frequency_score": 5.2403, "is_b2_plus": false, "derivatives": ["communique", "despatch", "expedition", "expeditiousness", "send off", "shipment"]}, {"word": "negotiating", "lemma": "negotiating", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "discuss the terms of an arrangement", "translation_ko": "", "example_en": "They negotiated the sale of the house", "context_sentence": "Also... on the negotiating table... is humanitarian aid... in response to international calls for assistance in the Middle East.\n \n3.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": false, "derivatives": ["negociate", "negotiate", "talk terms"]}, {"word": "negotiations", "lemma": "negotiation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/nɪˌɡəʊʃiˈeɪʃən/", "definition_en": "a discussion intended to produce an agreement", "translation_ko": "", "example_en": "the buyout negotiation lasted several days", "context_sentence": "According to Reuters on Tuesday, multiple sources say the two sides may resume negotiations in the Pakistani capital, Islamabad, where the initial talks were held.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": true, "derivatives": ["dialogue", "talks"]}, {"word": "distributing", "lemma": "distribute", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɨˈstɹɪbjuːt/", "definition_en": "administer or bestow, as in small portions", "translation_ko": "", "example_en": "administer critical remarks to everyone present", "context_sentence": "The government plans to begin distributing cash handouts to the bottom 70 percent of income earners starting April 27th.", "cefr_level": "B2", "frequency_score": 5.2097, "is_b2_plus": false, "derivatives": ["administer", "allot", "circulate", "deal", "deal out", "dish out", "dispense", "dole out", "give out", "hand out", "lot", "mete out", "parcel out", "pass around", "pass on"]}, {"word": "According", "lemma": "accord", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "harmony of people's opinions or actions or characters", "translation_ko": "", "example_en": "the two parties were in agreement", "context_sentence": "According to Reuters on Tuesday, multiple sources say the two sides may resume negotiations in the Pakistani capital, Islamabad, where the initial talks were held.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["accordance", "agree", "agreement", "concord", "conformity", "consort", "fit in", "harmonise", "harmonize", "pact", "treaty"]}, {"word": "breakthrough", "lemma": "breakthrough", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈbɹeɪkθɹuː/", "definition_en": "a productive insight", "translation_ko": "", "example_en": "", "context_sentence": "The U.S. and Iran could return to the negotiating table later this week, after their first round of talks ended over the weekend without a breakthrough.", "cefr_level": "B2", "frequency_score": 5.1701, "is_b2_plus": false, "derivatives": ["discovery", "find"]}, {"word": "imagery", "lemma": "imagery", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the ability to form mental images of things or events", "translation_ko": "", "example_en": "he could still hear her in his imagination", "context_sentence": "Satellite imagery from early April showed the completion of various facilities, such as a backup generator, administrative building, and garage, and people currently working on internal construction.", "cefr_level": "B2", "frequency_score": 5.1701, "is_b2_plus": false, "derivatives": ["imagination", "imaging", "mental imagery"]}, {"word": "refusal", "lemma": "refusal", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ɹɪˈfjuːzl̩/", "definition_en": "the act of refusing", "translation_ko": "", "example_en": "", "context_sentence": "In return, Seoul earns rental fees and secures the right of first refusal, allowing the government to purchase the oil first during a supply emergency.\n \n4.", "cefr_level": "B2", "frequency_score": 5.1701, "is_b2_plus": false, "derivatives": []}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
