@@ -313,5 +313,14 @@
     "mp3_path": "downloads/20260414_2155_arirang.mp4",
     "meta_path": "downloads/20260414_2155_arirang_meta.json",
     "updated_at": "2026-04-15T08:10:41.737692+09:00"
+  },
+  "20260415_2155": {
+    "status": "success",
+    "title": "21:55 Arirang News",
+    "source_url": "https://www.arirang.com/radio/132/podcast/668?lang=en",
+    "txt_path": "downloads/20260415_2155_arirang.txt",
+    "mp3_path": "downloads/20260415_2155_arirang.mp4",
+    "meta_path": "downloads/20260415_2155_arirang_meta.json",
+    "updated_at": "2026-04-16T08:09:42.584809+09:00"
   }
 }
