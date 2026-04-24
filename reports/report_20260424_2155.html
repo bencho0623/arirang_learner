@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.04.24", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260424_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260424/31658343/31658343_20260424-izgjakq5_audio_arirang-mp3-normal-20260424220432.mp4?hdnts=exp=3554316748~acl=/kr/media1/arirang/20260424/31658343/*~hmac=eaec1dfd895daf1784eb8315d2101c2ee2dd215323b4cd985ba25675244b4a90", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nPresident Lee Jae Myung wrapped up his state visit to Vietnam with a stop at the Imperial Citadel of Thang Long, one of Hanoi's most renowned landmarks.\nAt the UNESCO World Heritage Site, Lee and first lady Kim Hea Kyung were welcomed by Vietnam's top leader, To Lam, and his spouse, Ngo Phuong Ly.\nLee wore a red-and-blue striped tie, while Kim appeared in a white jacket and skirt, a combination resembling the colors of South Korea's national flag, the Taegeukgi.\nThe attire was meant to express national pride while returning Vietnam's warm hospitality with equal courtesy.\nThe two couples toured the site before sharing tea outdoors while enjoying traditional Vietnamese performances.\nOn the same day, the Blue House also revealed the gifts that had been prepared.\nFor General Secretary To Lam, the gifts featured a traditional Korean painting of the mythical creature haetae and a pine tree, symbols of justice and integrity, along with a speaker bearing a caricature of the couple, reflecting his appreciation for classical music.\nThe first lady was given merchandise from the National Museum of Korea, a beauty device, and a traditional mother-of-pearl box.\n\n2.\nNational Security Adviser Wi Sung-lac has drawn a clear distinction... between the domestic investigation here into e-commerce giant Coupang... and the defense commitment shared by South Korea and the U.S.\nAt a briefing on Thursday in Hanoi... he called for security consultations between the two countries to proceed separately.\nHe also said... he was in contact with the Republican lawmakers... who recently sent a letter... regarding Coupang... to South Korean Ambassador to the U.S.\nKang Kyung-wha.\nThe U.S. has insisted that...\nSouth Korea's probe into the U.S.-listed company... for its massive data leak... is discrimination.\n\n3.\nKorea's tech-heavy KOSDAQ index soared above the one-thousand-200 mark for the first time in over 25 years.\nAccording to the Korea Exchange on Friday, the index closed trade at 1-thousand-2-hundred-3-point-8, up 2-point-5 percent from its session on Thursday.\nThe significant milestone, last seen in August 2000, came as semiconductor equipment, materials stock, and biotech shares led broad gains across the index.\nThe rally was led by foreign investors who net-bought roughly 800 billion won worth of shares.\n\n4.\nAs of Friday afternoon, the national average for diesel reached 2,000.53 won per liter, crossing the 2,000-won mark for the first time since July 2022.\nGasoline is also up, averaging 2,006.45 won nationally and 2,043.94 won in the capital, Seoul.\nTo combat these rising costs, the government on Friday initiated its fourth petroleum price ceiling.\nThis keeps wholesale supply prices frozen at 1,934 won for gasoline and 1,923 won for diesel.\nWith this fourth review, wholesale caps have now been maintained for six consecutive weeks.\nWhile the government cited prior drops in international benchmarks to justify freezing the wholesale ceiling rather than lowering it, global markets remain highly volatile.\nIn fact, on Thursday in the U.S.,..\nBrent crude futures closed at 105.07 dollars per barrel, and U.S.\nWest Texas Intermediate reached 95.85 dollars amid ongoing geopolitical escalations.\nWith international price fluctuations typically taking two to three weeks to reach local gas stations, the full impact of the recent crude surge has yet to be realized.\n\n5.\nThe Blue House says there are no immediate concerns over Korea's oil supply for next month.\nPresidential Chief of Staff Kang Hoon-sik told reporters on Friday that the country has secured 74-point-6 million barrels of crude oil for May, about 87 percent of last year's monthly average imports.\nHe added that Korea has reduced its reliance on Middle Eastern oil from 69 percent to 56... by bringing in additional supplies from the Americas and Africa.\nKang also said efforts are underway to diversify shipping routes, noting that nearly 24 million barrels from Saudi Arabia and 16 million from the UAE are set to arrive in May through routes that bypass the Strait of Hormuz.\nMoving to weather forecast,\nAfternoon temperatures will stay slightly above average, yet what big day-to-night temperature swings continue.\nWe’re looking at mostly clear skies across the country tomorrow, and air quality should stay in good shape as well.\nBut dry weather advisories have been expanded to more areas across the country.\nTomorrow, Seoul will start the day at 10 degrees Celsius, Chuncheon at 7 degrees, Busan at 11 degrees.\nIn Seoul, it stays bright and spring-like throughout the weekend, with highs at around 25 degrees.\nThen, late Monday night into early Tuesday, rain is expected to move into central regions.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "haetae", "lemma": "haetae", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "For General Secretary To Lam, the gifts featured a traditional Korean painting of the mythical creature haetae and a pine tree, symbols of justice and integrity, along with a speaker bearing a caricature of the couple, reflecting his appreciation for classical music.", "cefr_level": "C2", "frequency_score": 8.0, "is_b2_plus": false, "derivatives": []}, {"word": "data", "lemma": "datum", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈdeɪtəm/", "definition_en": "an item of factual information derived from measurement or research", "translation_ko": "", "example_en": "", "context_sentence": "South Korea's probe into the U.S.-listed company... for its massive data leak... is discrimination.", "cefr_level": "C1", "frequency_score": 6.4802, "is_b2_plus": false, "derivatives": ["data point"]}, {"word": "fluctuations", "lemma": "fluctuation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a wave motion", "translation_ko": "", "example_en": "the fluctuations of the sea", "context_sentence": "With international price fluctuations typically taking two to three weeks to reach local gas stations, the full impact of the recent crude surge has yet to be realized.", "cefr_level": "C1", "frequency_score": 6.1101, "is_b2_plus": true, "derivatives": ["variation", "wavering"]}, {"word": "lawmakers", "lemma": "lawmaker", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a maker of laws; someone who gives a code of laws", "translation_ko": "", "example_en": "", "context_sentence": "he was in contact with the Republican lawmakers... who recently sent a letter... regarding Coupang... to South Korean Ambassador to the U.S.", "cefr_level": "B2", "frequency_score": 5.9318, "is_b2_plus": false, "derivatives": ["lawgiver"]}, {"word": "geopolitical", "lemma": "geopolitical", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "of or relating to geopolitics", "translation_ko": "", "example_en": "", "context_sentence": "Brent crude futures closed at 105.07 dollars per barrel, and U.S. West Texas Intermediate reached 95.85 dollars amid ongoing geopolitical escalations.", "cefr_level": "B2", "frequency_score": 5.8508, "is_b2_plus": true, "derivatives": []}, {"word": "biotech", "lemma": "biotech", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "the branch of molecular biology that studies the use of microorganisms to perform specific industrial processes", "translation_ko": "", "example_en": "biotechnology produced genetically altered bacteria that solved the problem", "context_sentence": "The significant milestone, last seen in August 2000, came as semiconductor equipment, materials stock, and biotech shares led broad gains across the index.", "cefr_level": "B2", "frequency_score": 5.8386, "is_b2_plus": false, "derivatives": ["biotechnology"]}, {"word": "diversify", "lemma": "diversify", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "make (more) diverse", "translation_ko": "", "example_en": "diversify a course of study", "context_sentence": "Kang also said efforts are underway to diversify shipping routes, noting that nearly 24 million barrels from Saudi Arabia and 16 million from the UAE are set to arrive in May through routes that bypass the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.8386, "is_b2_plus": false, "derivatives": ["branch out", "broaden", "radiate"]}, {"word": "caricature", "lemma": "caricature", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈkæɹɪkətʃʊə/", "definition_en": "a representation of a person that is exaggerated for comic effect", "translation_ko": "", "example_en": "", "context_sentence": "For General Secretary To Lam, the gifts featured a traditional Korean painting of the mythical creature haetae and a pine tree, symbols of justice and integrity, along with a speaker bearing a caricature of the couple, reflecting his appreciation for classical music.", "cefr_level": "B2", "frequency_score": 5.8097, "is_b2_plus": false, "derivatives": ["ape", "imitation", "impersonation"]}, {"word": "escalations", "lemma": "escalation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an increase to counteract a perceived discrepancy", "translation_ko": "", "example_en": "higher wages caused an escalation of prices", "context_sentence": "Brent crude futures closed at 105.07 dollars per barrel, and U.S. West Texas Intermediate reached 95.85 dollars amid ongoing geopolitical escalations.", "cefr_level": "B2", "frequency_score": 5.6799, "is_b2_plus": true, "derivatives": []}, {"word": "soared", "lemma": "soar", "pos": "VERB", "pos_ko": "동사", "phonetic": "/sɔː/", "definition_en": "the act of rising upward into the air", "translation_ko": "", "example_en": "", "context_sentence": "3.\nKorea's tech-heavy KOSDAQ index soared above the one-thousand-200 mark for the first time in over 25 years.", "cefr_level": "B2", "frequency_score": 5.6108, "is_b2_plus": false, "derivatives": ["hang glide", "soar up", "soar upwards", "surge", "zoom"]}, {"word": "mythical", "lemma": "mythical", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈmɪθɪkəl/", "definition_en": "based on or told of in traditional stories; lacking factual basis or historical validity", "translation_ko": "", "example_en": "mythical centaurs", "context_sentence": "For General Secretary To Lam, the gifts featured a traditional Korean painting of the mythical creature haetae and a pine tree, symbols of justice and integrity, along with a speaker bearing a caricature of the couple, reflecting his appreciation for classical music.", "cefr_level": "B2", "frequency_score": 5.5607, "is_b2_plus": false, "derivatives": ["fabulous", "mythic", "mythologic", "mythological"]}, {"word": "liter", "lemma": "liter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈliː.tə/", "definition_en": "a metric unit of capacity, formerly defined as the volume of one kilogram of pure water under standard conditions; now equal to 1,000 cubic centimeters (or approximately 1.75 pints)", "translation_ko": "", "example_en": "You should be able to fill four cups with one litre of water.", "context_sentence": "As of Friday afternoon, the national average for diesel reached 2,000.53 won per liter, crossing the 2,000-won mark for the first time since July 2022.", "cefr_level": "B2", "frequency_score": 5.5406, "is_b2_plus": false, "derivatives": ["cubic decimeter", "cubic decimetre", "l", "litre"]}, {"word": "attire", "lemma": "attire", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/əˈtaɪə(ɹ)/", "definition_en": "clothing of a distinctive style or for a particular occasion", "translation_ko": "", "example_en": "formal attire", "context_sentence": "The attire was meant to express national pride while returning Vietnam's warm hospitality with equal courtesy.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": false, "derivatives": ["deck out", "deck up", "dress", "dress up", "fancy up", "fig out", "fig up", "garb", "get up", "gussy up", "overdress", "prink", "rig out", "tog out", "tog up"]}, {"word": "semiconductor", "lemma": "semiconductor", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a substance as germanium or silicon whose electrical conductivity is intermediate between that of a metal and an insulator; its conductivity increases with temperature and in the presence of impurities", "translation_ko": "", "example_en": "", "context_sentence": "The significant milestone, last seen in August 2000, came as semiconductor equipment, materials stock, and biotech shares led broad gains across the index.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["semiconducting material", "semiconductor device", "semiconductor unit"]}, {"word": "benchmarks", "lemma": "benchmark", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a standard by which something can be measured or judged", "translation_ko": "", "example_en": "his painting sets the benchmark of quality", "context_sentence": "While the government cited prior drops in international benchmarks to justify freezing the wholesale ceiling rather than lowering it, global markets remain highly volatile.", "cefr_level": "B2", "frequency_score": 5.4001, "is_b2_plus": true, "derivatives": ["bench mark"]}, {"word": "cited", "lemma": "cite", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "a short note recognizing a source of information or of a quoted passage", "translation_ko": "", "example_en": "the student's essay failed to list several important citations", "context_sentence": "While the government cited prior drops in international benchmarks to justify freezing the wholesale ceiling rather than lowering it, global markets remain highly volatile.", "cefr_level": "B2", "frequency_score": 5.3298, "is_b2_plus": false, "derivatives": ["acknowledgment", "advert", "bring up", "citation", "credit", "mention", "name", "quotation", "quote", "refer", "reference"]}, {"word": "Brent", "lemma": "brent", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "small dark geese that breed in the north and migrate southward", "translation_ko": "", "example_en": "", "context_sentence": "Brent crude futures closed at 105.07 dollars per barrel, and U.S. West Texas Intermediate reached 95.85 dollars amid ongoing geopolitical escalations.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["brant", "brant goose", "brent goose"]}, {"word": "milestone", "lemma": "milestone", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "stone post at side of a road to show distances", "translation_ko": "", "example_en": "", "context_sentence": "The significant milestone, last seen in August 2000, came as semiconductor equipment, materials stock, and biotech shares led broad gains across the index.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["milepost"]}, {"word": "outdoors", "lemma": "outdoors", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "where the air is unconfined", "translation_ko": "", "example_en": "he wanted to get outdoors a little", "context_sentence": "The two couples toured the site before sharing tea outdoors while enjoying traditional Vietnamese performances.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["alfresco", "open", "open air", "out of doors", "out-of-doors", "outside"]}, {"word": "volatile", "lemma": "volatile", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a volatile substance; a substance that changes readily from solid or liquid to a vapor", "translation_ko": "", "example_en": "it was heated to evaporate the volatiles", "context_sentence": "While the government cited prior drops in international benchmarks to justify freezing the wholesale ceiling rather than lowering it, global markets remain highly volatile.", "cefr_level": "B2", "frequency_score": 5.2798, "is_b2_plus": true, "derivatives": ["explosive", "fickle"]}, {"word": "resembling", "lemma": "resemble", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɹɪˈzɛmb(ə)l/", "definition_en": "appear like; be similar or bear a likeness to", "translation_ko": "", "example_en": "She resembles her mother very much", "context_sentence": "Lee wore a red-and-blue striped tie, while Kim appeared in a white jacket and skirt, a combination resembling the colors of South Korea's national flag, the Taegeukgi.", "cefr_level": "B2", "frequency_score": 5.27, "is_b2_plus": false, "derivatives": []}, {"word": "briefing", "lemma": "briefing", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈbɹiːfɪŋ/", "definition_en": "detailed instructions, as for a military operation", "translation_ko": "", "example_en": "The U.S. president was briefed on the military coup and its implications on African stability.", "context_sentence": "2.\nNational Security Adviser Wi Sung-lac has drawn a clear distinction... between the domestic investigation here into e-commerce giant Coupang... and the defense commitment shared by South Korea and the U.S.\n\nAt a briefing on Thursday in Hanoi...", "cefr_level": "B2", "frequency_score": 5.2596, "is_b2_plus": false, "derivatives": ["brief"]}, {"word": "initiated", "lemma": "initiate", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "someone new to a field or activity", "translation_ko": "", "example_en": "He initiated a new program", "context_sentence": "To combat these rising costs, the government on Friday initiated its fourth petroleum price ceiling.", "cefr_level": "B2", "frequency_score": 5.2596, "is_b2_plus": false, "derivatives": ["beginner", "enlightened", "learned person", "novice", "originate", "pioneer", "pundit", "savant", "start", "tiro", "tyro"]}, {"word": "bypass", "lemma": "bypass", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "a highway that encircles an urban area so that traffic does not have to pass through the center", "translation_ko": "", "example_en": "", "context_sentence": "Kang also said efforts are underway to diversify shipping routes, noting that nearly 24 million barrels from Saudi Arabia and 16 million from the UAE are set to arrive in May through routes that bypass the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.2403, "is_b2_plus": false, "derivatives": ["beltway", "electrical shunt", "get around", "go around", "ring road", "ringway", "short-circuit", "shunt"]}, {"word": "According", "lemma": "accord", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "harmony of people's opinions or actions or characters", "translation_ko": "", "example_en": "the two parties were in agreement", "context_sentence": "According to the Korea Exchange on Friday, the index closed trade at 1-thousand-2-hundred-3-point-8, up 2-point-5 percent from its session on Thursday.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["accordance", "agree", "agreement", "concord", "conformity", "consort", "fit in", "harmonise", "harmonize", "pact", "treaty"]}, {"word": "reliance", "lemma": "reliance", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "certainty based on past experience", "translation_ko": "", "example_en": "he wrote the paper with considerable reliance on the work of other scientists", "context_sentence": "He added that Korea has reduced its reliance on Middle Eastern oil from 69 percent to 56... by bringing in additional supplies from the Americas and Africa.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["trust"]}, {"word": "surge", "lemma": "surge", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a sudden forceful flow", "translation_ko": "", "example_en": "", "context_sentence": "With international price fluctuations typically taking two to three weeks to reach local gas stations, the full impact of the recent crude surge has yet to be realized.", "cefr_level": "B2", "frequency_score": 5.1798, "is_b2_plus": false, "derivatives": ["billow", "heave", "rush", "soar", "soar up", "soar upwards", "spate", "upsurge", "zoom"]}, {"word": "nationally", "lemma": "nationally", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "with regard to a nation taken as a whole", "translation_ko": "", "example_en": "a nationally uniform culture", "context_sentence": "Gasoline is also up, averaging 2,006.45 won nationally and 2,043.94 won in the capital, Seoul.", "cefr_level": "B2", "frequency_score": 5.1599, "is_b2_plus": false, "derivatives": ["across the country", "across the nation", "nationwide"]}, {"word": "gasoline", "lemma": "gasoline", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a volatile flammable mixture of hydrocarbons (hexane and heptane and octane etc.) derived from petroleum; used mainly as a fuel in internal-combustion engines", "translation_ko": "", "example_en": "", "context_sentence": "This keeps wholesale supply prices frozen at 1,934 won for gasoline and 1,923 won for diesel.", "cefr_level": "B2", "frequency_score": 5.15, "is_b2_plus": false, "derivatives": ["gas", "gasolene", "petrol"]}, {"word": "Vietnamese", "lemma": "vietnamese", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a native or inhabitant of Vietnam", "translation_ko": "", "example_en": "", "context_sentence": "The two couples toured the site before sharing tea outdoors while enjoying traditional Vietnamese performances.", "cefr_level": "B2", "frequency_score": 5.15, "is_b2_plus": false, "derivatives": ["Annamese", "Annamite", "Vietnamese"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
