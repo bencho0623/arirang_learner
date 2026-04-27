@@ -1,0 +1,14 @@
+2026-04-27 23:27:44,621 [INFO] pipeline: Pipeline start date=20260427 step=None demo=False
+2026-04-27 23:27:44,621 [INFO] pipeline: [STEP] crawl start
+2026-04-27 23:27:46,948 [INFO] modules.crawler: Episode list loaded from Arirang API path (corner/list + media/vod/list).
+2026-04-27 23:27:46,949 [INFO] modules.crawler: Parsed episode candidates: 20
+2026-04-27 23:27:46,983 [INFO] modules.crawler: Episode selection rule: matched D-1 and target timeslot token (21:55/10 PM/2155). selected=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-04-27 23:27:46,983 [INFO] modules.crawler: Target candidate summary: date=20260427 airtime=21:55 title=21:55 Arirang News
+2026-04-27 23:27:46,983 [INFO] pipeline: Selection rule: D-1 + target timeslot token matched (21:55/10 PM/2155). url=https://www.arirang.com/radio/132/podcast/668?lang=en
+2026-04-27 23:27:50,525 [INFO] pipeline: [STEP] crawl success
+2026-04-27 23:27:50,525 [INFO] pipeline: [STEP] analyze start
+2026-04-27 23:28:04,672 [INFO] modules.analyzer: Saved vocabulary json=logs/vocabulary_20260427.json csv=logs/vocabulary_20260427.csv count=29
+2026-04-27 23:28:04,672 [INFO] pipeline: [STEP] analyze success json=logs/vocabulary_20260427.json csv=logs/vocabulary_20260427.csv count=29
+2026-04-27 23:28:04,672 [INFO] pipeline: [STEP] report start
+2026-04-27 23:28:04,675 [INFO] modules.reporter: Saved report: reports/report_20260427_2155.html
+2026-04-27 23:28:04,675 [INFO] pipeline: [STEP] report success path=reports/report_20260427_2155.html
