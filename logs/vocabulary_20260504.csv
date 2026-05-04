@@ -1,0 +1,71 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+intraday,intraday,NOUN,명사,,Occurring during a single day.,,,"It started from around 6,598 and climbed steadily, with gains widening to nearly five percent intraday, breaking past 6,780 and even topping 6,930.",C1,6.3904,False,
+fabricated,fabricate,VERB,동사,,"put together out of artificial or natural components or parts; ; ; He manufactured a popular cereal""",,the company fabricates plastic chairs,"The opposition has slammed the bill as a form of ""self-pardon,"" 
+arguing that Lee, as president, would appoint the special counsel, 
+who could then drop existing indictments if found to be based on 
+fabricated evidence.",C1,6.1101,False,construct|cook up|invent|make up|manufacture
+finalized,finalize,VERB,동사,,make final; put the last touches on; put into final form,,let's finalize the proposal,Candidate lineups for 16 metropolitan mayoral and gubernatorial races have now been finalized with just 30 days to go until voters head to the polls.,C1,6.1101,False,finalise|nail down|settle
+hoon,hoon,NOUN,명사,,A worthless person; a hooligan or lout.,,,Welcome to Arirang News This is Park Kee hoon,C1,6.0101,False,
+deliberation,deliberation,NOUN,명사,/dɪˌlɪbəˈɹeɪʃən/,(usually plural) discussion of all sides of a question,,the deliberations of the jury,"President Lee Jae Myung has asked the ruling Democratic Party 
+to determine the timing and planned procedures for a proposed 
+special counsel probe through public consultation and deliberation.",B2,5.9393,False,advisement|calculation|deliberateness|slowness|unhurriedness|weighing
+battlegrounds,battleground,NOUN,명사,,a region where a battle is being (or has been) fought,,they made a tour of Civil War battlefields,"Meanwhile, the race for Seoul’s mayor, one of the country’s key battlegrounds, has taken shape as a two-way contest between the 
+ruling Democratic Party’s candidate Jung Won-oh and the incumbent Mayor Oh Se-hoon of the main opposition People Power Party.",B2,5.9318,False,battlefield|field|field of battle|field of honor
+lawmakers,lawmaker,NOUN,명사,,a maker of laws; someone who gives a code of laws,,,"""
+Democratic Party lawmakers introduced a bill last week 
+to appoint a special counsel to examine allegations 
+that prosecutors under the former Yoon Suk Yeol administration 
+brought politically motivated indictments.",B2,5.9318,False,lawgiver
+alleged,allege,VERB,동사,/əˈlɛdʒ/,report or maintain,,He alleged that he was the victim of a crime,"The investigation would cover charges against Lee, including breach of trust in real estate development projects and alleged involvement 
+in the illegal transfer of funds to North Korea.",B2,5.821,False,aver|say
+gubernatorial,gubernatorial,ADJ,형용사,,relating to a governor,,gubernatorial election,Candidate lineups for 16 metropolitan mayoral and gubernatorial races have now been finalized with just 30 days to go until voters head to the polls.,B2,5.7696,False,
+semifinals,semifinal,NOUN,명사,,one of the two competitions in the next to the last round of an elimination tournament,,,"According to Seoul’s Unification Ministry and the Korea Football Association, North Korea’s Naegohyang women’s football team will take part in the AFC Women’s Champions League semifinals on May 20th.",B2,5.7595,False,semi
+widening,widen,VERB,동사,/ˈwaɪdən/,become broader or wider or more extensive,,The road widened,"It started from around 6,598 and climbed steadily, with gains widening to nearly five percent intraday, breaking past 6,780 and even topping 6,930.",B2,5.7496,False,broaden|extend|let out
+mayoral,mayoral,ADJ,형용사,,of or relating to a mayor or the office of mayor,,mayoral elections,Candidate lineups for 16 metropolitan mayoral and gubernatorial races have now been finalized with just 30 days to go until voters head to the polls.,B2,5.719,False,
+surpassing,surpass,VERB,동사,/sɚˈpæs/,distinguish oneself,,She excelled in math,"Online shopping in Korea hit a record high in March, 
+surpassing 25 trillion won, or about 17 billion U.S. dollars, for the first time.",B2,5.6308,False,exceed|excel|go by|go past|outdo|outgo|outmatch|outperform|outstrip|pass|pass by|stand out|surmount|transcend|travel by
+unjust,unjust,ADJ,형용사,/ʌnˈdʒʌst/,not fair; marked by injustice or partiality or deception,,used unfair methods,"That's according to Senior Presidential Secretary for Political Affairs 
+Hong Ihk-pyo on Monday, who said there is broad public support 
+to launch a probe into ""illegal acts and unjust investigations.",B2,5.5702,False,inequitable|unfair
+redevelopment,redevelopment,NOUN,명사,,the act of improving by renewing and restoring,,they are pursuing a general program of renovation to the entire property,"While, Oh aims at fast-track redevelopment and reconstruction projects 
+by easing loan regulations to revive housing supply.",B2,5.5607,False,overhaul|renovation
+lapse,lapse,NOUN,명사,,a mistake resulting from inattention,,,"The upcoming visit draws attention given the lapse in inter-Korean exchanges, with the North having declared the South a ""hostile state.""",B2,5.51,False,backsliding|lapsing|oversight|pass|relapse|relapsing|reversion|reverting|sink
+allegations,allegation,NOUN,명사,/ˌæl.əˈɡeɪ.ʃən/,(law) a formal accusation against somebody (often in a court of law),,an allegation of malpractice,"""
+Democratic Party lawmakers introduced a bill last week 
+to appoint a special counsel to examine allegations 
+that prosecutors under the former Yoon Suk Yeol administration 
+brought politically motivated indictments.",B2,5.5003,True,allegement
+telecom,telecom,NOUN,명사,,(often plural) systems used in transmitting messages over a distance electronically,,,"Automobile-related sales more than doubled, fueled by increased deliveries of imported electric vehicles, while telecom device sales jumped 
+on new smartphone releases.",B2,5.4202,False,telecommunication
+benchmark,benchmark,NOUN,명사,,a standard by which something can be measured or judged,,his painting sets the benchmark of quality,"The benchmark closed at 6,936, up 5-point-1 percent on the day.",B2,5.4001,True,bench mark
+displacement,displacement,NOUN,명사,,act of taking the place of another especially using underhanded tactics,,,"Jung is emphasizing labor reforms, including flexible work arrangements and measures to address job displacement driven by AI and 
+climate change.",B2,5.3696,False,displacement reaction|shift|supplanting|translation
+accelerating,accelerate,VERB,동사,/æk.ˈsɛl.ə.ˌɹeɪt/,move faster,,The car accelerated,"With the rally accelerating, the once-distant ""7,000 mark"" is now 
+within reach.",B2,5.3401,False,quicken|speed|speed up
+revive,revive,VERB,동사,,cause to regain consciousness,,The doctors revived the comatose man,"While, Oh aims at fast-track redevelopment and reconstruction projects 
+by easing loan regulations to revive housing supply.",B2,5.3197,False,animate|come to|quicken|reanimate|recreate|renovate|repair|resurrect|resuscitate|revivify|vivify
+emphasizing,emphasize,VERB,동사,,"to stress, single out as important",,Dr. Jones emphasizes exercise in addition to a change in diet,"Jung is emphasizing labor reforms, including flexible work arrangements and measures to address job displacement driven by AI and 
+climate change.",B2,5.3098,False,accent|accentuate|emphasise|punctuate|stress|underline|underscore
+appoint,appoint,VERB,동사,/əˈpɔɪnt/,create and charge with a task or function,,nominate a committee,"""
+Democratic Party lawmakers introduced a bill last week 
+to appoint a special counsel to examine allegations 
+that prosecutors under the former Yoon Suk Yeol administration 
+brought politically motivated indictments.",B2,5.3002,False,charge|constitute|name|nominate
+indictments,indictment,NOUN,명사,/ɪnˈdaɪt.mənt/,a formal document written for a prosecuting attorney charging a person with some offense,,,"""
+Democratic Party lawmakers introduced a bill last week 
+to appoint a special counsel to examine allegations 
+that prosecutors under the former Yoon Suk Yeol administration 
+brought politically motivated indictments.",B2,5.3002,True,bill of indictment
+digit,digit,NOUN,명사,/ˈdɪdʒɪt/,one of the elements that collectively form a system of numeration,,0 and 1 are digits,"Mobile shopping maintained double-digit growth, 
+but its share of total transactions slipped slightly.",B2,5.2299,False,dactyl|figure|finger|finger's breadth|fingerbreadth
+incumbent,incumbent,ADJ,형용사,,the official who holds an office,,,"Meanwhile, the race for Seoul’s mayor, one of the country’s key battlegrounds, has taken shape as a two-way contest between the 
+ruling Democratic Party’s candidate Jung Won-oh and the incumbent Mayor Oh Se-hoon of the main opposition People Power Party.",B2,5.2299,True,officeholder
+trillion,trillion,NUM,,/ˈtɹɪljən/,a very large indefinite number (usually hyperbole),,there were millions of flies,"Online shopping in Korea hit a record high in March, 
+surpassing 25 trillion won, or about 17 billion U.S. dollars, for the first time.",B2,5.2097,False,1000000000000|billion|gazillion|jillion|million|one million million|one million million million|zillion
+according,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"That's according to Senior Presidential Secretary for Political Affairs 
+Hong Ihk-pyo on Monday, who said there is broad public support 
+to launch a probe into ""illegal acts and unjust investigations.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
+pardon,pardon,NOUN,명사,/ˈpɑɹ.dən/,the act of excusing a mistake or offense,,,"The opposition has slammed the bill as a form of ""self-pardon,"" 
+arguing that Lee, as president, would appoint the special counsel, 
+who could then drop existing indictments if found to be based on 
+fabricated evidence.",B2,5.1798,False,amnesty|excuse|forgiveness|free pardon
