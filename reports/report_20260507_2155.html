@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.05.07", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260507_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260507/32469553/32469553_20260507-wb9k0nd9_audio_arirang-mp3-normal-20260507220747.mp4?hdnts=exp=3556565752~acl=/kr/media1/arirang/20260507/32469553/*~hmac=30c3bb8864bd772cc353164184e950c1059e81081627206cabdb4a6fcbcab3b9", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nA South Korean-operated bulk carrier stranded in the Strait of Hormuz for more than two months is now being towed toward Dubai after an engine room explosion and fire left the vessel disabled at sea on Monday.\nThe ship's owner, HMM, said it contracted a company in the United Arab Emirates to tow the HMM Namu, with the ship expected to arrive at Dubai Port as early as Thursday.\nOnce docked, authorities will begin a full investigation into the cause of the unexplained explosion and fire.\nThe investigation is also expected to examine claims made by U.S.\nPresident Donald Trump that the ship may have acted independently inside the restricted area near the Strait of Hormuz.\nHMM denied those allegations, stating that the ship had been waiting near the control line for restrictions to be lifted but was not within the expanded control zone.\nThe company also noted that hundreds of vessels, including four operated by HMM, were in the area at the time, making any unilateral movement unlikely.\nSouth Korea’s Ministry of Oceans and Fisheries plans to dispatch investigators, including officials from the Korea Maritime Safety Tribunal, to determine the exact cause of the accident.\n\n2.\nPresident Lee Jae Myung has called for the need to prioritize measures to tamp down higher prices due to uncertainties over ending the conflict in the Middle East.\nPresiding over a weekly meeting with his aides on Thursday, the president noted that pressure on prices will pose a significant burden on economic recovery if it persists, citing a rise in consumer prices last month.\nHe also called on officials to deploy all-out measures to manage supply chains, such as those for crude oil and key materials.\n\n3.\nSouth Korea's equity market has overtaken Canada's as the world's seventh largest, powered by surging demand for AI chips.\nThe total market capitalization of Korea-listed companies has jumped 71 percent this year to 4-point-59 trillion U.S. dollars.\nCanada's market, however, rose only about seven percent to 4-point-5 trillion U.S. dollars, falling behind Korea in global rankings.\nThe rally has been led largely by Samsung Electronics and SK hynix, Korea's two biggest chipmakers.\nSamsung Electronics recently crossed the one-trillion-dollar valuation mark, while both companies have seen their shares more than double this year.\nTogether, the two companies account for about 45 percent of the KOSPI's total market value.\n\n4.\nAccording to the Defense Acquisition Program Administration on Thursday,... the KF-21 has received final operational combat certification.\nThis means the fighter has met the Korean Air Force’s Required Operational Capabilities,... and that the Block-One air-to-air combat variant of the aircraft,... has been confirmed reliable to operate in real-world conflicts.\nThis comes three years after the aircraft received a provisional operational combat assessment in May 2023.\nThe KF-21's development program is slated to be completed in June,... and the first mass-produced aircraft is to be delivered to the Air Force as early as late September.\nThe state-run agency is planning to further secure air-to-ground combat capabilities through additional weapons testing.\n\n5.\nAhead of U.S.\nPresident Donald Trump's visit to China next week, his armored limousine and motorcade SUVs have been spotted in Beijing.\nReports say black limousines and SUVs with U.S. plates were seen on highways in Beijing, signaling a major security buildup ahead of one of this year's most closely watched diplomatic events.\nAt the center of the motorcade is \"The Beast,\" the presidential limousine.\nThe custom-built Cadillac is designed to withstand bullets and explosions, and is equipped with bulletproof glass and advanced security systems, earning its nickname, the \"White House on wheels.\"\nTrump is set to visit Beijing for two days from the 14th, and is reportedly unlikely to travel outside the capital.\nMoving to weather forecast,\nSkies will be clear nationwide again tomorrow.\nBut daytime temperatures will dip slightly across central regions.\nTemperatures will begin to rise again over the weekend, with Saturday’s high expected to reach 23 degrees Celsius.\nMeanwhile, light rain across the Seoul metropolitan area, inland and mountainous areas of Gangwon-do, Chungcheong-do, and western Jeolla-do provinces will all taper off by tonight.\nUV levels will be \"very high\" in most areas tomorrow between noon and 3 PM.\nAs for temperatures, Seoul will start the day at 10 degrees, Chuncheon at 9 degrees, Daegu at 12 degrees.\nThen by the afternoon, Seoul will rise up to 20 degrees, Daejeon 21, and Busan, 23 degrees.\nAnd, looking ahead to the weekend, we'll see clear skies and pleasant spring weather across the country.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "KOSPI", "lemma": "kospi", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "Together, the two companies account for about 45 percent of the KOSPI's total market value.", "cefr_level": "C2", "frequency_score": 7.5302, "is_b2_plus": false, "derivatives": []}, {"word": "chipmakers", "lemma": "chipmaker", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "A company that manufactures integrated circuit chips.", "translation_ko": "", "example_en": "", "context_sentence": "The rally has been led largely by Samsung Electronics and SK hynix, Korea's two biggest chipmakers.", "cefr_level": "C2", "frequency_score": 7.3904, "is_b2_plus": false, "derivatives": []}, {"word": "hynix", "lemma": "hynix", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "The rally has been led largely by Samsung Electronics and SK hynix, Korea's two biggest chipmakers.", "cefr_level": "C2", "frequency_score": 7.1302, "is_b2_plus": false, "derivatives": []}, {"word": "tamp", "lemma": "tamp", "pos": "VERB", "pos_ko": "동사", "phonetic": "/tæmp/", "definition_en": "a tool for tamping (e.g., for tamping tobacco into a pipe bowl or a charge into a drill hole etc.)", "translation_ko": "", "example_en": "", "context_sentence": "President Lee Jae Myung has called for the need to prioritize measures to tamp down higher prices due to uncertainties over ending the conflict in the Middle East.", "cefr_level": "C1", "frequency_score": 6.699, "is_b2_plus": false, "derivatives": ["pack", "tamp down", "tamper", "tamping bar"]}, {"word": "slated", "lemma": "slat", "pos": "VERB", "pos_ko": "동사", "phonetic": "/slæt/", "definition_en": "a thin strip (wood or metal)", "translation_ko": "", "example_en": "slats of a window blind", "context_sentence": "The KF-21's development program is slated to be completed in June,... and the first mass-produced aircraft is to be delivered to the Air Force as early as late September.", "cefr_level": "C1", "frequency_score": 6.6498, "is_b2_plus": false, "derivatives": ["spline"]}, {"word": "motorcade", "lemma": "motorcade", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈməʊtə(ɹ)ˌkeɪd/", "definition_en": "a procession of people traveling in motor cars", "translation_ko": "", "example_en": "JFK was assassinated in a motorcade.", "context_sentence": "Ahead of U.S. President Donald Trump's visit to China next week, his armored limousine and motorcade SUVs have been spotted in Beijing.", "cefr_level": "C1", "frequency_score": 6.2596, "is_b2_plus": false, "derivatives": []}, {"word": "Presiding", "lemma": "preside", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "act as president", "translation_ko": "", "example_en": "preside over companies and corporations", "context_sentence": "Presiding over a weekly meeting with his aides on Thursday, the president noted that pressure on prices will pose a significant burden on economic recovery if it persists, citing a rise in consumer prices last month.", "cefr_level": "C1", "frequency_score": 6.0101, "is_b2_plus": false, "derivatives": []}, {"word": "capitalization", "lemma": "capitalization", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "writing in capital letters", "translation_ko": "", "example_en": "", "context_sentence": "The total market capitalization of Korea-listed companies has jumped 71 percent this year to 4-point-59 trillion U.S. dollars.", "cefr_level": "B2", "frequency_score": 5.8794, "is_b2_plus": false, "derivatives": ["capitalisation"]}, {"word": "limousine", "lemma": "limousine", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌlɪməˈziːn/", "definition_en": "large luxurious car; usually driven by a chauffeur", "translation_ko": "", "example_en": "", "context_sentence": "Ahead of U.S. President Donald Trump's visit to China next week, his armored limousine and motorcade SUVs have been spotted in Beijing.", "cefr_level": "B2", "frequency_score": 5.8013, "is_b2_plus": false, "derivatives": ["limo"]}, {"word": "bulletproof", "lemma": "bulletproof", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/bʊl.ɪtpɹuːf/", "definition_en": "make bulletproof", "translation_ko": "", "example_en": "bulletproof the car", "context_sentence": "The custom-built Cadillac is designed to withstand bullets and explosions, and is equipped with bulletproof glass and advanced security systems, earning its nickname, the \"White House on wheels.", "cefr_level": "B2", "frequency_score": 5.7496, "is_b2_plus": false, "derivatives": ["unassailable", "unshakable", "watertight"]}, {"word": "unexplained", "lemma": "unexplained", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "not explained", "translation_ko": "", "example_en": "accomplished by some unexplained process", "context_sentence": "Once docked, authorities will begin a full investigation into the cause of the unexplained explosion and fire.", "cefr_level": "B2", "frequency_score": 5.719, "is_b2_plus": false, "derivatives": []}, {"word": "overtaken", "lemma": "overtake", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈəʊvə(ɹ).teɪk/", "definition_en": "catch up with and possibly overtake", "translation_ko": "", "example_en": "The Rolls Royce caught us near the exit ramp", "context_sentence": "3.\n\nSouth Korea's equity market has overtaken Canada's as the world's seventh largest, powered by surging demand for AI chips.", "cefr_level": "B2", "frequency_score": 5.699, "is_b2_plus": false, "derivatives": ["catch", "catch up with", "overcome", "overhaul", "overpower", "overwhelm", "pass", "sweep over", "whelm"]}, {"word": "taper", "lemma": "taper", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "a convex shape that narrows toward a point", "translation_ko": "", "example_en": "", "context_sentence": "Meanwhile, light rain across the Seoul metropolitan area, inland and mountainous areas of Gangwon-do, Chungcheong-do, and western Jeolla-do provinces will all taper off by tonight.", "cefr_level": "B2", "frequency_score": 5.699, "is_b2_plus": false, "derivatives": ["candle", "wax light", "wick"]}, {"word": "prioritize", "lemma": "prioritize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/pɹaɪˈɒɹətaɪz/", "definition_en": "assign a priority to", "translation_ko": "", "example_en": "we have too many things to do and must prioritize", "context_sentence": "President Lee Jae Myung has called for the need to prioritize measures to tamp down higher prices due to uncertainties over ending the conflict in the Middle East.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["prioritise"]}, {"word": "unilateral", "lemma": "unilateral", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "[ˌjʉː.nɪˈlæt.ə.ɹɫ̩]", "definition_en": "involving only one part or side", "translation_ko": "", "example_en": "unilateral paralysis", "context_sentence": "The company also noted that hundreds of vessels, including four operated by HMM, were in the area at the time, making any unilateral movement unlikely.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": true, "derivatives": ["one-sided"]}, {"word": "buildup", "lemma": "buildup", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the act of building up an accumulation", "translation_ko": "", "example_en": "I envied his rapid buildup of assets", "context_sentence": "Reports say black limousines and SUVs with U.S. plates were seen on highways in Beijing, signaling a major security buildup ahead of one of this year's most closely watched diplomatic events.", "cefr_level": "B2", "frequency_score": 5.6308, "is_b2_plus": false, "derivatives": []}, {"word": "mountainous", "lemma": "mountainous", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "having hills and crags", "translation_ko": "", "example_en": "hilly terrain", "context_sentence": "Meanwhile, light rain across the Seoul metropolitan area, inland and mountainous areas of Gangwon-do, Chungcheong-do, and western Jeolla-do provinces will all taper off by tonight.", "cefr_level": "B2", "frequency_score": 5.6198, "is_b2_plus": false, "derivatives": ["cragged", "craggy", "hilly"]}, {"word": "allegations", "lemma": "allegation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌæl.əˈɡeɪ.ʃən/", "definition_en": "(law) a formal accusation against somebody (often in a court of law)", "translation_ko": "", "example_en": "an allegation of malpractice", "context_sentence": "HMM denied those allegations, stating that the ship had been waiting near the control line for restrictions to be lifted but was not within the expanded control zone.", "cefr_level": "B2", "frequency_score": 5.5003, "is_b2_plus": true, "derivatives": ["allegement"]}, {"word": "equipped", "lemma": "equip", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɪˈkwɪp/", "definition_en": "provide with (something) usually for a specific purpose", "translation_ko": "", "example_en": "The expedition was equipped with proper clothing, food, and other necessities", "context_sentence": "The custom-built Cadillac is designed to withstand bullets and explosions, and is equipped with bulletproof glass and advanced security systems, earning its nickname, the \"White House on wheels.", "cefr_level": "B2", "frequency_score": 5.5003, "is_b2_plus": false, "derivatives": ["fit", "fit out", "outfit"]}, {"word": "persists", "lemma": "persist", "pos": "VERB", "pos_ko": "동사", "phonetic": "/pəˈsɪst/", "definition_en": "continue to exist", "translation_ko": "", "example_en": "These stories die hard", "context_sentence": "Presiding over a weekly meeting with his aides on Thursday, the president noted that pressure on prices will pose a significant burden on economic recovery if it persists, citing a rise in consumer prices last month.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["die hard", "endure", "hang in", "hang on", "hold on", "persevere", "prevail", "remain", "run", "stay"]}, {"word": "armored", "lemma": "armored", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈɑː.mə/", "definition_en": "equip with armor", "translation_ko": "", "example_en": "", "context_sentence": "Ahead of U.S. President Donald Trump's visit to China next week, his armored limousine and motorcade SUVs have been spotted in Beijing.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": ["armor", "armour", "armoured", "panoplied"]}, {"word": "withstand", "lemma": "withstand", "pos": "VERB", "pos_ko": "동사", "phonetic": "/wɪðˈstænd/", "definition_en": "resist or confront with resistance", "translation_ko": "", "example_en": "The politician defied public opinion", "context_sentence": "The custom-built Cadillac is designed to withstand bullets and explosions, and is equipped with bulletproof glass and advanced security systems, earning its nickname, the \"White House on wheels.", "cefr_level": "B2", "frequency_score": 5.3497, "is_b2_plus": false, "derivatives": ["defy", "hold", "hold out", "hold up", "resist", "stand firm"]}, {"word": "daytime", "lemma": "daytime", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈdeɪtaɪm/", "definition_en": "the time after sunrise and before sunset while it is light outside", "translation_ko": "", "example_en": "the dawn turned night into day", "context_sentence": "But daytime temperatures will dip slightly across central regions.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["day", "daylight"]}, {"word": "provisional", "lemma": "provisional", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/pɹəˈvɪʒənəl/", "definition_en": "under terms not final or fully worked out or agreed upon", "translation_ko": "", "example_en": "probationary employees", "context_sentence": "This comes three years after the aircraft received a provisional operational combat assessment in May 2023.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["probationary", "provisionary", "tentative"]}, {"word": "citing", "lemma": "cite", "pos": "VERB", "pos_ko": "동사", "phonetic": "/saɪt/", "definition_en": "a short note recognizing a source of information or of a quoted passage", "translation_ko": "", "example_en": "the student's essay failed to list several important citations", "context_sentence": "Presiding over a weekly meeting with his aides on Thursday, the president noted that pressure on prices will pose a significant burden on economic recovery if it persists, citing a rise in consumer prices last month.", "cefr_level": "B2", "frequency_score": 5.3298, "is_b2_plus": false, "derivatives": ["acknowledgment", "advert", "bring up", "citation", "credit", "mention", "name", "quotation", "quote", "refer", "reference"]}, {"word": "stranded", "lemma": "strand", "pos": "VERB", "pos_ko": "동사", "phonetic": "/stɹænd/", "definition_en": "a pattern forming a unity within a larger structural whole", "translation_ko": "", "example_en": "he tried to pick up the strands of his former life", "context_sentence": "A South Korean-operated bulk carrier stranded in the Strait of Hormuz for more than two months is now being towed toward Dubai after an engine room explosion and fire left the vessel disabled at sea on Monday.", "cefr_level": "B2", "frequency_score": 5.3197, "is_b2_plus": false, "derivatives": ["chain", "fibril", "filament", "string"]}, {"word": "aides", "lemma": "aide", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/eɪd/", "definition_en": "an officer who acts as military assistant to a more senior officer", "translation_ko": "", "example_en": "", "context_sentence": "Presiding over a weekly meeting with his aides on Thursday, the president noted that pressure on prices will pose a significant burden on economic recovery if it persists, citing a rise in consumer prices last month.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["adjutant", "aide-de-camp", "auxiliary"]}, {"word": "deploy", "lemma": "deploy", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɪˈplɔɪ/", "definition_en": "place troops or weapons in battle formation", "translation_ko": "", "example_en": "", "context_sentence": "He also called on officials to deploy all-out measures to manage supply chains, such as those for crude oil and key materials.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": []}, {"word": "valuation", "lemma": "valuation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌvæ.ljuːˈeɪ.ʃən/", "definition_en": "an appraisal of the value of something", "translation_ko": "", "example_en": "he set a high valuation on friendship", "context_sentence": "Samsung Electronics recently crossed the one-trillion-dollar valuation mark, while both companies have seen their shares more than double this year.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": ["evaluation", "rating"]}, {"word": "dispatch", "lemma": "dispatch", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dəˈspætʃ/", "definition_en": "an official report (usually sent in haste)", "translation_ko": "", "example_en": "", "context_sentence": "South Korea’s Ministry of Oceans and Fisheries plans to dispatch investigators, including officials from the Korea Maritime Safety Tribunal, to determine the exact cause of the accident.", "cefr_level": "B2", "frequency_score": 5.2403, "is_b2_plus": false, "derivatives": ["communique", "despatch", "expedition", "expeditiousness", "send off", "shipment"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
