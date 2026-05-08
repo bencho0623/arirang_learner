@@ -1,0 +1,57 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+data,datum,NOUN,명사,/ˈdeɪtəm/,an item of factual information derived from measurement or research,,,"According to preliminary data from the Bank of Korea on Friday, 
+the country’s current account recorded a surplus of 
+37-point-3-3 billion U.S. dollars in March.",C1,6.4802,False,data point
+carnations,carnation,NOUN,명사,,Eurasian plant with pink to purple-red spice-scented usually double flowers; widely cultivated in many varieties and many colors,,,The president and First Lady Kim Hea Kyung also took time to engage in a gesture of gratitude common during Parents' Day here that is the pinning of carnations on parents by their children.,C1,6.3002,False,Dianthus caryophyllus|clove pink|gillyflower
+hoon,hoon,NOUN,명사,,A worthless person; a hooligan or lout.,,,Welcome to Arirang News This is Park Kee hoon,C1,6.0101,False,
+invalidated,invalidate,VERB,동사,/ˌɪnˈvæl.ɪ.deɪt/,declare invalid,,The contract was annulled,"In a 2-1 decision issued on Thursday local time, the Court of 
+International Trade invalidated the administration’s use of Section 122 
+of the Trade Act and that it was not intended to address the types of 
+trade deficits cited by Trump.",C1,6.0,False,annul|avoid|cancel|nullify|quash|vitiate|void
+solemnly,solemnly,ADV,부사,/ˈsɒləmli/,in a grave and sedate manner,,the judge sat there solemnly,We will solemnly remember the noble sacrifice of those who fulfilled their duties.,B2,5.9706,False,
+pinning,pinning,NOUN,명사,,a mutual promise of a couple not to date anyone else; on college campuses it was once signaled by the giving of a fraternity pin,,,The president and First Lady Kim Hea Kyung also took time to engage in a gesture of gratitude common during Parents' Day here that is the pinning of carnations on parents by their children.,B2,5.8697,False,immobilise|immobilize|pin|trap
+deepen,deepen,VERB,동사,/ˈdiːpən/,"make more intense, stronger, or more marked; ,",,The efforts were intensified,The leaders of Korea and Canada discussed ways to deepen bilateral ties during talks on the phone on Friday.,B2,5.8097,False,change|compound|heighten|intensify
+firefighters,firefighter,NOUN,명사,/ˈfaɪə(ɹ)ˌfaɪt.ə(ɹ)/,a member of a fire department who tries to extinguish fires,,,President Lee Jae Myung marked Parents' Day today with solemn words of comfort to the parents of firefighters and police officers who lost their lives in the line of duty.,B2,5.6308,False,fire fighter|fire-eater|fireman
+solemn,solemn,ADJ,형용사,/ˈsɒləm/,dignified and somber in manner or character and committed to keeping promises,,a grave God-fearing man,President Lee Jae Myung marked Parents' Day today with solemn words of comfort to the parents of firefighters and police officers who lost their lives in the line of duty.,B2,5.5901,False,earnest|grave|sedate|sincere|sober
+bidder,bidder,NOUN,명사,/ˈbɪdɚ/,someone who makes an offer,,The highest bidder shall get the house.,The preferred bidder is expected to be announced next month.,B2,5.52,False,
+tariff,tariff,NOUN,명사,/ˈtæɹəf/,a government tax on imports or exports,,they signed a treaty to lower duties on trade between their countries,"A U.S. federal trade court has ruled that President Donald Trump 
+exceeded his authority by imposing a 10-percent global tariff 
+on imported goods.",B2,5.51,True,duty
+semiconductors,semiconductor,NOUN,명사,,a substance as germanium or silicon whose electrical conductivity is intermediate between that of a metal and an insulator; its conductivity increases with temperature and in the presence of impurities,,,"Korea’s current account surplus reached a record high in March, 
+fueled by a surge in exports of information technology products 
+such as semiconductors and computer peripherals.",B2,5.4698,False,semiconducting material|semiconductor device|semiconductor unit
+fulfilled,fulfil,VERB,동사,,put in effect,,carry out a task,We will solemnly remember the noble sacrifice of those who fulfilled their duties.,B2,5.4498,False,accomplish|action|carry out|carry through|execute|fill|fulfill|live up to|meet|satisfy
+plaintiffs,plaintiff,NOUN,명사,/ˈpleɪntɪf/,a person who brings an action in a court of law,,,"Responding to the ruling, the Blue House said on Friday, local time, 
+that Korea will continue to closely monitor related developments 
+while seeking to maintain a balance of interests under its current tariff deal with the U.S.
+An official noted that the ruling currently applies only to specific plaintiffs, and pointed out that Section 122 tariffs are limited by law to a maximum of 150 days.",B2,5.4498,True,complainant
+peripherals,peripheral,NOUN,명사,/pəˈɹɪf(ə)ɹ(ə)l/,(computer science) electronic equipment connected by cable to the CPU of a computer,,disk drives and printers are important peripherals,"Korea’s current account surplus reached a record high in March, 
+fueled by a surge in exports of information technology products 
+such as semiconductors and computer peripherals.",B2,5.3401,False,computer peripheral|peripheral device
+cited,cite,VERB,동사,/saɪt/,a short note recognizing a source of information or of a quoted passage,,the student's essay failed to list several important citations,"In a 2-1 decision issued on Thursday local time, the Court of 
+International Trade invalidated the administration’s use of Section 122 
+of the Trade Act and that it was not intended to address the types of 
+trade deficits cited by Trump.",B2,5.3298,False,acknowledgment|advert|bring up|citation|credit|mention|name|quotation|quote|refer|reference
+friction,friction,NOUN,명사,/ˈfɹɪkʃən̩/,a state of conflict between persons,,,The legal challenge follows months of friction over the administration's use of executive authority to bypass congressional oversight on trade policy.,B2,5.2899,True,clash|detrition|rubbing
+bilateral,bilateral,ADJ,형용사,/baɪˈlætəɹəl/,having identical parts on each side of an axis,,,The leaders of Korea and Canada discussed ways to deepen bilateral ties during talks on the phone on Friday.,B2,5.2798,True,bilaterally symmetric|bilaterally symmetrical|isobilateral|two-sided
+bypass,bypass,VERB,동사,/ˈbaɪpɑːs/,a highway that encircles an urban area so that traffic does not have to pass through the center,,,"The businesses argued the tariffs were an attempt to bypass a 
+Supreme Court ruling that struck down Trump’s 2025 tariffs 
+imposed under emergency economic powers.",B2,5.2403,False,beltway|electrical shunt|get around|go around|ring road|ringway|short-circuit|shunt
+According,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"According to HMM and local officials, the vessel was towed from waters near Umm Al Quwain in the United Arab Emirates and reached the Dubai Port area shortly after midnight Thursday, roughly 12 hours after towing operations began.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
+submarine,submarine,NOUN,명사,/sʌb.məˈɹiːn/,a submersible warship usually armed with torpedoes,,,The call came as Korea and Germany compete for a multi-billion-dollar submarine deal with Canada.,B2,5.1898,False,Cuban sandwich|Italian sandwich|U-boat|bomber|grinder|hero|hero sandwich|hoagie|hoagy|pigboat|poor boy|sub|submarine sandwich|torpedo|wedge
+surge,surge,NOUN,명사,/sɜːdʒ/,a sudden forceful flow,,He felt a surge of excitement.,"Korea’s current account surplus reached a record high in March, 
+fueled by a surge in exports of information technology products 
+such as semiconductors and computer peripherals.",B2,5.1798,False,billow|heave|rush|soar|soar up|soar upwards|spate|upsurge|zoom
+oversight,oversight,NOUN,명사,/ˈoʊvə(ɹ)ˌsaɪt/,an unintentional omission resulting from failure to notice something,,A small oversight at this stage can lead to big problems later.,The legal challenge follows months of friction over the administration's use of executive authority to bypass congressional oversight on trade policy.,B2,5.1701,True,inadvertence|lapse|superintendence|supervising|supervision
+surplus,surplus,NOUN,명사,/ˈsɜːpləs/,a quantity much larger than is needed,,,"Korea’s current account surplus reached a record high in March, 
+fueled by a surge in exports of information technology products 
+such as semiconductors and computer peripherals.",B2,5.1302,False,excess|extra|nimiety|redundant|spare|supererogatory|superfluous|supernumerary|surplusage
+underway,underway,ADJ,형용사,,currently in progress,,there is mischief afoot,"South Korean authorities have launched a full-scale investigation into the incident, with on-site inspections now underway.",B2,5.1302,False,afoot
+gesture,gesture,NOUN,명사,,motion of hands or body to emphasize or help to express a thought or feeling,,,The president and First Lady Kim Hea Kyung also took time to engage in a gesture of gratitude common during Parents' Day here that is the pinning of carnations on parents by their children.,B2,5.1002,False,gesticulate|motion
+exceeded,exceed,VERB,동사,/ɪkˈsiːd/,be greater in scope or size than some standard,,Their loyalty exceeds their national bonds,"A U.S. federal trade court has ruled that President Donald Trump 
+exceeded his authority by imposing a 10-percent global tariff 
+on imported goods.",B2,5.0799,False,go past|outdo|outgo|outmatch|outperform|outstrip|overstep|pass|surmount|surpass|top|transcend
+gratitude,gratitude,NOUN,명사,,a feeling of thankfulness and appreciation,,he was overwhelmed with gratitude for their help,The president and First Lady Kim Hea Kyung also took time to engage in a gesture of gratitude common during Parents' Day here that is the pinning of carnations on parents by their children.,B2,5.0799,False,
+imposing,impose,VERB,동사,/ɪmˈpəʊz/,compel to behave in a certain way,,Social relations impose courtesy,"A U.S. federal trade court has ruled that President Donald Trump 
+exceeded his authority by imposing a 10-percent global tariff 
+on imported goods.",B2,5.0799,False,bring down|enforce|inflict|levy|visit
