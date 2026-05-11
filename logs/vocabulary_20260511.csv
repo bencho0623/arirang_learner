@@ -1,0 +1,58 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+KOSPI,kospi,NOUN,명사,,,,,"The country's two chip giants once again dominated the rally, 
+making up roughly four-fifths of the KOSPI's gains.",C2,7.5302,False,
+hynix,hynix,NOUN,명사,,,,,"Samsung Electronics rose 6 percent, while SK hynix surged 12 percent.",C2,7.1302,False,
+slated,slat,VERB,동사,/slæt/,a thin strip (wood or metal),,slats of a window blind,"The two defense chiefs are slated to have talks on Monday morning 
+at the Pentagon, with key items expected to include the transfer of wartime operational control from Washington to Seoul.",C1,6.6498,False,spline
+sidecar,sidecar,NOUN,명사,,a cocktail made of orange liqueur with lemon juice and brandy,,,"Just three trading days after breaking through 7,000 for the first time, 
+the index is already nearing 8,000, with strong buying momentum triggering a buy-side sidecar shortly after opening.",C1,6.4597,False,
+paralyzed,paralyze,VERB,동사,,make powerless and unable to function,,The bureaucracy paralyzes the entire operation,"The sustained geopolitical tension has left critical waterways 
+like the Strait of Hormuz effectively paralyzed, 
+severely disrupting global energy supply chains.",C1,6.3497,False,paralyse
+fluctuations,fluctuation,NOUN,명사,/flʌktʃuːˈeɪʃən/,a wave motion,,the fluctuations of the sea,"This is nearly double the 0.11 percentage point impact 
+observed during standard market fluctuations.",C1,6.1101,True,variation|wavering
+inflationary,inflationary,ADJ,형용사,,associated with or tending to cause increases in inflation,,inflationary prices,"Korea is facing severe inflationary threats as global oil prices surge 
+amid the ongoing conflict in the Middle East.",C1,6.1101,False,
+earners,earner,NOUN,명사,,someone who earn wages in return for their labor,,,"The handouts target the bottom 70 percent of income earners 
+who account for roughly 36 million people.",C1,6.06,False,wage earner
+hoon,hoon,NOUN,명사,,A worthless person; a hooligan or lout.,,,Welcome to Arirang News This is Park Kee hoon,C1,6.0101,False,
+handouts,handout,NOUN,명사,/ˈhændaʊt/,an announcement distributed to members of the press in order to supplement or replace an oral presentation,,,"South Korea is launching a second round of cash handouts to help 
+Korean citizens hit hard by soaring fuel prices amid the Middle East unrest.",C1,6.0,False,press release|release
+capitalization,capitalization,NOUN,명사,,writing in capital letters,,,"Powered by the rally, Korea's total stock market capitalization topped 
+7-thousand trillion won, approximately 4.7 trillion U.S. dollars 
+for the first time ever Monday.",B2,5.8794,False,capitalisation
+justifiable,justifiable,ADJ,형용사,,capable of being justified,,,"The day after a set of attacks was identified as the cause of the recent fire on a South Korean cargo ship stranded in Hormuz, National Security Adviser Wi Sung-lac sent out a strong condemnation, saying any attack on civilian ships, including HMM Namu, is not justifiable or acceptable.",B2,5.8601,False,
+geopolitical,geopolitical,ADJ,형용사,,of or relating to geopolitics,,,"The sustained geopolitical tension has left critical waterways 
+like the Strait of Hormuz effectively paralyzed, 
+severely disrupting global energy supply chains.",B2,5.8508,True,
+waterways,waterway,NOUN,명사,,a navigable body of water,,,"The sustained geopolitical tension has left critical waterways 
+like the Strait of Hormuz effectively paralyzed, 
+severely disrupting global energy supply chains.",B2,5.821,False,watercourse
+soaring,soar,VERB,동사,/sɔː/,the act of rising upward into the air,,,"South Korea is launching a second round of cash handouts to help 
+Korean citizens hit hard by soaring fuel prices amid the Middle East unrest.",B2,5.6108,False,hang glide|soar up|soar upwards|surge|zoom
+condemnation,condemnation,NOUN,명사,/ˌkɒndəmˈneɪʃən/,an expression of strong disapproval; pronouncing as wrong or morally culpable,,his uncompromising condemnation of racism,"The day after a set of attacks was identified as the cause of the recent fire on a South Korean cargo ship stranded in Hormuz, National Security Adviser Wi Sung-lac sent out a strong condemnation, saying any attack on civilian ships, including HMM Namu, is not justifiable or acceptable.",B2,5.4802,False,conviction|curse|disapprobation|execration|judgment of conviction|sentence
+disrupting,disrupt,VERB,동사,/dɪsˈɹʌpt/,make a break in,,We interrupt the program for the following messages,"The sustained geopolitical tension has left critical waterways 
+like the Strait of Hormuz effectively paralyzed, 
+severely disrupting global energy supply chains.",B2,5.4101,False,break up|cut off|interrupt
+wartime,wartime,ADJ,형용사,,a period of time during which there is armed conflict,,,"The two defense chiefs are slated to have talks on Monday morning 
+at the Pentagon, with key items expected to include the transfer of wartime operational control from Washington to Seoul.",B2,5.4101,False,
+benchmark,benchmark,ADJ,형용사,,a standard by which something can be measured or judged,,his painting sets the benchmark of quality,"3.
+Chip heavyweights powered the KOSPI to yet another record close Monday, with the benchmark index ending 4.32 percent higher at 7822.24.",B2,5.4001,True,bench mark
+unidentified,unidentified,ADJ,형용사,,not yet identified,,an unidentified species,The Korean government has confirmed that attacks by two unidentified aircraft were behind last week's fire on the cargo vessel.,B2,5.3904,False,nameless|unknown|unnamed
+unrest,unrest,NOUN,명사,/ʌnˈɹɛst/,a state of agitation or turbulent change or development,,the political ferment produced new leadership,"South Korea is launching a second round of cash handouts to help 
+Korean citizens hit hard by soaring fuel prices amid the Middle East unrest.",B2,5.3904,False,agitation|ferment|fermentation|tempestuousness
+heavyweights,heavyweight,NOUN,명사,,an amateur boxer who weighs no more than 201 pounds,,an intellectual heavyweight,"3.
+Chip heavyweights powered the KOSPI to yet another record close Monday, with the benchmark index ending 4.32 percent higher at 7822.24.",B2,5.3799,False,behemoth|colossus|giant|hulk|titan|whale
+optimism,optimism,NOUN,명사,/ˈɒptɪmɪzəm/,the optimistic feeling that all is going to turn out well,,"I love her youth, her beauty and above all her optimism that everything will turn out fine.","Monday's rally followed growing optimism for memory chip stocks 
+in overseas markets over the weekend.",B2,5.3401,False,
+stranded,strand,VERB,동사,/stɹænd/,a pattern forming a unity within a larger structural whole,,he tried to pick up the strands of his former life,"The day after a set of attacks was identified as the cause of the recent fire on a South Korean cargo ship stranded in Hormuz, National Security Adviser Wi Sung-lac sent out a strong condemnation, saying any attack on civilian ships, including HMM Namu, is not justifiable or acceptable.",B2,5.3197,False,chain|fibril|filament|string
+counterpart,counterpart,NOUN,명사,/ˈkaʊntəˌpɑːt/,a person or thing having the same function or characteristics as another,,Those brass knobs and their hollow counterparts interlock perfectly,"2.
+South Korea's defense minister Ahn Gyu-back arrived in Washington D.C., on Sunday local time for talks with his U.S. counterpart Pete Hegseth.",B2,5.3002,False,opposite number|similitude|twin|vis-a-vis
+excluded,exclude,VERB,동사,,prevent from being included or considered or accepted,,The bad results were excluded from the report,Eligibility is tied to health insurance payments from March and those with high-value assets or significant financial income are excluded.,B2,5.2197,False,bar|boot out|chuck out|debar|eject|except|keep out|leave off|leave out|omit|shut|shut out|take out|turf out|turn out
+sailors,sailor,NOUN,명사,/ˈseɪlə/,any member of a ship's crew,,,Wi added that Seoul will double its efforts to secure the safety of Korean sailors and vessels near the Strait... and continue its efforts to join an international move to guarantee the safety of all vessels and freedom of navigation.,B2,5.2197,False,Panama|Panama hat|bluejacket|boater|crewman|leghorn|navy man|sailor boy|skimmer|straw hat
+trillion,trillion,NUM,,/ˈtɹɪljən/,a very large indefinite number (usually hyperbole),,there were millions of flies,"Powered by the rally, Korea's total stock market capitalization topped 
+7-thousand trillion won, approximately 4.7 trillion U.S. dollars 
+for the first time ever Monday.",B2,5.2097,False,1000000000000|billion|gazillion|jillion|million|one million million|one million million million|zillion
+According,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"According to a report released on Monday by the Korea Development Institute, a 10 percent rise in oil prices driven by transport uncertainty 
+pushes domestic consumer inflation up by 0.20 percentage points.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
+surged,surge,VERB,동사,/sɜːdʒ/,a sudden forceful flow,,He felt a surge of excitement.,"Samsung Electronics rose 6 percent, while SK hynix surged 12 percent.",B2,5.1798,False,billow|heave|rush|soar|soar up|soar upwards|spate|upsurge|zoom
