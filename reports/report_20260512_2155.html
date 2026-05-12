@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.05.12", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260512_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260512/32924769/32924769_20260512-9rbsn9c1_audio_arirang-mp3-normal-20260512221354.mp4?hdnts=exp=3557430778~acl=/kr/media1/arirang/20260512/32924769/*~hmac=d303bc5946d43f50db02e313f4811f1790cc915d2b426f96eca730f14e2298fb", "script_text": "Welcome to Arirang News this is Jin Myong\nAnd we start with our top headlines at this hour.\n\n1.\nDebris recovered from the attack on the Korean vessel, HMM Namu, will soon be brought to Seoul for forensic analysis,… as concern deepens over the safety of Korean ships stranded near the Strait of Hormuz.\nSpeaking to reporters on Tuesday,… a Foreign Ministry official said the government is working to bring recovered engine fragments of HMM Namu, into the country for examination by specialised institutions.\nThe official said the Defence Ministry would support the analysis,… but that the exact agency, transport route and timing are still under review.\nSeoul is trying to determine what type of flying object struck the vessel,…saying it is unclear whether they were drones or missiles.\n\n2.\nChinese Vice Premier He Lifeng and U.S.\nTreasury Secretary Scott Bessent are expected to hold talks in Seoul on Wednesday, a day before the U.S.-China summit in Beijing.\nHe Lifeng arrived at Incheon International Airport on Tuesday, and Bessent is scheduled to arrive Wednesday after talks with Japanese officials in Tokyo.\nThe talks in Seoul aim to bridge gaps on sensitive economic issues before the leaders meet, and to finalize the agenda on each country's priorities.\nMeanwhile, in Beijing, security has been reportedly tightened as police are stationed every 100 meters along major roads, and the Temple of Heaven has been closed to the public.\n\n3.\nU.S.\nTreasury Secretary Scott Bessent and Japanese Finance Minister Satsuki Katayama have pledged closer coordination to address currency market volatility following high-level talks in Tokyo on Tuesday.\nCurrently, Japan is the largest foreign holder of U.S. government debt, with holdings exceeding 1-point-2 trillion dollars.\nWhile Japan has recently spent billions in direct market interventions, Bessent suggested a preference for the Bank of Japan to tighten its monetary policy to support the yen more sustainably.\nThe meeting took place while Japan's 10-year government bond yield remains at a 29-year high.\n\n4.\nMaking more investments to prop up economic growth.\nThat was what President Lee Jae Myung called for on Tuesday at the Cabinet-slash-emergency economic meeting, as he assessed that the current conditions constitute an emergency that requires expansionary fiscal policy.\nAs he noted the economic impact of the consumption vouchers distributed last year,... the president urged officials to ensure that active fiscal policy is reflected in the growth strategy plan for the latter half of the year as well as next year's budget planning.\nHe said critics calling for government belt-tightening were \"irresponsible\" and were turning a blind eye to people's hardships.\n\n5.\nKorea is looking to fundamentally improve how it manages its foreign workforce, which has now reached 1-point-1 million people.\nTo better address industry needs and protect the rights of migrant workers, the Ministry of Employment and Labor held a forum on Tuesday.\nThe discussions focused on moving away from the current system, where policies are fragmented across different ministries based on visa types.\nPresenters at the forum emphasized shifting the focus from simply bringing in workers to supporting their entire lifecycle, including recruitment, training, and long-term settlement.\nMoving to weather forecast,\nTomorrow, clear skies will return with warm spring weather.\nAnd, temperatures will rise further toward Thursday and the weekend.\nSeoul’s daytime high will climb up to 29 degrees Celsius on Thursday, and temperatures could reach up to 30 degrees over the weekend.\nBut, there’ll also be big day-to-night temperature swings, so please dress in layers.\nMeanwhile, a dry weather advisory are in effect for the eastern coastal areas of Gangwon-do Province.\nSo, please be cautious of wildfire risks.\nTomorrow, UV levels will be \"very high\" nationwide during the daytime, so make sure to wear sunscreen and avoid outdoor activities as much as possible.\nTomorrow, clear skies will return.\nSeoul will start the day at 14 degrees, Chuncheon at 13 degrees, and Busan,15 degrees.\nThen by the afternoon, Seoul will get up to 25 degrees, while Chuncheon, Daejeon, and Gwangju will all top out at 26 degrees.\nLooking ahead, about 5 millimeters of rain is expected over the mountainous areas of Gangwon-do Province.\nNow, here's a look at the weather around the world."};
+    const rawVocabData = [{"word": "expansionary", "lemma": "expansionary", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "That promotes or exhibits expansion; expansionist.", "translation_ko": "", "example_en": "", "context_sentence": "That was what President Lee Jae Myung called for on Tuesday at the Cabinet-slash-emergency economic meeting, as he assessed that the current conditions constitute an emergency that requires expansionary fiscal policy.", "cefr_level": "C1", "frequency_score": 6.7399, "is_b2_plus": true, "derivatives": []}, {"word": "sustainably", "lemma": "sustainably", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "In a sustainable manner.", "translation_ko": "", "example_en": "", "context_sentence": "While Japan has recently spent billions in direct market interventions, Bessent suggested a preference for the Bank of Japan to tighten its monetary policy to support the yen more sustainably.", "cefr_level": "C1", "frequency_score": 6.3197, "is_b2_plus": false, "derivatives": []}, {"word": "lifecycle", "lemma": "lifecycle", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "The course of stages through which an organism passes from fertilized zygote until maturity, reproduction, and death.", "translation_ko": "", "example_en": "", "context_sentence": "Presenters at the forum emphasized shifting the focus from simply bringing in workers to supporting their entire lifecycle, including recruitment, training, and long-term settlement.", "cefr_level": "C1", "frequency_score": 6.1302, "is_b2_plus": false, "derivatives": []}, {"word": "finalize", "lemma": "finalize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈfaɪnəlaɪz/", "definition_en": "make final; put the last touches on; put into final form", "translation_ko": "", "example_en": "let's finalize the proposal", "context_sentence": "The talks in Seoul aim to bridge gaps on sensitive economic issues before the leaders meet, and to finalize the agenda on each country's priorities.", "cefr_level": "C1", "frequency_score": 6.1101, "is_b2_plus": false, "derivatives": ["finalise", "nail down", "settle"]}, {"word": "millimeters", "lemma": "millimeter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a metric unit of length equal to one thousandth of a meter", "translation_ko": "", "example_en": "", "context_sentence": "Looking ahead, about 5 millimeters of rain is expected over the mountainous areas of Gangwon-do Province.", "cefr_level": "B2", "frequency_score": 5.8697, "is_b2_plus": false, "derivatives": ["millimetre", "mm"]}, {"word": "deepens", "lemma": "deepen", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈdiːpən/", "definition_en": "make more intense, stronger, or more marked; ,", "translation_ko": "", "example_en": "The efforts were intensified", "context_sentence": "1.\nDebris recovered from the attack on the Korean vessel, HMM Namu, will soon be brought to Seoul for forensic analysis,… as concern deepens over the safety of Korean ships stranded near the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.8097, "is_b2_plus": false, "derivatives": ["change", "compound", "heighten", "intensify"]}, {"word": "Celsius", "lemma": "celsius", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "Swedish astronomer who devised the centigrade thermometer (1701-1744)", "translation_ko": "", "example_en": "", "context_sentence": "Seoul’s daytime high will climb up to 29 degrees Celsius on Thursday, and temperatures could reach up to 30 degrees over the weekend.", "cefr_level": "B2", "frequency_score": 5.71, "is_b2_plus": false, "derivatives": ["Anders Celsius", "Celsius"]}, {"word": "sunscreen", "lemma": "sunscreen", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a cream spread on the skin; contains a chemical (as PABA) to filter out ultraviolet light and so protect from sunburn", "translation_ko": "", "example_en": "", "context_sentence": "Tomorrow, UV levels will be \"very high\" nationwide during the daytime, so make sure to wear sunscreen and avoid outdoor activities as much as possible.", "cefr_level": "B2", "frequency_score": 5.71, "is_b2_plus": false, "derivatives": ["sun blocker", "sunblock"]}, {"word": "wildfire", "lemma": "wildfire", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a raging and rapidly spreading conflagration", "translation_ko": "", "example_en": "", "context_sentence": "So, please be cautious of wildfire risks.", "cefr_level": "B2", "frequency_score": 5.6402, "is_b2_plus": false, "derivatives": []}, {"word": "mountainous", "lemma": "mountainous", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "having hills and crags", "translation_ko": "", "example_en": "hilly terrain", "context_sentence": "Looking ahead, about 5 millimeters of rain is expected over the mountainous areas of Gangwon-do Province.", "cefr_level": "B2", "frequency_score": 5.6198, "is_b2_plus": false, "derivatives": ["cragged", "craggy", "hilly"]}, {"word": "specialised", "lemma": "specialised", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "devote oneself to a special area of work", "translation_ko": "", "example_en": "She specializes in honey bees", "context_sentence": "Speaking to reporters on Tuesday,… a Foreign Ministry official said the government is working to bring recovered engine fragments of HMM Namu, into the country for examination by specialised institutions.", "cefr_level": "B2", "frequency_score": 5.5498, "is_b2_plus": false, "derivatives": ["differentiate", "narrow", "narrow down", "particularise", "particularize", "specialise", "specialize", "speciate", "specify"]}, {"word": "vouchers", "lemma": "voucher", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈvaʊtʃə(ɹ)/", "definition_en": "someone who vouches for another or for the correctness of a statement", "translation_ko": "", "example_en": "", "context_sentence": "As he noted the economic impact of the consumption vouchers distributed last year,... the president urged officials to ensure that active fiscal policy is reflected in the growth strategy plan for the latter half of the year as well as next year's budget planning.", "cefr_level": "B2", "frequency_score": 5.5302, "is_b2_plus": false, "derivatives": ["coupon", "verifier"]}, {"word": "volatility", "lemma": "volatility", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the property of changing readily from a solid or liquid to a vapor", "translation_ko": "", "example_en": "", "context_sentence": "3.\n\nU.S. Treasury Secretary Scott Bessent and Japanese Finance Minister Satsuki Katayama have pledged closer coordination to address currency market volatility following high-level talks in Tokyo on Tuesday.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": false, "derivatives": ["excitability", "excitableness", "unpredictability"]}, {"word": "tightened", "lemma": "tighten", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈtaɪ.tən/", "definition_en": "make tight or tighter", "translation_ko": "", "example_en": "Tighten the wire", "context_sentence": "Meanwhile, in Beijing, security has been reportedly tightened as police are stationed every 100 meters along major roads, and the Temple of Heaven has been closed to the public.", "cefr_level": "B2", "frequency_score": 5.4895, "is_b2_plus": false, "derivatives": ["constrain", "fasten", "reduce", "stiffen", "tighten up"]}, {"word": "fragments", "lemma": "fragment", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈfɹæɡmənt/", "definition_en": "a piece broken off or cut off of something else", "translation_ko": "", "example_en": "a fragment of rock", "context_sentence": "Speaking to reporters on Tuesday,… a Foreign Ministry official said the government is working to bring recovered engine fragments of HMM Namu, into the country for examination by specialised institutions.", "cefr_level": "B2", "frequency_score": 5.4498, "is_b2_plus": false, "derivatives": ["break up", "fragmentise", "fragmentize", "shard", "sherd"]}, {"word": "hardships", "lemma": "hardship", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈhɑːdˌʃɪp/", "definition_en": "a state of misfortune or affliction", "translation_ko": "", "example_en": "debt-ridden farmers struggling with adversity", "context_sentence": "He said critics calling for government belt-tightening were \"irresponsible\" and were turning a blind eye to people's hardships.", "cefr_level": "B2", "frequency_score": 5.4401, "is_b2_plus": false, "derivatives": ["adversity", "asperity", "grimness", "hard knocks", "rigor", "rigorousness", "rigour", "rigourousness", "severeness", "severity"]}, {"word": "slash", "lemma": "slash", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a wound made by cutting", "translation_ko": "", "example_en": "he put a bandage over the cut", "context_sentence": "That was what President Lee Jae Myung called for on Tuesday at the Cabinet-slash-emergency economic meeting, as he assessed that the current conditions constitute an emergency that requires expansionary fiscal policy.", "cefr_level": "B2", "frequency_score": 5.3497, "is_b2_plus": false, "derivatives": ["cut", "cut down", "diagonal", "gash", "separatrix", "slice", "solidus", "stroke", "virgule"]}, {"word": "daytime", "lemma": "daytime", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "the time after sunrise and before sunset while it is light outside", "translation_ko": "", "example_en": "the dawn turned night into day", "context_sentence": "Seoul’s daytime high will climb up to 29 degrees Celsius on Thursday, and temperatures could reach up to 30 degrees over the weekend.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["day", "daylight"]}, {"word": "irresponsible", "lemma": "irresponsible", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ɪrəˈspɑnsɪbəl/", "definition_en": "showing lack of care for consequences", "translation_ko": "", "example_en": "behaved like an irresponsible idiot", "context_sentence": "He said critics calling for government belt-tightening were \"irresponsible\" and were turning a blind eye to people's hardships.", "cefr_level": "B2", "frequency_score": 5.3298, "is_b2_plus": false, "derivatives": []}, {"word": "stranded", "lemma": "strand", "pos": "VERB", "pos_ko": "동사", "phonetic": "/stɹænd/", "definition_en": "a pattern forming a unity within a larger structural whole", "translation_ko": "", "example_en": "he tried to pick up the strands of his former life", "context_sentence": "1.\nDebris recovered from the attack on the Korean vessel, HMM Namu, will soon be brought to Seoul for forensic analysis,… as concern deepens over the safety of Korean ships stranded near the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.3197, "is_b2_plus": false, "derivatives": ["chain", "fibril", "filament", "string"]}, {"word": "emphasized", "lemma": "emphasize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈɛm.fə.saɪz/", "definition_en": "to stress, single out as important", "translation_ko": "", "example_en": "Dr. Jones emphasizes exercise in addition to a change in diet", "context_sentence": "Presenters at the forum emphasized shifting the focus from simply bringing in workers to supporting their entire lifecycle, including recruitment, training, and long-term settlement.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["accent", "accentuate", "emphasise", "punctuate", "stress", "underline", "underscore"]}, {"word": "forensic", "lemma": "forensic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/fəˈɹɛn.sɪk/", "definition_en": "of, relating to, or used in public debate or argument", "translation_ko": "", "example_en": "", "context_sentence": "1.\nDebris recovered from the attack on the Korean vessel, HMM Namu, will soon be brought to Seoul for forensic analysis,… as concern deepens over the safety of Korean ships stranded near the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": []}, {"word": "migrant", "lemma": "migrant", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈmaɪɡɹənt/", "definition_en": "traveler who moves from one region or country to another", "translation_ko": "", "example_en": "", "context_sentence": "To better address industry needs and protect the rights of migrant workers, the Ministry of Employment and Labor held a forum on Tuesday.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": ["migrator", "migratory"]}, {"word": "fundamentally", "lemma": "fundamentally", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "in essence; at bottom or by one's (or its) very nature", "translation_ko": "", "example_en": "He is basically dishonest", "context_sentence": "Korea is looking to fundamentally improve how it manages its foreign workforce, which has now reached 1-point-1 million people.", "cefr_level": "B2", "frequency_score": 5.2299, "is_b2_plus": false, "derivatives": ["basically", "essentially"]}, {"word": "Presenters", "lemma": "presenter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/pɹɪˈzɛntə(ɹ)/", "definition_en": "someone who presents a message of some sort (as a petition or an address or a check or a memorial etc.)", "translation_ko": "", "example_en": "", "context_sentence": "Presenters at the forum emphasized shifting the focus from simply bringing in workers to supporting their entire lifecycle, including recruitment, training, and long-term settlement.", "cefr_level": "B2", "frequency_score": 5.2299, "is_b2_plus": false, "derivatives": ["bestower", "conferrer", "donor", "giver", "sponsor"]}, {"word": "prop", "lemma": "prop", "pos": "VERB", "pos_ko": "동사", "phonetic": "/pɹɒp/", "definition_en": "a support placed beneath or against something to keep it from shaking or falling", "translation_ko": "", "example_en": "They stuck a block of wood under it as a prop.", "context_sentence": "4.\nMaking more investments to prop up economic growth.", "cefr_level": "B2", "frequency_score": 5.2299, "is_b2_plus": false, "derivatives": ["airplane propeller", "airscrew", "prop up", "property", "shore", "shore up"]}, {"word": "cautious", "lemma": "cautious", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "people who are fearful and cautious", "translation_ko": "", "example_en": "whitewater rafting is not for the timid", "context_sentence": "So, please be cautious of wildfire risks.", "cefr_level": "B2", "frequency_score": 5.2097, "is_b2_plus": false, "derivatives": ["conservative", "timid"]}, {"word": "distributed", "lemma": "distribute", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɨˈstɹɪbjuːt/", "definition_en": "administer or bestow, as in small portions", "translation_ko": "", "example_en": "administer critical remarks to everyone present", "context_sentence": "As he noted the economic impact of the consumption vouchers distributed last year,... the president urged officials to ensure that active fiscal policy is reflected in the growth strategy plan for the latter half of the year as well as next year's budget planning.", "cefr_level": "B2", "frequency_score": 5.2097, "is_b2_plus": false, "derivatives": ["administer", "allot", "circulate", "deal", "deal out", "dish out", "dispense", "dole out", "give out", "hand out", "lot", "mete out", "parcel out", "pass around", "pass on"]}, {"word": "trillion", "lemma": "trillion", "pos": "NUM", "pos_ko": "", "phonetic": "/ˈtɹɪljən/", "definition_en": "a very large indefinite number (usually hyperbole)", "translation_ko": "", "example_en": "there were millions of flies", "context_sentence": "Currently, Japan is the largest foreign holder of U.S. government debt, with holdings exceeding 1-point-2 trillion dollars.", "cefr_level": "B2", "frequency_score": 5.2097, "is_b2_plus": false, "derivatives": ["1000000000000", "billion", "gazillion", "jillion", "million", "one million million", "one million million million", "zillion"]}, {"word": "constitute", "lemma": "constitute", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈkɒnstɪtjuːt/", "definition_en": "form or compose", "translation_ko": "", "example_en": "This money is my only income", "context_sentence": "That was what President Lee Jae Myung called for on Tuesday at the Cabinet-slash-emergency economic meeting, as he assessed that the current conditions constitute an emergency that requires expansionary fiscal policy.", "cefr_level": "B2", "frequency_score": 5.15, "is_b2_plus": false, "derivatives": ["appoint", "be", "comprise", "establish", "form", "found", "institute", "make", "make up", "name", "nominate", "plant", "represent"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
