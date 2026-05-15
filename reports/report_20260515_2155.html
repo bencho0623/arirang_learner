@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.05.15", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260515_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260515/32999761/32999761_20260515-uv3ncmtu_audio_arirang-mp3-normal-20260515220618.mp4?hdnts=exp=3557948184~acl=/kr/media1/arirang/20260515/32999761/*~hmac=52b9c5d22c7e3ac5317c99109af651433784a23a4291ab0f8c9241ed6adb590a", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nThe summit between U.S.\nPresident Donald Trump and Chinese President Xi Jinping ended on Friday with a symbolic gesture at the walled-off Zhongnanhai complex.\nThe two had lunch and tea at the special venue... and President Xi offered a rare glimpse into the private imperial gardens—a gesture typically reserved for China’s closest allies.\nBoth leaders characterized the three-day visit as a fundamental shift in bilateral ties.\nPresident Trump praised the personal rapport he has built with his counterpart over the last decade, suggesting their chemistry has allowed them to bypass traditional diplomatic gridlock.\nOn the economic front, President Trump indicated that he is returning to Washington with significant progress toward \"fantastic trade deals.\"\nIn an interview with Fox News, Trump described President Xi as \"all business,\" noting a pragmatic commitment to economic coordination.\nThe U.S. leader said China has committed to major purchases of American goods, including a large order of Boeing aircraft and a significant increase in imports of U.S. agricultural products, specifically soybeans... while gradually opening parts of its economy to U.S. businesses.\nTo manage these ongoing economic ties, the two sides have agreed to establish a new \"Board of Trade\" to handle disputes without immediately resorting to new tariffs.\nHowever... no joint statement or declaration was adopted by the two leaders for this trip.\nThe two will meet again this year as on Thursday Trump invited Xi to the U.S. in September.\n\n2.\nDebris from the unidentified aerial vehicle that struck a Korean-operated vessel near the Strait of Hormuz, has arrived in Seoul for detailed forensic analysis.\nThe foreign ministry said Friday that the fragments were transported by air on Thursday following consultations with United Arab Emirates authorities.\nThe debris includes engine parts collected from the scene of the attack last week on HMM Namu, moored in waters off the UAE.\nA government investigation team examined the wreckage in Dubai, before it was stored at the South Korean Embassy in the UAE.\n\n3.\nThe Defense Ministry is reportedly planning... to make public...\nSouth Korea's blueprint... for nuclear-powered submarines... as early as... the end of this month.\nAccording to sources... the road map will share... the submarines' defensive nature... in compliance with the Nuclear Non-Proliferation Treaty... as well as the overall timeline.\nThe move... is seen... as an effort to speed up related negotiations... regarding the program... amid slow progress in follow-up talks with the U.S.\n\n4.\nKorea's benchmark KOSPI passed above the 8-thousand mark for the first time ever during trading on Friday.\nThe index closed at 7-thousand-4-hundred-93-point18,... down 6.12 percent from the previous session.\nThe move above 8-thousand came roughly ten minutes after the opening bell,... just seven trading days after first breaking through the 7-thousand mark.\nYet sharp swings dominated trading throughout the day.\nThe index seesawed between gains and losses before falling as much as seven percent from the previous session during trading, triggering a sell-side sidecar at one point.\nUnlike the previous rally led by the country's chip giants, Friday's gains were powered by a wider group of market heavyweights.\nSamsung Electronics and SK hynix both ended lower, while shares of LG Electronics and Hyundai Motor moved higher.\nAll of the gainers are part of the broader AI value chain,... including sectors tied to memory chips, energy, and semiconductor materials.\nDuring Friday's session, foreign investors continued to take profits from major chipmakers.\n\n5.\nJapan's Prime Minister Sanae Takaichi will take a two-day trip to South Korea next week for a summit with President Lee Jae Myung.\nAccording to the Blue House on Friday, they will sit down on May 19th in Lee's hometown of Andong, which will involve an expanded session, joint press conference and dinner.\nSeoul's top office says the leaders will discuss bilateral ties as well as cooperation on the economy and society.\nAlso on the agenda is the situation in the Middle East.\nAnd there's interest in whether they discuss possible cooperation on energy supply and critical minerals.\nThe leaders last met in Takaichi's hometown of Nara prefecture in January.\n\n6.\nPresident Lee Jae Myung had a go at rice-planting today, at a village in {대구}Daegu's {군위군}Gunwi-gun County.\nAs rice-planting season gets underway in South Korea, the president operated a rice transplanter and observed a drone spraying pesticides over the fields.\nHe later shared a meal of noodles and traditional Korean rice wine {막걸리}makgeolli, with local residents.\nPresident Lee wished farmers a successful harvest this year and expressed his gratitude for their hard work, saying he was able to see firsthand the tremendous effort they put in on the ground.\nMoving to weather forecast,\nInland regions will continue to see big day-to-night temperature swings of around 15 degrees Celsius in many areas.\nClear skies tomorrow will bring strong sunshine throughout the day.\nThat means UV levels will be \"very high\" nationwide during the daytime.\nOzone concentrations are also expected to be \"bad\" in the capital area, Chungcheong-do, and Jeollabuk-do provinces.\nAs for temperatures, Seoul will start the day at 18 degrees, Daejeon, 15, and Busan, 14 degrees.\nThen by the afternoon, Seoul will get up to 31 degrees, Chuncheon and Daejeon, 31, and Daegu, up to even 33 degrees.\nThe early-season heat should finally back off around Wednesday next week, as rain moves into the country.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "transplanter", "lemma": "transplanter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a gardener who moves plants to new locations", "translation_ko": "", "example_en": "", "context_sentence": "As rice-planting season gets underway in South Korea, the president operated a rice transplanter and observed a drone spraying pesticides over the fields.", "cefr_level": "C2", "frequency_score": 8.0, "is_b2_plus": false, "derivatives": []}, {"word": "chipmakers", "lemma": "chipmaker", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "During Friday's session, foreign investors continued to take profits from major chipmakers.", "cefr_level": "C2", "frequency_score": 7.3904, "is_b2_plus": false, "derivatives": []}, {"word": "hynix", "lemma": "hynix", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "Samsung Electronics and SK hynix both ended lower, while shares of LG Electronics and Hyundai Motor moved higher.", "cefr_level": "C2", "frequency_score": 7.1302, "is_b2_plus": false, "derivatives": []}, {"word": "seesawed", "lemma": "seesaw", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "a plaything consisting of a board balanced on a fulcrum; the board is ridden up and down by children at either end", "translation_ko": "", "example_en": "", "context_sentence": "The index seesawed between gains and losses before falling as much as seven percent from the previous session during trading, triggering a sell-side sidecar at one point.", "cefr_level": "C1", "frequency_score": 6.5302, "is_b2_plus": false, "derivatives": ["dandle board", "teeter", "teeter-totter", "teeterboard", "teetertotter", "tilting board", "totter"]}, {"word": "gainers", "lemma": "gainer", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a person who gains weight", "translation_ko": "", "example_en": "", "context_sentence": "All of the gainers are part of the broader AI value chain,... including sectors tied to memory chips, energy, and semiconductor materials.", "cefr_level": "C1", "frequency_score": 6.4597, "is_b2_plus": false, "derivatives": ["full gainer", "weight gainer"]}, {"word": "sidecar", "lemma": "sidecar", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a cocktail made of orange liqueur with lemon juice and brandy", "translation_ko": "", "example_en": "", "context_sentence": "The index seesawed between gains and losses before falling as much as seven percent from the previous session during trading, triggering a sell-side sidecar at one point.", "cefr_level": "C1", "frequency_score": 6.4597, "is_b2_plus": false, "derivatives": []}, {"word": "gridlock", "lemma": "gridlock", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈɡɹɪdˌlɒk/", "definition_en": "a traffic jam so bad that no movement is possible", "translation_ko": "", "example_en": "", "context_sentence": "President Trump praised the personal rapport he has built with his counterpart over the last decade, suggesting their chemistry has allowed them to bypass traditional diplomatic gridlock.", "cefr_level": "C1", "frequency_score": 6.2097, "is_b2_plus": false, "derivatives": []}, {"word": "soybeans", "lemma": "soybean", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a source of oil; used for forage and soil improvement and as food", "translation_ko": "", "example_en": "", "context_sentence": "The U.S. leader said China has committed to major purchases of American goods, including a large order of Boeing aircraft and a significant increase in imports of U.S. agricultural products, specifically soybeans... while gradually opening parts of its economy to U.S. businesses.", "cefr_level": "B2", "frequency_score": 5.9101, "is_b2_plus": false, "derivatives": ["Glycine max", "soja", "soja bean", "soy", "soya", "soya bean", "soybean plant"]}, {"word": "prefecture", "lemma": "prefecture", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the district administered by a prefect (as in France or Japan or the Roman Empire)", "translation_ko": "", "example_en": "", "context_sentence": "The leaders last met in Takaichi's hometown of Nara prefecture in January.", "cefr_level": "B2", "frequency_score": 5.8297, "is_b2_plus": false, "derivatives": []}, {"word": "rapport", "lemma": "rapport", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ɹæˈpoʊɹ/", "definition_en": "a relationship of mutual understanding or trust and agreement between people", "translation_ko": "", "example_en": "He always tried to maintain a rapport with his customers.", "context_sentence": "President Trump praised the personal rapport he has built with his counterpart over the last decade, suggesting their chemistry has allowed them to bypass traditional diplomatic gridlock.", "cefr_level": "B2", "frequency_score": 5.8297, "is_b2_plus": false, "derivatives": ["resonance"]}, {"word": "firsthand", "lemma": "firsthand", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "received directly from a source", "translation_ko": "", "example_en": "firsthand information", "context_sentence": "President Lee wished farmers a successful harvest this year and expressed his gratitude for their hard work, saying he was able to see firsthand the tremendous effort they put in on the ground.", "cefr_level": "B2", "frequency_score": 5.7496, "is_b2_plus": false, "derivatives": ["at first hand"]}, {"word": "pesticides", "lemma": "pesticide", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a chemical used to kill pests (as rodents or insects)", "translation_ko": "", "example_en": "", "context_sentence": "As rice-planting season gets underway in South Korea, the president operated a rice transplanter and observed a drone spraying pesticides over the fields.", "cefr_level": "B2", "frequency_score": 5.7496, "is_b2_plus": false, "derivatives": ["pesticide"]}, {"word": "Celsius", "lemma": "celsius", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "Swedish astronomer who devised the centigrade thermometer (1701-1744)", "translation_ko": "", "example_en": "", "context_sentence": "Moving to weather forecast,\nInland regions will continue to see big day-to-night temperature swings of around 15 degrees Celsius in many areas.", "cefr_level": "B2", "frequency_score": 5.71, "is_b2_plus": false, "derivatives": ["Anders Celsius", "Celsius"]}, {"word": "wreckage", "lemma": "wreckage", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the remaining parts of something that has been wrecked", "translation_ko": "", "example_en": "they searched the wreckage for signs of survivors", "context_sentence": "A government investigation team examined the wreckage in Dubai, before it was stored at the South Korean Embassy in the UAE.\n \n3.", "cefr_level": "B2", "frequency_score": 5.71, "is_b2_plus": false, "derivatives": []}, {"word": "characterized", "lemma": "characterize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈkæɹəktəɹaɪz/", "definition_en": "describe or portray the character or the qualities or peculiarities of", "translation_ko": "", "example_en": "You can characterize his behavior as that of an egotist", "context_sentence": "Both leaders characterized the three-day visit as a fundamental shift in bilateral ties.", "cefr_level": "B2", "frequency_score": 5.6799, "is_b2_plus": false, "derivatives": ["characterise", "qualify"]}, {"word": "moored", "lemma": "moor", "pos": "VERB", "pos_ko": "동사", "phonetic": "/moː/", "definition_en": "one of the Muslim people of north Africa; of mixed Arab and Berber descent; converted to Islam in the 8th century; conqueror of Spain in the 8th century", "translation_ko": "", "example_en": "A cold, biting wind blew across the moor, and the travellers hastened their step.", "context_sentence": "The debris includes engine parts collected from the scene of the attack last week on HMM Namu, moored in waters off the UAE.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": false, "derivatives": ["Moor", "berth", "moorland", "tie up", "wharf"]}, {"word": "noodles", "lemma": "noodle", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a ribbonlike strip of pasta", "translation_ko": "", "example_en": "", "context_sentence": "He later shared a meal of noodles and traditional Korean rice wine {막걸리}makgeolli, with local residents.", "cefr_level": "B2", "frequency_score": 5.58, "is_b2_plus": false, "derivatives": ["attic", "bean", "bonce", "dome", "noggin"]}, {"word": "Ozone", "lemma": "ozone", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a colorless gas (O3) soluble in alkalis and cold water; a strong oxidizing agent; can be produced by electric discharge in oxygen or by the action of ultraviolet radiation on oxygen in the stratosphere (where it acts as a screen for ultraviolet radiation)", "translation_ko": "", "example_en": "", "context_sentence": "Ozone concentrations are also expected to be \"bad\" in the capital area, Chungcheong-do, and Jeollabuk-do provinces.", "cefr_level": "B2", "frequency_score": 5.58, "is_b2_plus": false, "derivatives": []}, {"word": "blueprint", "lemma": "blueprint", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈbluːˌpɹɪnt/", "definition_en": "something intended as a guide for making something else", "translation_ko": "", "example_en": "a blueprint for a house", "context_sentence": "South Korea's blueprint... for nuclear-powered submarines... as early as... the end of this month.", "cefr_level": "B2", "frequency_score": 5.52, "is_b2_plus": false, "derivatives": ["design", "draft", "draught", "pattern"]}, {"word": "pragmatic", "lemma": "pragmatic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/pɹæɡˈmætɪk/", "definition_en": "an imperial decree that becomes part of the fundamental law of the land", "translation_ko": "", "example_en": "", "context_sentence": "\"\nIn an interview with Fox News, Trump described President Xi as \"all business,\" noting a pragmatic commitment to economic coordination.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": false, "derivatives": ["hard-nosed", "hardheaded", "matter-of-fact", "practical", "pragmatic sanction", "pragmatical"]}, {"word": "tariffs", "lemma": "tariff", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈtæɹəf/", "definition_en": "a government tax on imports or exports", "translation_ko": "", "example_en": "they signed a treaty to lower duties on trade between their countries", "context_sentence": "To manage these ongoing economic ties, the two sides have agreed to establish a new \"Board of Trade\" to handle disputes without immediately resorting to new tariffs.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": true, "derivatives": ["duty"]}, {"word": "semiconductor", "lemma": "semiconductor", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a substance as germanium or silicon whose electrical conductivity is intermediate between that of a metal and an insulator; its conductivity increases with temperature and in the presence of impurities", "translation_ko": "", "example_en": "", "context_sentence": "All of the gainers are part of the broader AI value chain,... including sectors tied to memory chips, energy, and semiconductor materials.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["semiconducting material", "semiconductor device", "semiconductor unit"]}, {"word": "fragments", "lemma": "fragment", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈfɹæɡmənt/", "definition_en": "a piece broken off or cut off of something else", "translation_ko": "", "example_en": "a fragment of rock", "context_sentence": "The foreign ministry said Friday that the fragments were transported by air on Thursday following consultations with United Arab Emirates authorities.", "cefr_level": "B2", "frequency_score": 5.4498, "is_b2_plus": false, "derivatives": ["break up", "fragmentise", "fragmentize", "shard", "sherd"]}, {"word": "benchmark", "lemma": "benchmark", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a standard by which something can be measured or judged", "translation_ko": "", "example_en": "his painting sets the benchmark of quality", "context_sentence": "Korea's benchmark KOSPI passed above the 8-thousand mark for the first time ever during trading on Friday.", "cefr_level": "B2", "frequency_score": 5.4001, "is_b2_plus": true, "derivatives": ["bench mark"]}, {"word": "unidentified", "lemma": "unidentified", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "not yet identified", "translation_ko": "", "example_en": "an unidentified species", "context_sentence": "2.\nDebris from the unidentified aerial vehicle that struck a Korean-operated vessel near the Strait of Hormuz, has arrived in Seoul for detailed forensic analysis.", "cefr_level": "B2", "frequency_score": 5.3904, "is_b2_plus": false, "derivatives": ["nameless", "unknown", "unnamed"]}, {"word": "heavyweights", "lemma": "heavyweight", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an amateur boxer who weighs no more than 201 pounds", "translation_ko": "", "example_en": "", "context_sentence": "Unlike the previous rally led by the country's chip giants, Friday's gains were powered by a wider group of market heavyweights.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": ["behemoth", "colossus", "giant", "hulk", "titan", "whale"]}, {"word": "daytime", "lemma": "daytime", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the time after sunrise and before sunset while it is light outside", "translation_ko": "", "example_en": "the dawn turned night into day", "context_sentence": "That means UV levels will be \"very high\" nationwide during the daytime.", "cefr_level": "B2", "frequency_score": 5.3401, "is_b2_plus": false, "derivatives": ["day", "daylight"]}, {"word": "counterpart", "lemma": "counterpart", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈkaʊntəˌpɑːt/", "definition_en": "a person or thing having the same function or characteristics as another", "translation_ko": "", "example_en": "Those brass knobs and their hollow counterparts interlock perfectly", "context_sentence": "President Trump praised the personal rapport he has built with his counterpart over the last decade, suggesting their chemistry has allowed them to bypass traditional diplomatic gridlock.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": ["opposite number", "similitude", "twin", "vis-a-vis"]}, {"word": "bilateral", "lemma": "bilateral", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/baɪˈlætəɹəl/", "definition_en": "having identical parts on each side of an axis", "translation_ko": "", "example_en": "", "context_sentence": "Both leaders characterized the three-day visit as a fundamental shift in bilateral ties.", "cefr_level": "B2", "frequency_score": 5.2798, "is_b2_plus": true, "derivatives": ["bilaterally symmetric", "bilaterally symmetrical", "isobilateral", "two-sided"]}, {"word": "forensic", "lemma": "forensic", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/fəˈɹɛn.sɪk/", "definition_en": "of, relating to, or used in public debate or argument", "translation_ko": "", "example_en": "", "context_sentence": "2.\nDebris from the unidentified aerial vehicle that struck a Korean-operated vessel near the Strait of Hormuz, has arrived in Seoul for detailed forensic analysis.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": []}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
