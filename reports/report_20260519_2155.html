@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.05.19", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260519_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260519/33107815/33107815_20260519-1vqu51gi_audio_arirang-mp3-normal-20260519221246.mp4?hdnts=exp=3558640788~acl=/kr/media1/arirang/20260519/33107815/*~hmac=0208df22dfd27b6dacc32b090cc299ece7ce3975c6d6ef01248a45ab9ab444b9", "script_text": "Welcome to Arirang News this is Jin Myong\nAnd we start with our top headlines at this hour.\n\n1.\nPresident Lee Jae Myung today hosted his Japanese counterpart Sanae Takaichi in his hometown of Andong.\nThe leaders agreed on the need to swiftly restore peace and stability to the Middle East.\nThey also agreed to expand South Korea-Japan cooperation on supply chains, and strengthen their partnership in the sectors of LNG and crude oil.\nLee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.\nThe leaders last met in Takaichi's hometown of Nara Prefecture in January.\n\n2.\nSamsung Electronics and its labor union remain locked in last-minute talks, with no final outcome announced past the expected 7 PM deadline.\nPark Soo-keun, chairman of the National Labor Relations Commission, said a mediation proposal will be made if the two sides fail to reach an agreement by 10 p.m.\nThe two sides have been trying to hash out a deal on performance-based bonus payments before an 18-day strike scheduled to begin Thursday.\nThe key dispute centers on how to fund and distribute performance bonuses.\n\n3.\nThe Ministry of Unification clarified on Tuesday that the phrase \"peaceful two states\" from this year's unification white paper is \"not the government's official position.\"\nA ministry official told reporters at the Government Complex Seoul that\n\"the expression 'peaceful two states' is one of the concepts the Unification Ministry has introduced to support peaceful coexistence between the two Koreas.\"\nThe official reiterated that \"this does not mean acknowledging North Korea as a legal state.\nThe idea is rather to recognize North Korea as a political entity and pursue policy on that foundation.\"\n\n4.\nA press conference was held earlier today at Suwon Sports Complex ahead of the AFC Women's Champions League semifinal between Suwon FC Women of South Korea and Naegohyang FC from North Korea.\nHead coach Ri Yu-il of the North Korean team said his players are ready to perform their best.\nForward and Naegohyang captain Kim Kyong-yong added that the team atmosphere remained positive and that her teammates will give their all in light of the expectations of their people.\nThe semifinal match between clubs of the two Koreas kicks off at 7 PM Wednesday in Suwon.\n\n5.\nNinety-five different stories from fourteen different countries gathered in Seoul on Monday.\nThe opening ceremony of the Overseas Korean Adoptees Gathering, hosted by Overseas Koreans Agency, marked the beginning of a powerful, collective homecoming.\nFor organization leaders who have dedicated their lives to supporting this community, this return represents a monumental chapter.\nParticipants gathered at Namsangol Hanok Village to experience a tea ceremony and an etiquette classroom, taking their first steps toward practicing customs they had never known before.\nMoving to weather forecast,\nThe early summer heat will ease with rain tomorrow, bringing temperatures back to seasonal levels.\nTomorrow, highs will be around 21 degrees Celsius in Seoul and 20 degrees in Daegu.\nRain is expected nationwide early tomorrow.\nIn terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.\nThe Jeolla-do and Gyeongsang-do provinces are expected to receive 10 to 60, while parts of the central region could see as much as 80 millimeters.\nAs for temperatures, Seoul will start the day at 19 degrees, Daejeon 17, and Busan 18 degrees.\nThen by the afternoon, Seoul will warm up to 21 degrees, Chuncheon 20, and Gwangju 23 degrees.\nBy Thursday afternoon, most of the rain will taper off, and temperatures will start to rise again.\nNow, here's a look at the weather around the world.\nThe current temperatures are:\n__________in Seoul\n_________in Gwangju\n_________in Busan\n_________on Jejudo island.\nYou’re listening to Arirang Radio."};
+    const rawVocabData = [{"word": "trilateral", "lemma": "trilateral", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a three-sided polygon", "translation_ko": "", "example_en": "", "context_sentence": "Lee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.", "cefr_level": "C1", "frequency_score": 6.5702, "is_b2_plus": false, "derivatives": ["three-sided", "triangle", "triangular", "trigon"]}, {"word": "reaffirmed", "lemma": "reaffirm", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɹiːəˈfɜː(ɹ)m/", "definition_en": "affirm once again", "translation_ko": "", "example_en": "He reaffirmed his faith in the church", "context_sentence": "Lee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.", "cefr_level": "C1", "frequency_score": 6.1701, "is_b2_plus": false, "derivatives": []}, {"word": "coexistence", "lemma": "coexistence", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "existing peacefully together", "translation_ko": "", "example_en": "", "context_sentence": "A ministry official told reporters at the Government Complex Seoul that \n\"the expression 'peaceful two states' is one of the concepts the Unification Ministry has introduced to support peaceful coexistence between the two Koreas.", "cefr_level": "C1", "frequency_score": 6.1002, "is_b2_plus": false, "derivatives": []}, {"word": "millimeters", "lemma": "millimeter", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a metric unit of length equal to one thousandth of a meter", "translation_ko": "", "example_en": "", "context_sentence": "In terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.", "cefr_level": "B2", "frequency_score": 5.8697, "is_b2_plus": false, "derivatives": ["millimetre", "mm"]}, {"word": "reiterated", "lemma": "reiterate", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "to say, state, or perform again", "translation_ko": "", "example_en": "She kept reiterating her request", "context_sentence": "The official reiterated that \"this does not mean acknowledging North Korea as a legal state.", "cefr_level": "B2", "frequency_score": 5.8697, "is_b2_plus": false, "derivatives": ["ingeminate", "iterate", "repeat", "restate", "retell"]}, {"word": "semifinal", "lemma": "semifinal", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "one of the two competitions in the next to the last round of an elimination tournament", "translation_ko": "", "example_en": "", "context_sentence": "\" \n\n4.\n\nA press conference was held earlier today at Suwon Sports Complex ahead of the AFC Women's Champions League semifinal between Suwon FC Women of South Korea and Naegohyang FC from North Korea.", "cefr_level": "B2", "frequency_score": 5.7595, "is_b2_plus": false, "derivatives": ["semi"]}, {"word": "taper", "lemma": "taper", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "a convex shape that narrows toward a point", "translation_ko": "", "example_en": "", "context_sentence": "By Thursday afternoon, most of the rain will taper off, and temperatures will start to rise again.", "cefr_level": "B2", "frequency_score": 5.699, "is_b2_plus": false, "derivatives": ["candle", "wax light", "wick"]}, {"word": "unification", "lemma": "unification", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an occurrence that involves the production of a union", "translation_ko": "", "example_en": "", "context_sentence": "The Ministry of Unification clarified on Tuesday that the phrase \"peaceful two states\" from this year's unification white paper is \"not the government's official position.\"", "cefr_level": "B2", "frequency_score": 5.6402, "is_b2_plus": false, "derivatives": ["conjugation", "fusion", "jointure", "merger", "union", "uniting"]}, {"word": "mountainous", "lemma": "mountainous", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "having hills and crags", "translation_ko": "", "example_en": "hilly terrain", "context_sentence": "In terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.", "cefr_level": "B2", "frequency_score": 5.6198, "is_b2_plus": false, "derivatives": ["cragged", "craggy", "hilly"]}, {"word": "etiquette", "lemma": "etiquette", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈɛtɪkɪt/", "definition_en": "rules governing socially acceptable behavior", "translation_ko": "", "example_en": "", "context_sentence": "Participants gathered at Namsangol Hanok Village to experience a tea ceremony and an etiquette classroom, taking their first steps toward practicing customs they had never known before.", "cefr_level": "B2", "frequency_score": 5.6003, "is_b2_plus": false, "derivatives": []}, {"word": "monumental", "lemma": "monumental", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˌmɒnjʊˈmɛntəl/", "definition_en": "relating or belonging to or serving as a monument", "translation_ko": "", "example_en": "the use of the arch in monumental architecture", "context_sentence": "For organization leaders who have dedicated their lives to supporting this community, this return represents a monumental chapter.", "cefr_level": "B2", "frequency_score": 5.5003, "is_b2_plus": false, "derivatives": ["massive", "monolithic"]}, {"word": "dedicated", "lemma": "dedicate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈdɛdɪkeɪt/", "definition_en": "give entirely to a specific person, activity, or cause", "translation_ko": "", "example_en": "She committed herself to the work of God", "context_sentence": "For organization leaders who have dedicated their lives to supporting this community, this return represents a monumental chapter.", "cefr_level": "B2", "frequency_score": 5.4895, "is_b2_plus": false, "derivatives": ["commit", "consecrate", "devote", "give"]}, {"word": "mediation", "lemma": "mediation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/midiˈeɪʃən/", "definition_en": "a negotiation to resolve differences that is conducted by some impartial party", "translation_ko": "", "example_en": "", "context_sentence": "Park Soo-keun, chairman of the National Labor Relations Commission, said a mediation proposal will be made if the two sides fail to reach an agreement by 10 p.m.\n\nThe two sides have been trying to hash out a deal on performance-based bonus payments before an 18-day strike scheduled to begin Thursday.", "cefr_level": "B2", "frequency_score": 5.4895, "is_b2_plus": true, "derivatives": ["intermediation"]}, {"word": "homecoming", "lemma": "homecoming", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈhoʊmˌkʌmɪŋ/", "definition_en": "an annual school or university reunion for graduates", "translation_ko": "", "example_en": "His homecoming was saddened by the news of his mother's death the day before.", "context_sentence": "The opening ceremony of the Overseas Korean Adoptees Gathering, hosted by Overseas Koreans Agency, marked the beginning of a powerful, collective homecoming.", "cefr_level": "B2", "frequency_score": 5.4597, "is_b2_plus": false, "derivatives": ["return"]}, {"word": "swiftly", "lemma": "swiftly", "pos": "ADV", "pos_ko": "부사", "phonetic": "/ˈswɪftli/", "definition_en": "in a swift manner", "translation_ko": "", "example_en": "she moved swiftly", "context_sentence": "The leaders agreed on the need to swiftly restore peace and stability to the Middle East.", "cefr_level": "B2", "frequency_score": 5.4597, "is_b2_plus": false, "derivatives": ["fleetly"]}, {"word": "hash", "lemma": "hash", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈhæʃ/", "definition_en": "chopped meat mixed with potatoes and browned", "translation_ko": "", "example_en": "", "context_sentence": "Park Soo-keun, chairman of the National Labor Relations Commission, said a mediation proposal will be made if the two sides fail to reach an agreement by 10 p.m.\n\nThe two sides have been trying to hash out a deal on performance-based bonus payments before an 18-day strike scheduled to begin Thursday.", "cefr_level": "B2", "frequency_score": 5.3696, "is_b2_plus": false, "derivatives": ["haschisch", "hasheesh", "hashish"]}, {"word": "counterpart", "lemma": "counterpart", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈkaʊntəˌpɑːt/", "definition_en": "a person or thing having the same function or characteristics as another", "translation_ko": "", "example_en": "Those brass knobs and their hollow counterparts interlock perfectly", "context_sentence": "President Lee Jae Myung today hosted his Japanese counterpart Sanae Takaichi in his hometown of Andong.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": ["opposite number", "similitude", "twin", "vis-a-vis"]}, {"word": "Ninety", "lemma": "ninety", "pos": "NUM", "pos_ko": "", "phonetic": "/ˈnaɪn.ti/", "definition_en": "the cardinal number that is the product of ten and nine", "translation_ko": "", "example_en": "", "context_sentence": "5.\nNinety-five different stories from fourteen different countries gathered in Seoul on Monday.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["90", "XC", "xc"]}, {"word": "Participants", "lemma": "participant", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/pɑːˈtɪsɪpənt/", "definition_en": "someone who takes part in an activity", "translation_ko": "", "example_en": "All participants must adhere to the rules of the competition.", "context_sentence": "Participants gathered at Namsangol Hanok Village to experience a tea ceremony and an etiquette classroom, taking their first steps toward practicing customs they had never known before.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": false, "derivatives": ["player"]}, {"word": "distribute", "lemma": "distribute", "pos": "VERB", "pos_ko": "동사", "phonetic": "/dɨˈstɹɪbjuːt/", "definition_en": "administer or bestow, as in small portions", "translation_ko": "", "example_en": "administer critical remarks to everyone present", "context_sentence": "The key dispute centers on how to fund and distribute performance bonuses.", "cefr_level": "B2", "frequency_score": 5.2097, "is_b2_plus": false, "derivatives": ["administer", "allot", "circulate", "deal", "deal out", "dish out", "dispense", "dole out", "give out", "hand out", "lot", "mete out", "parcel out", "pass around", "pass on"]}, {"word": "rainfall", "lemma": "rainfall", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "water falling in drops from vapor condensed in the atmosphere", "translation_ko": "", "example_en": "", "context_sentence": "In terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.", "cefr_level": "B2", "frequency_score": 5.1798, "is_b2_plus": false, "derivatives": ["rain"]}, {"word": "teammates", "lemma": "teammate", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈtiːmˌmeɪt/", "definition_en": "a fellow member of a team", "translation_ko": "", "example_en": "it was his first start against his former teammates", "context_sentence": "Forward and Naegohyang captain Kim Kyong-yong added that the team atmosphere remained positive and that her teammates will give their all in light of the expectations of their people.", "cefr_level": "B2", "frequency_score": 5.1599, "is_b2_plus": false, "derivatives": ["mate"]}, {"word": "clarified", "lemma": "clarify", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈklæɹɪfaɪ/", "definition_en": "make clear and (more) comprehensible", "translation_ko": "", "example_en": "clarify the mystery surrounding her death", "context_sentence": "The Ministry of Unification clarified on Tuesday that the phrase \"peaceful two states\" from this year's unification white paper is \"not the government's official position.\"", "cefr_level": "B2", "frequency_score": 5.15, "is_b2_plus": false, "derivatives": ["clear up", "elucidate"]}, {"word": "fourteen", "lemma": "fourteen", "pos": "NUM", "pos_ko": "", "phonetic": "/ˈfɔː.tiːn/", "definition_en": "the cardinal number that is the sum of thirteen and one", "translation_ko": "", "example_en": "", "context_sentence": "5.\nNinety-five different stories from fourteen different countries gathered in Seoul on Monday.", "cefr_level": "B2", "frequency_score": 5.1198, "is_b2_plus": false, "derivatives": ["14", "XIV", "xiv"]}, {"word": "hometown", "lemma": "hometown", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the town (or city) where you grew up or where you have your principal residence", "translation_ko": "", "example_en": "he never went back to his hometown again", "context_sentence": "President Lee Jae Myung today hosted his Japanese counterpart Sanae Takaichi in his hometown of Andong.", "cefr_level": "B2", "frequency_score": 5.0899, "is_b2_plus": false, "derivatives": []}, {"word": "amid", "lemma": "amid", "pos": "ADP", "pos_ko": "", "phonetic": "/əˈmɪd/", "definition_en": "In the middle of; in the center of; surrounded by.", "translation_ko": "", "example_en": "", "context_sentence": "Lee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.", "cefr_level": "B2", "frequency_score": 5.0501, "is_b2_plus": false, "derivatives": []}, {"word": "seasonal", "lemma": "seasonal", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈsiːzənəl/", "definition_en": "a worker who finds employment only in certain seasons", "translation_ko": "", "example_en": "", "context_sentence": "Moving to weather forecast, \nThe early summer heat will ease with rain tomorrow, bringing temperatures back to seasonal levels.", "cefr_level": "B2", "frequency_score": 5.02, "is_b2_plus": false, "derivatives": ["seasonal worker"]}, {"word": "expectations", "lemma": "expectation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ɛkspɛkˈteɪʃən/", "definition_en": "belief about (or mental picture of) the future", "translation_ko": "", "example_en": "", "context_sentence": "Forward and Naegohyang captain Kim Kyong-yong added that the team atmosphere remained positive and that her teammates will give their all in light of the expectations of their people.", "cefr_level": "B2", "frequency_score": 5.0101, "is_b2_plus": false, "derivatives": ["anticipation", "arithmetic mean", "expected value", "first moment", "outlook", "prospect"]}, {"word": "crude", "lemma": "crude", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/kɹʉd/", "definition_en": "a dark oil consisting mainly of hydrocarbons", "translation_ko": "", "example_en": "", "context_sentence": "They also agreed to expand South Korea-Japan cooperation on supply chains, and strengthen their partnership in the sectors of LNG and crude oil.", "cefr_level": "B2", "frequency_score": 5.0, "is_b2_plus": false, "derivatives": ["crude oil", "earthy", "fossil oil", "gross", "oil", "petroleum", "primitive", "rock oil", "rough", "rude", "unprocessed", "unrefined", "vulgar"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>

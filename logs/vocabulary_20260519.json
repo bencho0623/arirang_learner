@@ -1,0 +1,551 @@
+{
+  "created_at": "2026-05-19T23:40:11.042385",
+  "count": 29,
+  "items": [
+    {
+      "word": "trilateral",
+      "lemma": "trilateral",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "a three-sided polygon",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Lee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.",
+      "cefr_level": "C1",
+      "frequency_score": 6.5702,
+      "is_b2_plus": false,
+      "derivatives": [
+        "three-sided",
+        "triangle",
+        "triangular",
+        "trigon"
+      ]
+    },
+    {
+      "word": "reaffirmed",
+      "lemma": "reaffirm",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ɹiːəˈfɜː(ɹ)m/",
+      "definition_en": "affirm once again",
+      "translation_ko": "",
+      "example_en": "He reaffirmed his faith in the church",
+      "context_sentence": "Lee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.",
+      "cefr_level": "C1",
+      "frequency_score": 6.1701,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "coexistence",
+      "lemma": "coexistence",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "existing peacefully together",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "A ministry official told reporters at the Government Complex Seoul that \n\"the expression 'peaceful two states' is one of the concepts the Unification Ministry has introduced to support peaceful coexistence between the two Koreas.",
+      "cefr_level": "C1",
+      "frequency_score": 6.1002,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "millimeters",
+      "lemma": "millimeter",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "a metric unit of length equal to one thousandth of a meter",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "In terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8697,
+      "is_b2_plus": false,
+      "derivatives": [
+        "millimetre",
+        "mm"
+      ]
+    },
+    {
+      "word": "reiterated",
+      "lemma": "reiterate",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "to say, state, or perform again",
+      "translation_ko": "",
+      "example_en": "She kept reiterating her request",
+      "context_sentence": "The official reiterated that \"this does not mean acknowledging North Korea as a legal state.",
+      "cefr_level": "B2",
+      "frequency_score": 5.8697,
+      "is_b2_plus": false,
+      "derivatives": [
+        "ingeminate",
+        "iterate",
+        "repeat",
+        "restate",
+        "retell"
+      ]
+    },
+    {
+      "word": "semifinal",
+      "lemma": "semifinal",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "one of the two competitions in the next to the last round of an elimination tournament",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "\" \n\n4.\n\nA press conference was held earlier today at Suwon Sports Complex ahead of the AFC Women's Champions League semifinal between Suwon FC Women of South Korea and Naegohyang FC from North Korea.",
+      "cefr_level": "B2",
+      "frequency_score": 5.7595,
+      "is_b2_plus": false,
+      "derivatives": [
+        "semi"
+      ]
+    },
+    {
+      "word": "taper",
+      "lemma": "taper",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "",
+      "definition_en": "a convex shape that narrows toward a point",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "By Thursday afternoon, most of the rain will taper off, and temperatures will start to rise again.",
+      "cefr_level": "B2",
+      "frequency_score": 5.699,
+      "is_b2_plus": false,
+      "derivatives": [
+        "candle",
+        "wax light",
+        "wick"
+      ]
+    },
+    {
+      "word": "unification",
+      "lemma": "unification",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "an occurrence that involves the production of a union",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "The Ministry of Unification clarified on Tuesday that the phrase \"peaceful two states\" from this year's unification white paper is \"not the government's official position.\"",
+      "cefr_level": "B2",
+      "frequency_score": 5.6402,
+      "is_b2_plus": false,
+      "derivatives": [
+        "conjugation",
+        "fusion",
+        "jointure",
+        "merger",
+        "union",
+        "uniting"
+      ]
+    },
+    {
+      "word": "mountainous",
+      "lemma": "mountainous",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "",
+      "definition_en": "having hills and crags",
+      "translation_ko": "",
+      "example_en": "hilly terrain",
+      "context_sentence": "In terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6198,
+      "is_b2_plus": false,
+      "derivatives": [
+        "cragged",
+        "craggy",
+        "hilly"
+      ]
+    },
+    {
+      "word": "etiquette",
+      "lemma": "etiquette",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈɛtɪkɪt/",
+      "definition_en": "rules governing socially acceptable behavior",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Participants gathered at Namsangol Hanok Village to experience a tea ceremony and an etiquette classroom, taking their first steps toward practicing customs they had never known before.",
+      "cefr_level": "B2",
+      "frequency_score": 5.6003,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "monumental",
+      "lemma": "monumental",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/ˌmɒnjʊˈmɛntəl/",
+      "definition_en": "relating or belonging to or serving as a monument",
+      "translation_ko": "",
+      "example_en": "the use of the arch in monumental architecture",
+      "context_sentence": "For organization leaders who have dedicated their lives to supporting this community, this return represents a monumental chapter.",
+      "cefr_level": "B2",
+      "frequency_score": 5.5003,
+      "is_b2_plus": false,
+      "derivatives": [
+        "massive",
+        "monolithic"
+      ]
+    },
+    {
+      "word": "dedicated",
+      "lemma": "dedicate",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈdɛdɪkeɪt/",
+      "definition_en": "give entirely to a specific person, activity, or cause",
+      "translation_ko": "",
+      "example_en": "She committed herself to the work of God",
+      "context_sentence": "For organization leaders who have dedicated their lives to supporting this community, this return represents a monumental chapter.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4895,
+      "is_b2_plus": false,
+      "derivatives": [
+        "commit",
+        "consecrate",
+        "devote",
+        "give"
+      ]
+    },
+    {
+      "word": "mediation",
+      "lemma": "mediation",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/midiˈeɪʃən/",
+      "definition_en": "a negotiation to resolve differences that is conducted by some impartial party",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Park Soo-keun, chairman of the National Labor Relations Commission, said a mediation proposal will be made if the two sides fail to reach an agreement by 10 p.m.\n\nThe two sides have been trying to hash out a deal on performance-based bonus payments before an 18-day strike scheduled to begin Thursday.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4895,
+      "is_b2_plus": true,
+      "derivatives": [
+        "intermediation"
+      ]
+    },
+    {
+      "word": "homecoming",
+      "lemma": "homecoming",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈhoʊmˌkʌmɪŋ/",
+      "definition_en": "an annual school or university reunion for graduates",
+      "translation_ko": "",
+      "example_en": "His homecoming was saddened by the news of his mother's death the day before.",
+      "context_sentence": "The opening ceremony of the Overseas Korean Adoptees Gathering, hosted by Overseas Koreans Agency, marked the beginning of a powerful, collective homecoming.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4597,
+      "is_b2_plus": false,
+      "derivatives": [
+        "return"
+      ]
+    },
+    {
+      "word": "swiftly",
+      "lemma": "swiftly",
+      "pos": "ADV",
+      "pos_ko": "부사",
+      "phonetic": "/ˈswɪftli/",
+      "definition_en": "in a swift manner",
+      "translation_ko": "",
+      "example_en": "she moved swiftly",
+      "context_sentence": "The leaders agreed on the need to swiftly restore peace and stability to the Middle East.",
+      "cefr_level": "B2",
+      "frequency_score": 5.4597,
+      "is_b2_plus": false,
+      "derivatives": [
+        "fleetly"
+      ]
+    },
+    {
+      "word": "hash",
+      "lemma": "hash",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈhæʃ/",
+      "definition_en": "chopped meat mixed with potatoes and browned",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Park Soo-keun, chairman of the National Labor Relations Commission, said a mediation proposal will be made if the two sides fail to reach an agreement by 10 p.m.\n\nThe two sides have been trying to hash out a deal on performance-based bonus payments before an 18-day strike scheduled to begin Thursday.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3696,
+      "is_b2_plus": false,
+      "derivatives": [
+        "haschisch",
+        "hasheesh",
+        "hashish"
+      ]
+    },
+    {
+      "word": "counterpart",
+      "lemma": "counterpart",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈkaʊntəˌpɑːt/",
+      "definition_en": "a person or thing having the same function or characteristics as another",
+      "translation_ko": "",
+      "example_en": "Those brass knobs and their hollow counterparts interlock perfectly",
+      "context_sentence": "President Lee Jae Myung today hosted his Japanese counterpart Sanae Takaichi in his hometown of Andong.",
+      "cefr_level": "B2",
+      "frequency_score": 5.3002,
+      "is_b2_plus": false,
+      "derivatives": [
+        "opposite number",
+        "similitude",
+        "twin",
+        "vis-a-vis"
+      ]
+    },
+    {
+      "word": "Ninety",
+      "lemma": "ninety",
+      "pos": "NUM",
+      "pos_ko": "",
+      "phonetic": "/ˈnaɪn.ti/",
+      "definition_en": "the cardinal number that is the product of ten and nine",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "5.\nNinety-five different stories from fourteen different countries gathered in Seoul on Monday.",
+      "cefr_level": "B2",
+      "frequency_score": 5.2899,
+      "is_b2_plus": false,
+      "derivatives": [
+        "90",
+        "XC",
+        "xc"
+      ]
+    },
+    {
+      "word": "Participants",
+      "lemma": "participant",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/pɑːˈtɪsɪpənt/",
+      "definition_en": "someone who takes part in an activity",
+      "translation_ko": "",
+      "example_en": "All participants must adhere to the rules of the competition.",
+      "context_sentence": "Participants gathered at Namsangol Hanok Village to experience a tea ceremony and an etiquette classroom, taking their first steps toward practicing customs they had never known before.",
+      "cefr_level": "B2",
+      "frequency_score": 5.2197,
+      "is_b2_plus": false,
+      "derivatives": [
+        "player"
+      ]
+    },
+    {
+      "word": "distribute",
+      "lemma": "distribute",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/dɨˈstɹɪbjuːt/",
+      "definition_en": "administer or bestow, as in small portions",
+      "translation_ko": "",
+      "example_en": "administer critical remarks to everyone present",
+      "context_sentence": "The key dispute centers on how to fund and distribute performance bonuses.",
+      "cefr_level": "B2",
+      "frequency_score": 5.2097,
+      "is_b2_plus": false,
+      "derivatives": [
+        "administer",
+        "allot",
+        "circulate",
+        "deal",
+        "deal out",
+        "dish out",
+        "dispense",
+        "dole out",
+        "give out",
+        "hand out",
+        "lot",
+        "mete out",
+        "parcel out",
+        "pass around",
+        "pass on"
+      ]
+    },
+    {
+      "word": "rainfall",
+      "lemma": "rainfall",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "water falling in drops from vapor condensed in the atmosphere",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "In terms of rainfall, the mountainous areas of Jeju Island could see up to 120 millimeters.",
+      "cefr_level": "B2",
+      "frequency_score": 5.1798,
+      "is_b2_plus": false,
+      "derivatives": [
+        "rain"
+      ]
+    },
+    {
+      "word": "teammates",
+      "lemma": "teammate",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ˈtiːmˌmeɪt/",
+      "definition_en": "a fellow member of a team",
+      "translation_ko": "",
+      "example_en": "it was his first start against his former teammates",
+      "context_sentence": "Forward and Naegohyang captain Kim Kyong-yong added that the team atmosphere remained positive and that her teammates will give their all in light of the expectations of their people.",
+      "cefr_level": "B2",
+      "frequency_score": 5.1599,
+      "is_b2_plus": false,
+      "derivatives": [
+        "mate"
+      ]
+    },
+    {
+      "word": "clarified",
+      "lemma": "clarify",
+      "pos": "VERB",
+      "pos_ko": "동사",
+      "phonetic": "/ˈklæɹɪfaɪ/",
+      "definition_en": "make clear and (more) comprehensible",
+      "translation_ko": "",
+      "example_en": "clarify the mystery surrounding her death",
+      "context_sentence": "The Ministry of Unification clarified on Tuesday that the phrase \"peaceful two states\" from this year's unification white paper is \"not the government's official position.\"",
+      "cefr_level": "B2",
+      "frequency_score": 5.15,
+      "is_b2_plus": false,
+      "derivatives": [
+        "clear up",
+        "elucidate"
+      ]
+    },
+    {
+      "word": "fourteen",
+      "lemma": "fourteen",
+      "pos": "NUM",
+      "pos_ko": "",
+      "phonetic": "/ˈfɔː.tiːn/",
+      "definition_en": "the cardinal number that is the sum of thirteen and one",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "5.\nNinety-five different stories from fourteen different countries gathered in Seoul on Monday.",
+      "cefr_level": "B2",
+      "frequency_score": 5.1198,
+      "is_b2_plus": false,
+      "derivatives": [
+        "14",
+        "XIV",
+        "xiv"
+      ]
+    },
+    {
+      "word": "hometown",
+      "lemma": "hometown",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "",
+      "definition_en": "the town (or city) where you grew up or where you have your principal residence",
+      "translation_ko": "",
+      "example_en": "he never went back to his hometown again",
+      "context_sentence": "President Lee Jae Myung today hosted his Japanese counterpart Sanae Takaichi in his hometown of Andong.",
+      "cefr_level": "B2",
+      "frequency_score": 5.0899,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "amid",
+      "lemma": "amid",
+      "pos": "ADP",
+      "pos_ko": "",
+      "phonetic": "/əˈmɪd/",
+      "definition_en": "In the middle of; in the center of; surrounded by.",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Lee{이} and Takaichi also reaffirmed the importance of trilateral cooperation with the U.S. amid a rapidly changing international order.",
+      "cefr_level": "B2",
+      "frequency_score": 5.0501,
+      "is_b2_plus": false,
+      "derivatives": []
+    },
+    {
+      "word": "seasonal",
+      "lemma": "seasonal",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/ˈsiːzənəl/",
+      "definition_en": "a worker who finds employment only in certain seasons",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Moving to weather forecast, \nThe early summer heat will ease with rain tomorrow, bringing temperatures back to seasonal levels.",
+      "cefr_level": "B2",
+      "frequency_score": 5.02,
+      "is_b2_plus": false,
+      "derivatives": [
+        "seasonal worker"
+      ]
+    },
+    {
+      "word": "expectations",
+      "lemma": "expectation",
+      "pos": "NOUN",
+      "pos_ko": "명사",
+      "phonetic": "/ɛkspɛkˈteɪʃən/",
+      "definition_en": "belief about (or mental picture of) the future",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "Forward and Naegohyang captain Kim Kyong-yong added that the team atmosphere remained positive and that her teammates will give their all in light of the expectations of their people.",
+      "cefr_level": "B2",
+      "frequency_score": 5.0101,
+      "is_b2_plus": false,
+      "derivatives": [
+        "anticipation",
+        "arithmetic mean",
+        "expected value",
+        "first moment",
+        "outlook",
+        "prospect"
+      ]
+    },
+    {
+      "word": "crude",
+      "lemma": "crude",
+      "pos": "ADJ",
+      "pos_ko": "형용사",
+      "phonetic": "/kɹʉd/",
+      "definition_en": "a dark oil consisting mainly of hydrocarbons",
+      "translation_ko": "",
+      "example_en": "",
+      "context_sentence": "They also agreed to expand South Korea-Japan cooperation on supply chains, and strengthen their partnership in the sectors of LNG and crude oil.",
+      "cefr_level": "B2",
+      "frequency_score": 5.0,
+      "is_b2_plus": false,
+      "derivatives": [
+        "crude oil",
+        "earthy",
+        "fossil oil",
+        "gross",
+        "oil",
+        "petroleum",
+        "primitive",
+        "rock oil",
+        "rough",
+        "rude",
+        "unprocessed",
+        "unrefined",
+        "vulgar"
+      ]
+    }
+  ]
+}
