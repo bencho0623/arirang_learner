@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.05.28", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260528_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260528/33184259/33184259_20260528-t2vbwl27_audio_arirang-mp3-normal-20260528220248.mp4?hdnts=exp=3560197124~acl=/kr/media1/arirang/20260528/33184259/*~hmac=f93b6747d5b0b64ab85dec0f96bbeab7286bc6f20ec9742fc6ab99fa961fab45", "script_text": "Welcome to Arirang News\nThis is Kim Ji Eun,\nAnd We start with the top headlines at this hour\n#1\nVoters in South Korea will have their first chance to cast their ballots this Friday, as early voting for the June 3rd local elections gets underway.\nFor two days — Friday and Saturday — polling stations will be open from six in the morning until six in the evening.\nOne of the more convenient aspects of early voting is that voters can cast their ballots at any of the 3,571 polling stations nationwide, regardless of where they are registered — a flexibility that isn't available on election day itself.\nAll that is required is a valid photo ID.\nEligible foreign residents can participate in the local elections.\nThose aged eighteen or over who have held permanent residency for at least three years and are registered on their local government's foreign residents list are entitled to vote — though not in the parliamentary by-elections.\nThursday also marks the start of a polling blackout — meaning no new survey results can be published until polls close on election day.\nThe elections are the first nationwide vote since President Lee Jae Myung took office, and are being closely watched as a barometer of the political landscape.\n#2\nPresident Lee Jae Myung has called for a thorough investigation into the recent fatal overpass collapse and a poor construction of an underground transportation complex in the capital.\nSpeaking at a weekly meeting with his aides on Thursday, Lee pointed out cases where safety has been overlooked due to cost issues.\nHe urged the authorities to look into the incidents to find out whether they occurred due to similar reasons.\nHe noted the gravity of the matter and urged for the need to hold those responsible strictly to account.\nThis week, the collapse of the overpass in Seoul killed three people, while controversy has been recently raised over a report that found reinforcement bars were largely missing from the construction.\n#3\nSouth Korea is making a final push to secure a major Canadian submarine contract estimated to be worth up to 60 trillion won, or roughly 40 billion U.S. dollars.\nChief of Naval Operations {김경률} Kim Kyung-ryul and Defense Acquisition Program Administration Minister {이용철} Lee Yong-cheol attended CANSEC, Canada’s largest defense and security exhibition, on Thursday.\nThe visit to Ottawa comes ahead of Canada’s expected decision on a project to replace its aging submarine fleet with up to 12 conventionally powered submarines.\nKim met with key Canadian leadership, including the Secretary of State for Defense Procurement and the Navy Commander, to discuss maritime security cooperation.\nMinister Lee outlined South Korea's proposal to local broadcaster CBC --- which includes guaranteed technology transfers, domestic supply chain integration, and long-term maintenance based in Canada.\n#4\nTensions between the U.S. and Iran are escalating again near the Strait of Hormuz.\nIran's foreign ministry spokesperson accused Washington of repeatedly violating the ceasefire agreed to on April 8.\nHe said U.S. actions in the Gulf, including what Tehran described as provocations against commercial vessels and strikes on Iranian territory, were \"gross violations\" of the ceasefire.\nIran also warned it was ready to take all necessary measures under the UN Charter to defend its territory and sovereignty.\nThe U.S. military, however, argues that American forces shot down four Iranian suicide drones near the strait, after they allegedly posed a threat to commercial vessels and U.S. personnel.\n#5\nSouth Korean Defense Minister Ahn Gyu-back will travel to Singapore this week to attend the annual Asia Security Summit, from Friday through Sunday.\nAccording to the Ministry of National Defense on Thursday,\nAhn plans to deliver a speech to the plenary session\nto introduce Korea's defense policy\nduring the current increasingly volatile security landscape.\nJoining the summit will be his counterparts from key nations,\nincluding the United States, Japan, and other European and Indo-Pacific partners.\nVietnam's President To Lam is set to deliver the keynote speech\non the first day of the forum on Friday.\nMeanwhile, the keynote address from U.S.\nDefense Secretary Pete Hegseth,\nIs set to be delivered the following day,\nwith high scrutiny expected from Asian allies.\nMoving to the weather forecast,\nWe’re expecting bright and sunny weather across much of the country tomorrow.\nAnd with temperatures on the rise, it’ll feel a lot more like early summer for the next few days.\nStrong winds have been sweeping across much of the country since this afternoon, with gusts reaching over 15 meters per second in many areas.\nThe current temperature are\n20 degrees in Seoul,\n19 degrees in Gwangju,\n23 degrees in Busan,\nAnd 18 degrees on Jejudo Island\nYou’re listening to, Arirang Radio"};
+    const rawVocabData = [{"word": "cheol", "lemma": "cheol", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "Chief of Naval Operations {김경률} Kim Kyung-ryul and Defense Acquisition Program Administration Minister {이용철} Lee Yong-cheol attended CANSEC, Canada’s largest defense and security exhibition, on Thursday.", "cefr_level": "C1", "frequency_score": 6.51, "is_b2_plus": false, "derivatives": []}, {"word": "entitled", "lemma": "entitle", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ənˈtaɪtəl/", "definition_en": "give the right to", "translation_ko": "", "example_en": "The Freedom of Information Act entitles you to request your FBI file", "context_sentence": "Those aged eighteen or over who have held permanent residency for at least three years and are registered on their local government's foreign residents list are entitled to vote — though not in the parliamentary by-elections.", "cefr_level": "C1", "frequency_score": 6.2899, "is_b2_plus": false, "derivatives": ["ennoble", "gentle", "title"]}, {"word": "overpass", "lemma": "overpass", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "bridge formed by the upper level of a crossing of two highways at different levels", "translation_ko": "", "example_en": "The homeless man had built a little shelter, complete with cook-stove, beneath a concrete overpass.", "context_sentence": "#2\nPresident Lee Jae Myung has called for a thorough investigation into the recent fatal overpass collapse and a poor construction of an underground transportation complex in the capital.", "cefr_level": "C1", "frequency_score": 6.04, "is_b2_plus": false, "derivatives": ["flyover"]}, {"word": "conventionally", "lemma": "conventionally", "pos": "ADV", "pos_ko": "부사", "phonetic": "", "definition_en": "in a conventional manner", "translation_ko": "", "example_en": "he usually behaves rather conventionally", "context_sentence": "The visit to Ottawa comes ahead of Canada’s expected decision on a project to replace its aging submarine fleet with up to 12 conventionally powered submarines.", "cefr_level": "B2", "frequency_score": 5.9318, "is_b2_plus": false, "derivatives": []}, {"word": "gusts", "lemma": "gust", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a strong current of air", "translation_ko": "", "example_en": "the tree was bent almost double by the gust", "context_sentence": "Strong winds have been sweeping across much of the country since this afternoon, with gusts reaching over 15 meters per second in many areas.", "cefr_level": "B2", "frequency_score": 5.8996, "is_b2_plus": false, "derivatives": ["blast", "blow"]}, {"word": "plenary", "lemma": "plenary", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "full in all respects", "translation_ko": "", "example_en": "a plenary session of the legislature", "context_sentence": "According to the Ministry of National Defense on Thursday, \nAhn plans to deliver a speech to the plenary session \nto introduce Korea's defense policy \nduring the current increasingly volatile security landscape.", "cefr_level": "B2", "frequency_score": 5.8996, "is_b2_plus": false, "derivatives": []}, {"word": "barometer", "lemma": "barometer", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/bəˈɹɒmətə(ɹ)/", "definition_en": "an instrument that measures atmospheric pressure", "translation_ko": "", "example_en": "", "context_sentence": "The elections are the first nationwide vote since President Lee Jae Myung took office, and are being closely watched as a barometer of the political landscape.", "cefr_level": "B2", "frequency_score": 5.821, "is_b2_plus": false, "derivatives": []}, {"word": "provocations", "lemma": "provocation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌpɹɒvəˈkeɪʃən/", "definition_en": "unfriendly behavior that causes anger or resentment", "translation_ko": "", "example_en": "", "context_sentence": "He said U.S. actions in the Gulf, including what Tehran described as provocations against commercial vessels and strikes on Iranian territory, were \"gross violations\" of the ceasefire.", "cefr_level": "B2", "frequency_score": 5.8097, "is_b2_plus": false, "derivatives": ["aggravation", "incitation", "incitement", "irritation"]}, {"word": "ceasefire", "lemma": "ceasefire", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "In warfare, an agreed end to hostilities for a specific purpose. (Typically only temporary).", "translation_ko": "", "example_en": "The rebels agreed to a ceasefire while the peace talks were underway.", "context_sentence": "Iran's foreign ministry spokesperson accused Washington of repeatedly violating the ceasefire agreed to on April 8.", "cefr_level": "B2", "frequency_score": 5.6799, "is_b2_plus": true, "derivatives": []}, {"word": "escalating", "lemma": "escalate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈɛs.kə.leɪt/", "definition_en": "increase in extent or intensity", "translation_ko": "", "example_en": "The Allies escalated the bombing", "context_sentence": "Minister Lee outlined South Korea's proposal to local broadcaster CBC --- which includes guaranteed technology transfers, domestic supply chain integration, and long-term maintenance based in Canada.\n\n#4\nTensions between the U.S. and Iran are escalating again near the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": false, "derivatives": ["intensify", "step up"]}, {"word": "reinforcement", "lemma": "reinforcement", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌɹiːɪnˈfɔː(ɹ)smənt/", "definition_en": "a military operation (often involving new supplies of men and materiel) to strengthen a military force or aid in the performance of its mission", "translation_ko": "", "example_en": "they called for artillery support", "context_sentence": "This week, the collapse of the overpass in Seoul killed three people, while controversy has been recently raised over a report that found reinforcement bars were largely missing from the construction.", "cefr_level": "B2", "frequency_score": 5.5702, "is_b2_plus": false, "derivatives": ["reenforcement", "reinforcer", "reinforcing stimulus", "reward", "strengthener", "support"]}, {"word": "keynote", "lemma": "keynote", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "the principal theme in a speech or literary work", "translation_ko": "", "example_en": "", "context_sentence": "Vietnam's President To Lam is set to deliver the keynote speech \non the first day of the forum on Friday.", "cefr_level": "B2", "frequency_score": 5.52, "is_b2_plus": false, "derivatives": ["tonic"]}, {"word": "overlooked", "lemma": "overlook", "pos": "VERB", "pos_ko": "동사", "phonetic": "/əʊvəˈlʊk/", "definition_en": "a high place affording a good view", "translation_ko": "", "example_en": "", "context_sentence": "Speaking at a weekly meeting with his aides on Thursday, Lee pointed out cases where safety has been overlooked due to cost issues.", "cefr_level": "B2", "frequency_score": 5.4698, "is_b2_plus": false, "derivatives": ["command", "dominate", "drop", "leave out", "look across", "look out on", "look out over", "miss", "neglect", "omit", "overleap", "overtop", "pretermit"]}, {"word": "blackout", "lemma": "blackout", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈblækaʊt/", "definition_en": "a suspension of radio or tv broadcasting", "translation_ko": "", "example_en": "", "context_sentence": "Thursday also marks the start of a polling blackout — meaning no new survey results can be published until polls close on election day.", "cefr_level": "B2", "frequency_score": 5.4202, "is_b2_plus": false, "derivatives": ["amnesia", "brownout", "dimout", "memory loss"]}, {"word": "strait", "lemma": "strait", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/stɹeɪt/", "definition_en": "a narrow channel of the sea joining two larger bodies of water", "translation_ko": "", "example_en": "The Strait of Gibraltar", "context_sentence": "The U.S. military, however, argues that American forces shot down four Iranian suicide drones near the strait, after they allegedly posed a threat to commercial vessels and U.S. personnel.", "cefr_level": "B2", "frequency_score": 5.4001, "is_b2_plus": false, "derivatives": ["pass", "sound", "straits"]}, {"word": "broadcaster", "lemma": "broadcaster", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "someone who broadcasts on radio or television", "translation_ko": "", "example_en": "", "context_sentence": "Minister Lee outlined South Korea's proposal to local broadcaster CBC --- which includes guaranteed technology transfers, domestic supply chain integration, and long-term maintenance based in Canada.\n\n#4\nTensions between the U.S. and Iran are escalating again near the Strait of Hormuz.", "cefr_level": "B2", "frequency_score": 5.3696, "is_b2_plus": false, "derivatives": ["spreader"]}, {"word": "spokesperson", "lemma": "spokesperson", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "an advocate who represents someone else's policy or purpose", "translation_ko": "", "example_en": "the meeting was attended by spokespersons for all the major organs of government", "context_sentence": "Iran's foreign ministry spokesperson accused Washington of repeatedly violating the ceasefire agreed to on April 8.", "cefr_level": "B2", "frequency_score": 5.3595, "is_b2_plus": false, "derivatives": ["interpreter", "representative", "voice"]}, {"word": "aides", "lemma": "aide", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/eɪd/", "definition_en": "an officer who acts as military assistant to a more senior officer", "translation_ko": "", "example_en": "", "context_sentence": "Speaking at a weekly meeting with his aides on Thursday, Lee pointed out cases where safety has been overlooked due to cost issues.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["adjutant", "aide-de-camp", "auxiliary"]}, {"word": "counterparts", "lemma": "counterpart", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "a person or thing having the same function or characteristics as another", "translation_ko": "", "example_en": "", "context_sentence": "Joining the summit will be his counterparts from key nations, \nincluding the United States, Japan, and other European and Indo-Pacific partners.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": ["opposite number", "similitude", "twin", "vis-a-vis"]}, {"word": "residency", "lemma": "residency", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈɹɛzɪdənsi/", "definition_en": "the act of dwelling in a place", "translation_ko": "", "example_en": "", "context_sentence": "Those aged eighteen or over who have held permanent residency for at least three years and are registered on their local government's foreign residents list are entitled to vote — though not in the parliamentary by-elections.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": false, "derivatives": ["abidance", "residence"]}, {"word": "accused", "lemma": "accuse", "pos": "VERB", "pos_ko": "동사", "phonetic": "/əˈkjuːz/", "definition_en": "bring an accusation against; level a charge against", "translation_ko": "", "example_en": "The neighbors accused the man of spousal abuse", "context_sentence": "Iran's foreign ministry spokesperson accused Washington of repeatedly violating the ceasefire agreed to on April 8.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["charge", "criminate", "impeach", "incriminate"]}, {"word": "volatile", "lemma": "volatile", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "a volatile substance; a substance that changes readily from solid or liquid to a vapor", "translation_ko": "", "example_en": "it was heated to evaporate the volatiles", "context_sentence": "According to the Ministry of National Defense on Thursday, \nAhn plans to deliver a speech to the plenary session \nto introduce Korea's defense policy \nduring the current increasingly volatile security landscape.", "cefr_level": "B2", "frequency_score": 5.2798, "is_b2_plus": true, "derivatives": ["explosive", "fickle"]}, {"word": "scrutiny", "lemma": "scrutiny", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the act of examining something closely (as for mistakes)", "translation_ko": "", "example_en": "", "context_sentence": "Meanwhile, the keynote address from U.S. Defense Secretary Pete Hegseth, \nIs set to be delivered the following day, \nwith high scrutiny expected from Asian allies.", "cefr_level": "B2", "frequency_score": 5.2596, "is_b2_plus": false, "derivatives": ["examination"]}, {"word": "violating", "lemma": "violate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈvaɪəˌleɪt/", "definition_en": "fail to agree with; be in violation of; as of rules or patterns", "translation_ko": "", "example_en": "This sentence violates the rules of syntax", "context_sentence": "Iran's foreign ministry spokesperson accused Washington of repeatedly violating the ceasefire agreed to on April 8.", "cefr_level": "B2", "frequency_score": 5.2503, "is_b2_plus": false, "derivatives": ["assault", "breach", "break", "desecrate", "dishonor", "dishonour", "go against", "infract", "offend", "outrage", "profane", "rape", "ravish", "transgress"]}, {"word": "trillion", "lemma": "trillion", "pos": "NUM", "pos_ko": "", "phonetic": "/ˈtɹɪljən/", "definition_en": "a very large indefinite number (usually hyperbole)", "translation_ko": "", "example_en": "there were millions of flies", "context_sentence": "#3\nSouth Korea is making a final push to secure a major Canadian submarine contract estimated to be worth up to 60 trillion won, or roughly 40 billion U.S. dollars.", "cefr_level": "B2", "frequency_score": 5.2097, "is_b2_plus": false, "derivatives": ["1000000000000", "billion", "gazillion", "jillion", "million", "one million million", "one million million million", "zillion"]}, {"word": "According", "lemma": "accord", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "harmony of people's opinions or actions or characters", "translation_ko": "", "example_en": "the two parties were in agreement", "context_sentence": "According to the Ministry of National Defense on Thursday, \nAhn plans to deliver a speech to the plenary session \nto introduce Korea's defense policy \nduring the current increasingly volatile security landscape.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["accordance", "agree", "agreement", "concord", "conformity", "consort", "fit in", "harmonise", "harmonize", "pact", "treaty"]}, {"word": "eighteen", "lemma": "eighteen", "pos": "NUM", "pos_ko": "", "phonetic": "/ˈeɪ.tiːn/", "definition_en": "the cardinal number that is the sum of seventeen and one", "translation_ko": "", "example_en": "", "context_sentence": "Those aged eighteen or over who have held permanent residency for at least three years and are registered on their local government's foreign residents list are entitled to vote — though not in the parliamentary by-elections.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["18", "XVIII", "xviii"]}, {"word": "submarine", "lemma": "submarine", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/sʌb.məˈɹiːn/", "definition_en": "a submersible warship usually armed with torpedoes", "translation_ko": "", "example_en": "", "context_sentence": "#3\nSouth Korea is making a final push to secure a major Canadian submarine contract estimated to be worth up to 60 trillion won, or roughly 40 billion U.S. dollars.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["Cuban sandwich", "Italian sandwich", "U-boat", "bomber", "grinder", "hero", "hero sandwich", "hoagie", "hoagy", "pigboat", "poor boy", "sub", "submarine sandwich", "torpedo", "wedge"]}, {"word": "polling", "lemma": "polling", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/pɔl/", "definition_en": "get the opinions (of people) by asking specific questions", "translation_ko": "", "example_en": "", "context_sentence": "For two days — Friday and Saturday — polling stations will be open from six in the morning until six in the evening.", "cefr_level": "B2", "frequency_score": 5.1701, "is_b2_plus": false, "derivatives": ["canvas", "canvass", "poll", "pollard"]}, {"word": "sovereignty", "lemma": "sovereignty", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈsɒv.ɹən.ti/", "definition_en": "government free from external control", "translation_ko": "", "example_en": "", "context_sentence": "Iran also warned it was ready to take all necessary measures under the UN Charter to defend its territory and sovereignty.", "cefr_level": "B2", "frequency_score": 5.1403, "is_b2_plus": true, "derivatives": ["reign"]}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
