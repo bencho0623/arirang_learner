@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arirang Learner Report</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe1ea;
+      --accent: #1e40af;
+      --good: #15803d;
+      --warn: #b45309;
+      --bad: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", "Noto Sans KR", sans-serif;
+    }
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .hero {
+      color: #fff;
+      border: 0;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.22), transparent 35%),
+        linear-gradient(135deg, #1d4ed8 0%, #0f766e 55%, #0b132b 100%);
+    }
+    .hero h1 { margin: 0 0 8px; font-size: 24px; }
+    .hero .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-weight: 600;
+    }
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .cefr-chart {
+      display: flex;
+      align-items: end;
+      gap: 8px;
+      min-height: 74px;
+    }
+    .cefr-col {
+      width: 34px;
+      text-align: center;
+      font-size: 11px;
+      color: #e2e8f0;
+    }
+    .cefr-bar {
+      width: 100%;
+      border-radius: 8px 8px 2px 2px;
+      background: rgba(255,255,255,0.86);
+      margin-bottom: 4px;
+      min-height: 6px;
+    }
+    .audio-wrap { display: block; }
+    audio { width: 100%; }
+    .script-box {
+      max-height: 400px;
+      overflow: auto;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfdff;
+    }
+    .script-box.expanded {
+      max-height: none;
+    }
+    .script-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+    .script-hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .script-toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    mark {
+      background: transparent;
+      cursor: pointer;
+      padding: 0 1px;
+      border-radius: 2px;
+      transition: background 0.15s ease;
+    }
+    mark:hover { background: rgba(59,130,246,0.12); }
+    .mark-b2 { border-bottom: 3px solid #facc15; }
+    .mark-c1 { border-bottom: 3px solid #fb923c; }
+    .mark-c2 { border-bottom: 3px solid #ef4444; }
+    .cards-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .v-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+    .v-card.bookmarked {
+      border: 2px solid #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245,158,11,0.15) inset;
+    }
+    .card-top {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-right: 28px;
+    }
+    .word { font-size: 20px; font-weight: 700; }
+    .cefr {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      padding: 2px 8px;
+    }
+    .phonetic { color: var(--muted); font-size: 13px; }
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    .bookmark-btn {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+    }
+    .bookmark-btn[aria-pressed="true"] { filter: saturate(160%); }
+    .card-body { display: none; margin-top: 8px; }
+    .v-card.open .card-body { display: block; }
+    .def-box {
+      background: #f3f4f6;
+      padding: 8px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .ko {
+      color: var(--good);
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .example {
+      font-style: italic;
+      color: #374151;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .context {
+      border-left: 4px solid #3b82f6;
+      padding: 8px;
+      background: #eff6ff;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 8px;
+      color: #374151;
+      background: #fff;
+    }
+    .quiz-list { display: grid; gap: 12px; }
+    .q {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+    }
+    .q .stem { margin-bottom: 8px; }
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .choice {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+    }
+    .choice.correct { background: #dcfce7; border-color: #16a34a; }
+    .choice.wrong { background: #fee2e2; border-color: #ef4444; }
+    .q-result {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #334155;
+    }
+    .progress {
+      height: 10px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #16a34a, #22c55e);
+      transition: width 0.2s ease;
+    }
+    @media (max-width: 600px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .choices { grid-template-columns: 1fr; }
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1220;
+        --card: #111827;
+        --ink: #e5e7eb;
+        --muted: #9ca3af;
+        --line: #253041;
+      }
+      .script-box { background: #0f172a; }
+      .def-box { background: #1f2937; }
+      .context { background: #0b2947; }
+      .choice { background: #0f172a; }
+      .q { background: #111827; }
+    }
+    @media print {
+      .audio-wrap, .quiz-section { display: none !important; }
+      .v-card .card-body { display: block !important; }
+      .container { max-width: 100%; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1 id="news-title"></h1>
+      <div class="meta" id="news-meta"></div>
+      <div class="header-row">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="badge" id="vocab-count-badge"></span>
+          <span class="badge" id="bookmark-count-badge">Bookmarks 0</span>
+        </div>
+        <div class="cefr-chart" id="cefr-chart"></div>
+      </div>
+    </section>
+
+    <section class="panel audio-wrap" id="audio-section">
+      <h2>Audio Player</h2>
+      <audio controls id="audio-player"></audio>
+    </section>
+
+    <section class="panel">
+      <h2>Script Viewer</h2>
+      <div class="script-tools">
+        <div class="script-hint">Scroll to view full script. Use expand when needed.</div>
+        <button id="script-toggle" class="script-toggle" type="button">Expand</button>
+      </div>
+      <div class="script-box" id="script-box"></div>
+    </section>
+
+    <section class="panel">
+      <div class="cards-head">
+        <h2 style="margin:0;">Vocabulary Cards</h2>
+      </div>
+      <div class="cards-grid" id="cards-grid"></div>
+    </section>
+
+    <section class="panel quiz-section" id="quiz-section">
+      <h2>Fill-in Quiz</h2>
+      <div id="quiz-score">0 / 0</div>
+      <div class="progress"><i id="quiz-progress"></i></div>
+      <div class="quiz-list" id="quiz-list" style="margin-top:12px;"></div>
+    </section>
+  </div>
+
+  <script>
+    const episode = {"date_display": "2026.05.29", "airtime": "21:55", "title": "21:55 Arirang News", "mp3_filename": "20260529_2155_arirang.mp4", "mp3_url": "https://download-arirang-com.akamaized.net/kr/media1/arirang/20260529/33193295/33193295_20260529-921e2npq_audio_arirang-mp3-normal-20260529220724.mp4?hdnts=exp=3560369782~acl=/kr/media1/arirang/20260529/33193295/*~hmac=9738f439e432b7d71e62eb40949328b9eb5879e6c7abc12f84d2c51098109523", "script_text": "Welcome to Arirang News.\nThis is Key Kim.\nWe start with the top headlines at this hour.\n\n1.\nPresident Lee Jae Myung and first lady Kim Hea Kyung visited a neighborhood community center near Cheong Wa Dae on Friday to cast their ballots in early voting for the upcoming local elections.\nWearing a gray tie, Lee and his wife cast ballots at the Samcheong neighborhood community center for the June 3 elections in Incheon's Gyeyang-B district, where the first couple's personal residence is registered.\nThe two-day early voting began earlier Friday for the local elections and parliamentary by-elections, in which 16 mayoral and gubernatorial posts will be contested, along with 227 local government chief positions and some 4,000 seats on local councils.\nVoters can cast their ballots at any of more than 3,500 polling stations across the nation from 6 a.m. to 6 p.m. on Friday and Saturday.\nThe upcoming elections are the first major ones for the Lee administration since it took office in June and thus widely regarded as a referendum on its first year in office.\n\n2.\nA draft of the National Defense Authorization Act submitted by the U.S.\nHouse of Representatives for the fiscal year 2027 contains strengthened restrictions on the use of funds to reduce the number of U.S.\nForces Korea troops.\nReleased by the House Armed Services Committee Chairman Mike Rogers on Friday,... the NDAA for fiscal year from October this year to September next year says that no funds authorized under the act may be “obligated or expended” for the purpose of reducing the number of U.S. troops stationed in South Korea below 28-thousand-500.\nThe \"FY2027 NDAA\" draft goes further than this year’s version by broadening the funding restrictions on reducing U.S. troops in South Korea.\nIt bars not only NDAA funds, but also any funds allocated in fiscal years 2026 and 2027, from being used for troop cuts.\nThe latest House draft also includes provisions aimed at strongly limiting the U.S. president’s ability to make unilateral decisions regarding the reduction or redeployment of troops stationed in Europe.\nThe NDAA must pass both the House and Senate,... and thus, this version could still change during negotiations with the Senate before the bill is finalized.\n\n3.\nKorea must play a larger role in global climate diplomacy,... amid weakening global leadership in an increasingly contested world.\nThat’s according to experts and officials attending a forum in Seoul,... hosted by the Seoul International Law Academy.\nThe forum featured presentations on energy security and emissions reduction,... followed by a broader discussion between government officials, academics, industry experts and media.\n\n4.\nSamsung Electronics has begun shipping samples of its latest high-bandwidth memory chip, becoming the first in the industry to supply 12-layer HBM4E samples.\nThe chip giant said it has started delivering the latest memory chip to major clients, following the launch of mass production for HBM4 in February.\nSamsung said the new HBM4E offers faster speeds and greater bandwidth than its predecessor, while also improving capacity and energy efficiency.\nMeanwhile,\nNVIDIA CEO Jensen Huang will be in South Korea next week... for a second visit... in some seven months.\nOn his agenda are talks... with executives... from Samsung Electronics...\nSK hynix...\nLG... and Naver... to name a few... to address... high-bandwidth memory... physical AI... and cloud computing... respectively.\nMoving to weather forecast,\nUnder mostly sunny skies nationwide this weekend, temperatures will climb to summer-like levels.\nBy Sunday, Seoul will rise to 30 degrees, while Pohang is forecast to soar to 34 degrees.\nMany areas across the country will top the 30-degree mark.\nStrong sunshine will dominate throughout tomorrow.\nUV levels are expected to reach the \"extreme\" levels on Jeju Island, while most other regions will see \"very high\" UV levels.\nOzone concentrations will also be on the rise.\nMeanwhile, Typhoon Jangmi is heading northward, south of Japan.\nAlthough it won't directly impact Korea, rough seas are expected around Jeju Island from Tuesday next week.\n59:30’\nThe current temperatures are:\n_______ degrees in Seoul\n_______ degrees in Pyeongchang\n_______ degrees in Busan\nAnd _______ degrees on Jejudo Island\n59:39’ You’re listening to Arirang Radio 59:42’"};
+    const rawVocabData = [{"word": "hynix", "lemma": "hynix", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "", "translation_ko": "", "example_en": "", "context_sentence": "SK hynix... LG... and Naver... to name a few... to address... high-bandwidth memory... physical AI... and cloud computing... respectively.", "cefr_level": "C2", "frequency_score": 7.1302, "is_b2_plus": false, "derivatives": []}, {"word": "redeployment", "lemma": "redeployment", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "the withdrawal and redistribution of forces in an attempt to use them more effectively", "translation_ko": "", "example_en": "", "context_sentence": "The latest House draft also includes provisions aimed at strongly limiting the U.S. president’s ability to make unilateral decisions regarding the reduction or redeployment of troops stationed in Europe.", "cefr_level": "C1", "frequency_score": 6.6402, "is_b2_plus": false, "derivatives": ["redisposition"]}, {"word": "obligated", "lemma": "obligate", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "force somebody to do something", "translation_ko": "", "example_en": "We compel all students to fill out this form", "context_sentence": "Released by the House Armed Services Committee Chairman Mike Rogers on Friday,... the NDAA for fiscal year from October this year to September next year says that no funds authorized under the act may be “obligated or expended” for the purpose of reducing the number of U.S. troops stationed in South Korea below 28-thousand-500.", "cefr_level": "C1", "frequency_score": 6.4295, "is_b2_plus": false, "derivatives": ["bind", "compel", "hold", "oblige"]}, {"word": "finalized", "lemma": "finalize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈfaɪnəlaɪz/", "definition_en": "make final; put the last touches on; put into final form", "translation_ko": "", "example_en": "let's finalize the proposal", "context_sentence": "The NDAA must pass both the House and Senate,... and thus, this version could still change during negotiations with the Senate before the bill is finalized.", "cefr_level": "C1", "frequency_score": 6.1101, "is_b2_plus": false, "derivatives": ["finalise", "nail down", "settle"]}, {"word": "expended", "lemma": "expend", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ɛkˈspɛnd/", "definition_en": "use up, consume fully", "translation_ko": "", "example_en": "The legislature expended its time on school questions", "context_sentence": "Released by the House Armed Services Committee Chairman Mike Rogers on Friday,... the NDAA for fiscal year from October this year to September next year says that no funds authorized under the act may be “obligated or expended” for the purpose of reducing the number of U.S. troops stationed in South Korea below 28-thousand-500.", "cefr_level": "C1", "frequency_score": 6.1002, "is_b2_plus": false, "derivatives": ["drop", "spend", "use"]}, {"word": "northward", "lemma": "northward", "pos": "ADV", "pos_ko": "부사", "phonetic": "/ˈnɔːθwəd/", "definition_en": "the cardinal compass point that is at 0 or 360 degrees", "translation_ko": "", "example_en": "", "context_sentence": "Meanwhile, Typhoon Jangmi is heading northward, south of Japan.", "cefr_level": "B2", "frequency_score": 5.7799, "is_b2_plus": false, "derivatives": ["N", "due north", "north", "northbound", "northerly", "northwards"]}, {"word": "gubernatorial", "lemma": "gubernatorial", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˌɡjuː.bə.neˈtɔː.ɹi.əl/", "definition_en": "relating to a governor", "translation_ko": "", "example_en": "gubernatorial election", "context_sentence": "The two-day early voting began earlier Friday for the local elections and parliamentary by-elections, in which 16 mayoral and gubernatorial posts will be contested, along with 227 local government chief positions and some 4,000 seats on local councils.", "cefr_level": "B2", "frequency_score": 5.7696, "is_b2_plus": false, "derivatives": []}, {"word": "mayoral", "lemma": "mayoral", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/meɪˈɔː.ɹəl/", "definition_en": "of or relating to a mayor or the office of mayor", "translation_ko": "", "example_en": "mayoral elections", "context_sentence": "The two-day early voting began earlier Friday for the local elections and parliamentary by-elections, in which 16 mayoral and gubernatorial posts will be contested, along with 227 local government chief positions and some 4,000 seats on local councils.", "cefr_level": "B2", "frequency_score": 5.719, "is_b2_plus": false, "derivatives": []}, {"word": "broadening", "lemma": "broaden", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "make broader", "translation_ko": "", "example_en": "broaden the road", "context_sentence": "The \"FY2027 NDAA\" draft goes further than this year’s version by broadening the funding restrictions on reducing U.S. troops in South Korea.", "cefr_level": "B2", "frequency_score": 5.699, "is_b2_plus": false, "derivatives": ["branch out", "diversify", "extend", "widen"]}, {"word": "allocated", "lemma": "allocate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈæl.ə.keɪt/", "definition_en": "distribute according to a plan or set apart for a special purpose", "translation_ko": "", "example_en": "I am allocating a loaf of bread to everyone on a daily basis", "context_sentence": "It bars not only NDAA funds, but also any funds allocated in fiscal years 2026 and 2027, from being used for troop cuts.", "cefr_level": "B2", "frequency_score": 5.6904, "is_b2_plus": false, "derivatives": ["apportion"]}, {"word": "unilateral", "lemma": "unilateral", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "[ˌjʉː.nɪˈlæt.ə.ɹɫ̩]", "definition_en": "involving only one part or side", "translation_ko": "", "example_en": "unilateral paralysis", "context_sentence": "The latest House draft also includes provisions aimed at strongly limiting the U.S. president’s ability to make unilateral decisions regarding the reduction or redeployment of troops stationed in Europe.", "cefr_level": "B2", "frequency_score": 5.6498, "is_b2_plus": true, "derivatives": ["one-sided"]}, {"word": "authorized", "lemma": "authorize", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈɑθəɹaɪz/", "definition_en": "grant authorization or clearance for", "translation_ko": "", "example_en": "Clear the manuscript for publication", "context_sentence": "Released by the House Armed Services Committee Chairman Mike Rogers on Friday,... the NDAA for fiscal year from October this year to September next year says that no funds authorized under the act may be “obligated or expended” for the purpose of reducing the number of U.S. troops stationed in South Korea below 28-thousand-500.", "cefr_level": "B2", "frequency_score": 5.6198, "is_b2_plus": false, "derivatives": ["authorise", "clear", "empower", "pass"]}, {"word": "soar", "lemma": "soar", "pos": "VERB", "pos_ko": "동사", "phonetic": "/sɔː/", "definition_en": "the act of rising upward into the air", "translation_ko": "", "example_en": "", "context_sentence": "By Sunday, Seoul will rise to 30 degrees, while Pohang is forecast to soar to 34 degrees.", "cefr_level": "B2", "frequency_score": 5.6108, "is_b2_plus": false, "derivatives": ["hang glide", "soar up", "soar upwards", "surge", "zoom"]}, {"word": "Ozone", "lemma": "ozone", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈoʊzoʊn/", "definition_en": "a colorless gas (O3) soluble in alkalis and cold water; a strong oxidizing agent; can be produced by electric discharge in oxygen or by the action of ultraviolet radiation on oxygen in the stratosphere (where it acts as a screen for ultraviolet radiation)", "translation_ko": "", "example_en": "", "context_sentence": "Ozone concentrations will also be on the rise.", "cefr_level": "B2", "frequency_score": 5.58, "is_b2_plus": false, "derivatives": []}, {"word": "weakening", "lemma": "weaken", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈwikən/", "definition_en": "lessen the strength of", "translation_ko": "", "example_en": "The fever weakened his body", "context_sentence": "3.\nKorea must play a larger role in global climate diplomacy,... amid weakening global leadership in an increasingly contested world.", "cefr_level": "B2", "frequency_score": 5.51, "is_b2_plus": false, "derivatives": ["break", "counteract", "countermine", "damp", "dampen", "de-escalate", "sabotage", "soften", "step down", "subvert", "undermine"]}, {"word": "bandwidth", "lemma": "bandwidth", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "/ˈbændwɪdθ/", "definition_en": "a data transmission rate; the maximum amount of information (bits/second) that can be transmitted along a channel", "translation_ko": "", "example_en": "", "context_sentence": "4.\n\nSamsung Electronics has begun shipping samples of its latest high-bandwidth memory chip, becoming the first in the industry to supply 12-layer HBM4E samples.", "cefr_level": "B2", "frequency_score": 5.3799, "is_b2_plus": false, "derivatives": []}, {"word": "troops", "lemma": "troop", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/tɹuːp/", "definition_en": "a group of soldiers", "translation_ko": "", "example_en": "", "context_sentence": "A draft of the National Defense Authorization Act submitted by the U.S. House of Representatives for the fiscal year 2027 contains strengthened restrictions on the use of funds to reduce the number of U.S. Forces Korea troops.", "cefr_level": "B2", "frequency_score": 5.3098, "is_b2_plus": false, "derivatives": ["flock", "parade", "promenade", "scout group", "scout troop"]}, {"word": "emissions", "lemma": "emission", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ɪˈmɪʃn̩/", "definition_en": "the act of emitting; causing to flow forth", "translation_ko": "", "example_en": "the emission was mostly blood", "context_sentence": "The forum featured presentations on energy security and emissions reduction,... followed by a broader discussion between government officials, academics, industry experts and media.", "cefr_level": "B2", "frequency_score": 5.3002, "is_b2_plus": true, "derivatives": ["discharge", "emanation", "expelling"]}, {"word": "diplomacy", "lemma": "diplomacy", "pos": "NOUN", "pos_ko": "명사", "phonetic": "", "definition_en": "negotiation between nations", "translation_ko": "", "example_en": "National diplomacy typically deploys its dexterity to secure advantage for one's nation.", "context_sentence": "3.\nKorea must play a larger role in global climate diplomacy,... amid weakening global leadership in an increasingly contested world.", "cefr_level": "B2", "frequency_score": 5.2899, "is_b2_plus": false, "derivatives": ["delicacy", "diplomatic negotiations", "discreetness", "finesse", "statecraft", "statesmanship"]}, {"word": "restrictions", "lemma": "restriction", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ɹɪˈstɹɪkʃən/", "definition_en": "a principle that limits the extent of something", "translation_ko": "", "example_en": "I am willing to accept certain restrictions on my movements", "context_sentence": "A draft of the National Defense Authorization Act submitted by the U.S. House of Representatives for the fiscal year 2027 contains strengthened restrictions on the use of funds to reduce the number of U.S. Forces Korea troops.", "cefr_level": "B2", "frequency_score": 5.2403, "is_b2_plus": false, "derivatives": ["confinement", "limitation"]}, {"word": "contested", "lemma": "contested", "pos": "ADJ", "pos_ko": "형용사", "phonetic": "", "definition_en": "to make the subject of dispute, contention, or litigation", "translation_ko": "", "example_en": "They contested the outcome of the race", "context_sentence": "3.\nKorea must play a larger role in global climate diplomacy,... amid weakening global leadership in an increasingly contested world.", "cefr_level": "B2", "frequency_score": 5.2299, "is_b2_plus": false, "derivatives": ["contend", "contest", "repugn"]}, {"word": "negotiations", "lemma": "negotiation", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/nɪˌɡəʊʃiˈeɪʃən/", "definition_en": "a discussion intended to produce an agreement", "translation_ko": "", "example_en": "the buyout negotiation lasted several days", "context_sentence": "The NDAA must pass both the House and Senate,... and thus, this version could still change during negotiations with the Senate before the bill is finalized.", "cefr_level": "B2", "frequency_score": 5.2197, "is_b2_plus": true, "derivatives": ["dialogue", "talks"]}, {"word": "according", "lemma": "accord", "pos": "VERB", "pos_ko": "동사", "phonetic": "", "definition_en": "harmony of people's opinions or actions or characters", "translation_ko": "", "example_en": "the two parties were in agreement", "context_sentence": "That’s according to experts and officials attending a forum in Seoul,... hosted by the Seoul International Law Academy.", "cefr_level": "B2", "frequency_score": 5.1898, "is_b2_plus": false, "derivatives": ["accordance", "agree", "agreement", "concord", "conformity", "consort", "fit in", "harmonise", "harmonize", "pact", "treaty"]}, {"word": "predecessor", "lemma": "predecessor", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˈpɹiːdɪsɛsɚ/", "definition_en": "one who precedes you in time (as in holding a position or office)", "translation_ko": "", "example_en": "", "context_sentence": "Samsung said the new HBM4E offers faster speeds and greater bandwidth than its predecessor, while also improving capacity and energy efficiency.", "cefr_level": "B2", "frequency_score": 5.1798, "is_b2_plus": false, "derivatives": ["forerunner", "harbinger", "herald", "precursor"]}, {"word": "polling", "lemma": "polling", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/pɔl/", "definition_en": "get the opinions (of people) by asking specific questions", "translation_ko": "", "example_en": "", "context_sentence": "Voters can cast their ballots at any of more than 3,500 polling stations across the nation from 6 a.m. to 6 p.m. on Friday and Saturday.", "cefr_level": "B2", "frequency_score": 5.1701, "is_b2_plus": false, "derivatives": ["canvas", "canvass", "poll", "pollard"]}, {"word": "dominate", "lemma": "dominate", "pos": "VERB", "pos_ko": "동사", "phonetic": "/ˈdɒməˌneɪt/", "definition_en": "be larger in number, quantity, power, status or importance", "translation_ko": "", "example_en": "Money reigns supreme here", "context_sentence": "Strong sunshine will dominate throughout tomorrow.", "cefr_level": "B2", "frequency_score": 5.1302, "is_b2_plus": false, "derivatives": ["command", "eclipse", "master", "overlook", "overshadow", "overtop", "predominate", "prevail", "reign", "rule"]}, {"word": "amid", "lemma": "amid", "pos": "ADP", "pos_ko": "", "phonetic": "/əˈmɪd/", "definition_en": "In the middle of; in the center of; surrounded by.", "translation_ko": "", "example_en": "", "context_sentence": "3.\nKorea must play a larger role in global climate diplomacy,... amid weakening global leadership in an increasingly contested world.", "cefr_level": "B2", "frequency_score": 5.0501, "is_b2_plus": false, "derivatives": []}, {"word": "referendum", "lemma": "referendum", "pos": "NOUN", "pos_ko": "명사", "phonetic": "/ˌɹɛfəˈɹɛndəm/", "definition_en": "a legislative act is referred for final approval to a popular vote by the electorate", "translation_ko": "", "example_en": "", "context_sentence": "The upcoming elections are the first major ones for the Lee administration since it took office in June and thus widely regarded as a referendum on its first year in office.", "cefr_level": "B2", "frequency_score": 5.02, "is_b2_plus": true, "derivatives": []}];
+    const vocabData = JSON.parse(JSON.stringify(rawVocabData));
+    const bookmarksKey = "arirang_bookmarks";
+
+    function escHtml(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function cleanInlineArtifacts(s) {
+      let t = String(s ?? "");
+      t = t.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      t = t.replace(/data-[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;)?/gi, "");
+      t = t.replace(/<[^>]+>/g, "");
+      return t;
+    }
+
+    function loadBookmarks() {
+      try {
+        return JSON.parse(localStorage.getItem(bookmarksKey) || "{}");
+      } catch (_) {
+        return {};
+      }
+    }
+
+    function saveBookmarks(bm) {
+      localStorage.setItem(bookmarksKey, JSON.stringify(bm));
+    }
+
+    function cefrClass(level) {
+      if (level === "C2") return "mark-c2";
+      if (level === "C1") return "mark-c1";
+      if (level === "B2") return "mark-b2";
+      return "";
+    }
+
+    function openCard(lemma) {
+      const el = document.getElementById("card-" + lemma);
+      if (!el) return;
+      el.classList.add("open");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function renderHeader() {
+      document.getElementById("news-title").textContent = episode.title || "Arirang News";
+      document.getElementById("news-meta").innerHTML =
+        "<span>" + escHtml(episode.date_display || "") + "</span>" +
+        "<span>/</span>" +
+        "<span>" + escHtml(episode.airtime || "21:55") + "</span>";
+
+      document.getElementById("vocab-count-badge").textContent = "Vocab " + vocabData.length;
+
+      const dist = { B2:0, C1:0, C2:0 };
+      for (const v of vocabData) {
+        if (v.cefr_level === "B2") dist.B2++;
+        if (v.cefr_level === "C1") dist.C1++;
+        if (v.cefr_level === "C2") dist.C2++;
+      }
+      const max = Math.max(1, dist.B2, dist.C1, dist.C2);
+      const chart = document.getElementById("cefr-chart");
+      chart.innerHTML = ["B2","C1","C2"].map(k => {
+        const h = Math.max(6, Math.round((dist[k] / max) * 56));
+        return "<div class='cefr-col'>" +
+               "<div class='cefr-bar' style='height:" + h + "px'></div>" +
+               "<div>" + k + "</div>" +
+               "</div>";
+      }).join("");
+    }
+
+    function renderAudio() {
+      const section = document.getElementById("audio-section");
+      const player = document.getElementById("audio-player");
+      const bust = "?v=" + Date.now();
+      if (!episode.mp3_filename && !episode.mp3_url) {
+        section.style.display = "none";
+        return;
+      }
+      if (episode.mp3_filename) {
+        // report file is in reports/, media files are in downloads/
+        player.src = "../downloads/" + episode.mp3_filename + bust;
+      } else {
+        player.src = episode.mp3_url + (String(episode.mp3_url).includes("?") ? "&v=" : "?v=") + Date.now();
+      }
+    }
+
+    function renderScript() {
+      const box = document.getElementById("script-box");
+      const toggle = document.getElementById("script-toggle");
+      let src = String(episode.script_text || "");
+      // Defensive cleanup for raw/encoded inline attribute residue.
+      src = src.replace(/\bdata\s*-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s>]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "");
+      src = src.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:'[^']*'|"[^"]*"|[^\s<]+)\s*(?:>|&gt;|&amp;gt;)?/gi, "$1");
+      let text = escHtml(src);
+      text = text.replace(/data\s*-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s&]+)\s*(?:&gt;|&amp;gt;)?/gi, "");
+      text = text.replace(/(^|\s)-\s*[a-z-]+\s*=\s*(?:&#39;[^&#]*&#39;|&quot;[^&]*&quot;|[^\s<]+)\s*(?:&gt;|&amp;gt;)?/gi, "$1");
+      if (!text) {
+        box.textContent = "Script is not available.";
+        toggle.style.display = "none";
+        return;
+      }
+
+      const sorted = [...vocabData]
+        .filter(v => v.word)
+        .sort((a,b) => String(b.word).length - String(a.word).length);
+
+      const byLower = new Map();
+      const escapedWords = [];
+      for (const item of sorted) {
+        const word = String(item.word || "").trim();
+        if (!word) continue;
+        const lower = word.toLowerCase();
+        if (!byLower.has(lower)) {
+          byLower.set(lower, item);
+        }
+        escapedWords.push(word.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&"));
+      }
+      if (escapedWords.length) {
+        const pattern = new RegExp("\\b(" + escapedWords.join("|") + ")\\b", "gi");
+        text = text.replace(pattern, (m) => {
+          const item = byLower.get(String(m).toLowerCase());
+          if (!item) return m;
+          const lemma = String(item.lemma || "").trim();
+          const cls = cefrClass(item.cefr_level);
+          return "<mark class='" + cls + "' data-key='" + escHtml(lemma) + "'>" + m + "</mark>";
+        });
+      }
+
+      box.innerHTML = text;
+      box.querySelectorAll("mark[data-key]").forEach((el) => {
+        el.addEventListener("click", () => openCard(el.getAttribute("data-key")));
+      });
+
+      toggle.addEventListener("click", () => {
+        box.classList.toggle("expanded");
+        toggle.textContent = box.classList.contains("expanded") ? "Collapse" : "Expand";
+      });
+    }
+
+    function renderCards() {
+      const bm = loadBookmarks();
+      const grid = document.getElementById("cards-grid");
+      grid.innerHTML = vocabData.map((v) => {
+        const lemma = escHtml(v.lemma || "");
+        const ko = String(v.translation_ko || "").trim() || "Not listed in dictionary";
+        const deriv = Array.isArray(v.derivatives) ? v.derivatives : [];
+        const tags = deriv.map(x => "<span class='tag'>" + escHtml(x) + "</span>").join("");
+        const bookmarked = bm[v.word] ? "bookmarked" : "";
+        const pressed = bm[v.word] ? "true" : "false";
+        const definition = cleanInlineArtifacts(v.definition_en || "");
+        const example = cleanInlineArtifacts(v.example_en || "");
+        const context = cleanInlineArtifacts(v.context_sentence || "");
+        return "<article class='v-card " + bookmarked + "' id='card-" + lemma + "'>" +
+               "<button class='bookmark-btn' data-word='" + escHtml(v.word) + "' aria-pressed='" + pressed + "'>🔖</button>" +
+               "<div class='card-top'>" +
+               "<span class='word'>" + escHtml(v.word || "") + "</span>" +
+               "<span class='cefr'>" + escHtml(v.cefr_level || "") + "</span>" +
+               "<span class='phonetic'>" + escHtml(v.phonetic || "") + "</span>" +
+               "</div>" +
+               "<div class='sub'>" + escHtml(v.pos_ko || "") + " | Frequency " + escHtml(v.frequency_score) + "</div>" +
+               "<div class='card-body'>" +
+               "<div class='def-box'>" + escHtml(definition) + "</div>" +
+               "<div class='ko'>" + escHtml(ko) + "</div>" +
+               "<div class='example'>" + escHtml(example) + "</div>" +
+               "<div class='context'>" + escHtml(context) + "</div>" +
+               "<div class='tags'>" + tags + "</div>" +
+               "</div>" +
+               "</article>";
+      }).join("");
+
+      grid.querySelectorAll(".v-card").forEach((card) => {
+        card.addEventListener("click", (ev) => {
+          if (ev.target && ev.target.classList.contains("bookmark-btn")) return;
+          card.classList.toggle("open");
+        });
+      });
+
+      grid.querySelectorAll(".bookmark-btn").forEach((btn) => {
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const word = btn.getAttribute("data-word");
+          const store = loadBookmarks();
+          store[word] = !store[word];
+          if (!store[word]) delete store[word];
+          saveBookmarks(store);
+          renderCards();
+          updateBookmarkCount();
+        });
+      });
+    }
+
+    function updateBookmarkCount() {
+      const bm = loadBookmarks();
+      const n = Object.keys(bm).length;
+      document.getElementById("bookmark-count-badge").textContent = "Bookmarks " + n;
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function buildQuizItems() {
+      const withCtx = vocabData.filter(v => cleanInlineArtifacts(v.context_sentence || "").trim() && v.word);
+      const picked = shuffle(withCtx).slice(0, 5);
+      const words = vocabData.map(v => v.word).filter(Boolean);
+      return picked.map((q, idx) => {
+        const answer = q.word;
+        const wrongPool = shuffle(words.filter(w => w !== answer)).slice(0, 3);
+        const choices = shuffle([answer, ...wrongPool]);
+        const cleanCtx = cleanInlineArtifacts(q.context_sentence || "");
+        const stem = cleanCtx.replace(new RegExp("\\b" + answer.replace(/[.*+?^${}()|[\\]\\]/g, "\\$&") + "\\b", "i"), "______");
+        return {
+          id: idx + 1,
+          answer,
+          choices,
+          stem,
+          definition: q.definition_en || ""
+        };
+      });
+    }
+
+    function renderQuiz() {
+      const list = document.getElementById("quiz-list");
+      const scoreEl = document.getElementById("quiz-score");
+      const progress = document.getElementById("quiz-progress");
+      const items = buildQuizItems();
+      if (!items.length) {
+        document.getElementById("quiz-section").style.display = "none";
+        return;
+      }
+
+      let answered = 0;
+      let correct = 0;
+
+      function refresh() {
+        scoreEl.textContent = correct + " / " + items.length;
+        progress.style.width = Math.round((answered / items.length) * 100) + "%";
+      }
+
+      list.innerHTML = items.map((q) => {
+        return "<div class='q' data-id='" + q.id + "'>" +
+               "<div class='stem'><strong>Q" + q.id + ".</strong> " + escHtml(q.stem) + "</div>" +
+               "<div class='choices'>" +
+               q.choices.map(c => "<button class='choice' data-choice='" + escHtml(c) + "'>" + escHtml(c) + "</button>").join("") +
+               "</div>" +
+               "<div class='q-result'></div>" +
+               "</div>";
+      }).join("");
+
+      list.querySelectorAll(".q").forEach((qEl) => {
+        const id = Number(qEl.getAttribute("data-id"));
+        const q = items.find(x => x.id === id);
+        if (!q) return;
+        let done = false;
+        qEl.querySelectorAll(".choice").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            if (done) return;
+            done = true;
+            answered++;
+            const picked = btn.getAttribute("data-choice");
+            const result = qEl.querySelector(".q-result");
+            qEl.querySelectorAll(".choice").forEach((b) => {
+              const val = b.getAttribute("data-choice");
+              if (val === q.answer) b.classList.add("correct");
+            });
+            if (picked === q.answer) {
+              correct++;
+              btn.classList.add("correct");
+              result.textContent = "Correct! " + (q.definition ? q.definition : "");
+            } else {
+              btn.classList.add("wrong");
+              result.textContent = "Incorrect. Answer: " + q.answer + (q.definition ? " | " + q.definition : "");
+            }
+            refresh();
+          });
+        });
+      });
+
+      refresh();
+    }
+
+    renderHeader();
+    renderAudio();
+    renderScript();
+    renderCards();
+    updateBookmarkCount();
+    renderQuiz();
+  </script>
+</body>
+</html>
