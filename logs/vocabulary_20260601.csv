@@ -1,0 +1,60 @@
+﻿word,lemma,pos,pos_ko,phonetic,definition_en,translation_ko,example_en,context_sentence,cefr_level,frequency_score,is_b2_plus,derivatives
+sidecar,sidecar,NOUN,명사,,a cocktail made of orange liqueur with lemon juice and brandy,,,"According to the KRX, the surge triggered a buy-side sidecar at around 
+11:30 AM, which temporarily halted program buying for five minutes.",C1,6.4597,False,
+firefighting,firefighting,NOUN,명사,,,,,"Prime Minister Kim Min-seok also ordered relevant agencies 
+to use all available manpower and equipment for firefighting, 
+rescue operations and medical support.",C1,6.0799,False,
+seok,seok,NOUN,명사,,,,,"Prime Minister Kim Min-seok also ordered relevant agencies 
+to use all available manpower and equipment for firefighting, 
+rescue operations and medical support.",C1,6.06,False,
+hoon,hoon,NOUN,명사,,A worthless person; a hooligan or lout.,,,Welcome to Arirang News This is Park Kee hoon,C1,6.0101,False,
+outbound,outbound,NOUN,명사,,that is going out or leaving,,the departing train,"The Ministry of Trade, Industry and Resources reported on Monday that outbound shipments in May reached 87.7 billion U.S. dollars, a 53.2 percent surge from a year earlier.",C1,6.0,False,outward|outward-bound
+successively,successively,ADV,부사,,in proper order or sequence,,talked to each child in turn,"After breaking through the 8-thousand-500 mark for the first time, 
+the index successively crossed 8-thousand-600, 8-thousand-700 and 
+even 8-thousand-800 during intraday trading.",B2,5.9788,False,in turn
+extinguished,extinguish,VERB,동사,/ɪkˈstɪŋ.ɡwɪʃ/,put an end to; kill,,The Nazis snuffed out the life of many Jewish children,"The fire was brought under control within 50 minutes 
+and was fully extinguished shortly after 1 PM.",B2,5.9586,False,annihilate|blow out|carry off|crush out|decimate|do away with|eliminate|eradicate|get rid of|press out|quench|snuff out|stub out|wipe out
+capitalization,capitalization,NOUN,명사,,writing in capital letters,,,"For the first time, total market capitalization also surpassed 7-thousand-trillion won, or around 4-point-6 trillion U.S. dollars.",B2,5.8794,False,capitalisation
+mobilize,mobilize,VERB,동사,,make ready for action or use,,marshal resources,"According to the Blue House on Monday, Lee instructed authorities 
+to mobilize all available resources for rescue operations 
+and recovery efforts, after an explosion at around 10:59 AM on Monday 
+at Hanwha Aerospace's Daejeon plant.",B2,5.821,False,call up|circulate|marshal|mobilise|rally|summon
+deepen,deepen,VERB,동사,/ˈdiːpən/,"make more intense, stronger, or more marked; ,",,The efforts were intensified,"The first-ever Korea–Africa Foreign Ministers’ Meeting opened in central Seoul on Monday, as Korea looks to deepen its ties with the continent amid growing competition over supply chains, critical minerals and emerging markets.",B2,5.8097,False,change|compound|heighten|intensify
+instructed,instruct,VERB,동사,/ˌɪnˈstɹʌkt/,impart skills or knowledge to,,I taught them French,"According to the Blue House on Monday, Lee instructed authorities 
+to mobilize all available resources for rescue operations 
+and recovery efforts, after an explosion at around 10:59 AM on Monday 
+at Hanwha Aerospace's Daejeon plant.",B2,5.6904,False,apprise|apprize|learn|teach
+surpassed,surpass,VERB,동사,/sɚˈpæs/,distinguish oneself,,She excelled in math,"For the first time, total market capitalization also surpassed 7-thousand-trillion won, or around 4-point-6 trillion U.S. dollars.",B2,5.6308,False,exceed|excel|go by|go past|outdo|outgo|outmatch|outperform|outstrip|pass|pass by|stand out|surmount|transcend|travel by
+manpower,manpower,NOUN,명사,,the force of workers available,,,"Prime Minister Kim Min-seok also ordered relevant agencies 
+to use all available manpower and equipment for firefighting, 
+rescue operations and medical support.",B2,5.5406,False,hands|men|work force|workforce
+benchmark,benchmark,ADJ,형용사,,a standard by which something can be measured or judged,,his painting sets the benchmark of quality,"South Korea's benchmark KOSPI opened at a record high of 
+8-thousand 4-hundred-85 on Monday, and continued extending gains throughout the session.",B2,5.4001,True,bench mark
+trajectory,trajectory,NOUN,명사,/tɹəˈdʒɛktəɹɪ/,the path followed by an object moving through space,,,"1.
+Korea’s export sector continues its robust upward trajectory, 
+fueled by surging global demand for memory chips.",B2,5.3904,False,flight
+upward,upward,ADJ,형용사,/ˈʌpwəd/,directed up,,the cards were face upward,"1.
+Korea’s export sector continues its robust upward trajectory, 
+fueled by surging global demand for memory chips.",B2,5.2899,False,up|upwardly|upwards
+shipments,shipment,NOUN,명사,/ˈʃɪpmənt/,goods carried by a large vehicle,,,"The Ministry of Trade, Industry and Resources reported on Monday that outbound shipments in May reached 87.7 billion U.S. dollars, a 53.2 percent surge from a year earlier.",B2,5.2403,False,cargo|consignment|despatch|dispatch|freight|lading|load|loading|payload
+sustainability,sustainability,NOUN,명사,/səsˌteɪnəˈbɪlɪti/,the property of being sustainable,,,"Korea and African countries are seeking a stronger partnership for solidarity, sustainability and shared prosperity.",B2,5.2299,False,
+trillion,trillion,NUM,,/ˈtɹɪljən/,a very large indefinite number (usually hyperbole),,there were millions of flies,"For the first time, total market capitalization also surpassed 7-thousand-trillion won, or around 4-point-6 trillion U.S. dollars.",B2,5.2097,False,1000000000000|billion|gazillion|jillion|million|one million million|one million million million|zillion
+According,accord,VERB,동사,,harmony of people's opinions or actions or characters,,the two parties were in agreement,"According to the KRX, the surge triggered a buy-side sidecar at around 
+11:30 AM, which temporarily halted program buying for five minutes.",B2,5.1898,False,accordance|agree|agreement|concord|conformity|consort|fit in|harmonise|harmonize|pact|treaty
+surging,surge,VERB,동사,/sɜːdʒ/,a sudden forceful flow,,He felt a surge of excitement.,"1.
+Korea’s export sector continues its robust upward trajectory, 
+fueled by surging global demand for memory chips.",B2,5.1798,False,billow|heave|rush|soar|soar up|soar upwards|spate|upsurge|zoom
+surplus,surplus,NOUN,명사,/ˈsɜːpləs/,a quantity much larger than is needed,,,"But despite the higher imports, the solid export performance resulted in a monthly trade surplus of 26.9 billion dollars.",B2,5.1302,False,excess|extra|nimiety|redundant|spare|supererogatory|superfluous|supernumerary|surplusage
+emerging,emerge,VERB,동사,/iˈmɜːd͡ʒ/,"come out into view, as from concealment",,"Suddenly, the proprietor emerged from his office","The first-ever Korea–Africa Foreign Ministers’ Meeting opened in central Seoul on Monday, as Korea looks to deepen its ties with the continent amid growing competition over supply chains, critical minerals and emerging markets.",B2,5.1101,False,come forth|come out|egress|go forth|issue
+tombs,tomb,NOUN,명사,,a place for the burial of a corpse (especially beneath the ground and marked by a tombstone),,he put flowers on his mother's grave,"According to the Korea Heritage Service on Monday, nearly 18 million people visited the nation's royal palaces and Joseon Dynasty royal tombs last year, up nearly 13 percent from a year earlier 
+and the highest figure on record.",B2,5.1101,False,grave
+prosperity,prosperity,NOUN,명사,/pɹɒˈspɛɹ.ɪ.ti/,an economic state of growth with rising profits and full employment,,,"Korea and African countries are seeking a stronger partnership for solidarity, sustainability and shared prosperity.",B2,5.0899,False,successfulness
+exceeded,exceed,VERB,동사,/ɪkˈsiːd/,be greater in scope or size than some standard,,Their loyalty exceeds their national bonds,"It is an all-time high for the month of May, and the first time exports have exceeded the 80 billion dollar mark for three consecutive months.",B2,5.0799,False,go past|outdo|outgo|outmatch|outperform|outstrip|overstep|pass|surmount|surpass|top|transcend
+halted,halt,VERB,동사,/hɔːlt/,the state of inactivity following an interruption,,the negotiations were in arrest,"According to the KRX, the surge triggered a buy-side sidecar at around 
+11:30 AM, which temporarily halted program buying for five minutes.",B2,5.0701,False,arrest|check|freeze|hitch|hold|stay|stop|stoppage
+sustained,sustain,VERB,동사,/səˈsteɪn/,lengthen or extend in duration or space,,We sustained the diplomatic negotiations as long as possible,"Five people were killed, one suffered severe burns across the body, 
+and another sustained minor injuries.",B2,5.0701,False,get|have|hold|hold up|keep|keep up|maintain|nourish|nurture|prolong|suffer|support
+robust,robust,ADJ,형용사,/ɹəʊˈbʌst/,"sturdy and strong in form, constitution, or construction",,a robust body,"1.
+Korea’s export sector continues its robust upward trajectory, 
+fueled by surging global demand for memory chips.",B2,5.06,False,full-bodied|racy|rich
+amid,amid,ADP,,/əˈmɪd/,In the middle of; in the center of; surrounded by.,,,"The first-ever Korea–Africa Foreign Ministers’ Meeting opened in central Seoul on Monday, as Korea looks to deepen its ties with the continent amid growing competition over supply chains, critical minerals and emerging markets.",B2,5.0501,False,
